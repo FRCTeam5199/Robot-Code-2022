@@ -1,6 +1,7 @@
 package frc.drive;
 
 import com.ctre.phoenix.sensors.CANCoder;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -45,19 +46,21 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     private BaseController xbox;
     private CANCoder FRcoder, BRcoder, BLcoder, FLcoder;
 
+    //<Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
+    public static double MAX_VELOCITY_METERS_PER_SECOND;
+
     public DriveManagerSwerve() {
         super();
     }
 
     @Override
     public void init() {
-        setPIDControllers();
-        createDriveMotors();
-        setInvert();
         xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+        createPIDControllers(new PID(0.0035, 0.000001, 0));
+        setDrivingPIDS(new PID(0.001, 0, 0.0001));
+        createDriveMotors();
         setCANCoder();
         setupSteeringEncoders();
-        //setSteeringPIDS(new PID(0.005, 0.0000, 0.01));
     }
 
     @Override
@@ -197,12 +200,12 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         driverBL.driver.moveAtVelocity(FPS_BL);
          */
 
-        //todo get rid of this
-        double gearRatio = 28.6472 * 12;
-        driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
-        driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
-        driverBR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_BR) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
-        driverBL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_BL) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
+        double gearRatio = robotSettings.SWERVE_SDS_DRIVE_BASE.getDriveReduction() * robotSettings.SWERVE_SDS_DRIVE_BASE.getWheelDiameter();
+        double voltageMult = 0.91 / 371.0;
+        driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
+        driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
+        driverBR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_BR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
+        driverBL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_BL) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
     }
 
     /**
@@ -333,6 +336,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
     private void createDriveMotors() throws InitializationFailureException {
             double s2rf;
+            double freeSpeed;
             switch (robotSettings.DRIVE_MOTOR_TYPE) {
                 case CAN_SPARK_MAX: {
                             driverFR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
@@ -341,6 +345,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
                             driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
                     //rpm <=> rps <=> gearing <=> wheel circumference
                     s2rf = robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI);
+                    freeSpeed = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX.MAX_SPEED_RPM;
                     break;
                 }
                 case TALON_FX: {
@@ -350,13 +355,16 @@ public class DriveManagerSwerve extends AbstractDriveManager {
                             driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.TALON_FX);
                     //Sens units / 100ms <=> rps <=> gearing <=> wheel circumference
                     s2rf = (10.0 / robotSettings.DRIVEBASE_SENSOR_UNITS_PER_ROTATION) * robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI / 12);
+                    freeSpeed = AbstractMotorController.SupportedMotors.TALON_FX.MAX_SPEED_RPM;
                     break;
                 }
                 default:
                     throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
             }
-    }
-    public void setInvert(){
+        MAX_VELOCITY_METERS_PER_SECOND = freeSpeed / 60.0 *
+                SdsModuleConfigurations.MK3_STANDARD.getDriveReduction() *
+                SdsModuleConfigurations.MK3_STANDARD.getWheelDiameter() * Math.PI;
+
         driverFR.driver.setBrake(true);
         driverFL.driver.setInverted(true).setBrake(true);
         driverBR.driver.setBrake(true);
@@ -366,8 +374,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         driverBR.steering.setInverted(true);
         driverBL.steering.setInverted(true);
         driverFL.steering.setInverted(true);
-    }
-
+   }
     public void setCANCoder() {
         FRcoder = new CANCoder(11);
         BRcoder = new CANCoder(12);
@@ -375,10 +382,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         BLcoder = new CANCoder(14);
     }
 
-    public void  setPIDControllers() {
-        PID steeringPID = new PID(0.0035, 0.000001, 0);
-        setDrivingPIDS(new PID(0.001, 0, 0.0001));
-
+    public void createPIDControllers(PID steeringPID) {
         FLpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
         FRpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
         BLpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);

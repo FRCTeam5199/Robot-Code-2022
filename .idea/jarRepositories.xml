@@ -71,5 +71,10 @@
       <option name="name" value="WPIab676553-b602-441f-a38d-f1296eff6537_0Release" />
       <option name="url" value="https://maven.ctr-electronics.com/release/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="WPI9619F7EA-7F96-4236-9D94-02338DFED592_0Release" />
+      <option name="name" value="WPI9619F7EA-7F96-4236-9D94-02338DFED592_0Release" />
+      <option name="url" value="https://jitpack.io" />
+    </remote-repository>
   </component>
 </project>
