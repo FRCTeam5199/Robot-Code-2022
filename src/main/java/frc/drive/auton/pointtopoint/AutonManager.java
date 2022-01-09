@@ -186,7 +186,7 @@ public class AutonManager extends AbstractAutonManager {
         if (!inTolerance) {
             double turned = (drivingChild.guidance.imu.relativeYaw() - yawBeforeTurn) * -1;
             UserInterface.smartDashboardPutNumber("Turned", turned);
-            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, -ROT_PID.calculate(turned - -rotationOffset) * robotSettings.AUTO_ROTATION_SPEED);
+            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, -ROT_PID.calculate(turned + rotationOffset) * robotSettings.AUTO_ROTATION_SPEED);
 
             //-rotationOffset * robotSettings.AUTO_ROTATION_SPEED);
             //System.out.println("DrivePure @ " + robotSettings.AUTO_SPEED * speed);

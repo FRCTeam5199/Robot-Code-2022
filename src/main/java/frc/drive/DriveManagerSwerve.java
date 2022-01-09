@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
+import frc.misc.InitializationFailureException;
 import frc.misc.PID;
 import frc.misc.SubsystemStatus;
 import frc.motors.AbstractMotorController;
@@ -50,48 +51,13 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
     @Override
     public void init() {
-        PID steeringPID = new PID(0.0035, 0.000001, 0);
-
-        FLpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
-        FRpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
-        BLpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
-        BRpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
-        FLpid.enableContinuousInput(-180, 180);
-        FRpid.enableContinuousInput(-180, 180);
-        BLpid.enableContinuousInput(-180, 180);
-        BRpid.enableContinuousInput(-180, 180);
-
+        setPIDControllers();
+        createDriveMotors();
+        setInvert();
         xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
-
-        driverFR = new SwerveMotorController(1, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, 2, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
-        driverBR = new SwerveMotorController(4, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, 3, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
-        driverBL = new SwerveMotorController(6, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, 5, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
-        driverFL = new SwerveMotorController(7, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, 8, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
-
-        driverFR.driver.setBrake(true);
-        driverFL.driver.setInverted(true).setBrake(true);
-        driverBR.driver.setBrake(true);
-        driverBL.driver.setInverted(true).setBrake(true);
-
-        driverFR.steering.setInverted(true);
-        driverBR.steering.setInverted(true);
-        driverBL.steering.setInverted(true);
-        driverFL.steering.setInverted(true);
-
-        //setSteeringPIDS(new PID(0.005, 0.0000, 0.01));
-
-        FRcoder = new CANCoder(11);
-        BRcoder = new CANCoder(12);
-        FLcoder = new CANCoder(13);
-        BLcoder = new CANCoder(14);
-
-        driverFR.driver.setSensorToRealDistanceFactor(robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER / 12 * Math.PI) / 60);
-        driverBR.driver.setSensorToRealDistanceFactor(robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER / 12 * Math.PI) / 60);
-        driverFL.driver.setSensorToRealDistanceFactor(robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER / 12 * Math.PI) / 60);
-        driverBL.driver.setSensorToRealDistanceFactor(robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER / 12 * Math.PI) / 60);
+        setCANCoder();
         setupSteeringEncoders();
-
-        setDrivingPIDS(new PID(0.0000, 0, 0.000));
+        //setSteeringPIDS(new PID(0.005, 0.0000, 0.01));
     }
 
     @Override
@@ -224,10 +190,19 @@ public class DriveManagerSwerve extends AbstractDriveManager {
             System.out.println("BL: " + BL);
             System.out.println("BR: " + BR);
         }
-        driverFR.driver.moveAtVelocity(FPS_FL);
+        /*
+        driverFR.driver.moveAtVelocity(FPS_FR);
         driverBR.driver.moveAtVelocity(FPS_BR);
         driverFL.driver.moveAtVelocity(FPS_FL);
         driverBL.driver.moveAtVelocity(FPS_BL);
+         */
+
+        //todo get rid of this
+        double gearRatio = 28.6472 * 12;
+        driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
+        driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
+        driverBR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_BR) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
+        driverBL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_BL) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
     }
 
     /**
@@ -354,5 +329,63 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         Translation2d BLPos = Objects.requireNonNullElseGet(backLeftLocation, () -> backLeftLocation = new Translation2d(trackLength / 2 / 39.3701, trackWidth / 2 / 39.3701));
         Translation2d BRPos = Objects.requireNonNullElseGet(backRightLocation, () -> backRightLocation = new Translation2d(trackLength / 2 / 39.3701, -trackWidth / 2 / 39.3701));
         return Objects.requireNonNullElseGet(kinematics, () -> kinematics = new SwerveDriveKinematics(FLPos, FRPos, BLPos, BRPos));
+    }
+
+    private void createDriveMotors() throws InitializationFailureException {
+            double s2rf;
+            switch (robotSettings.DRIVE_MOTOR_TYPE) {
+                case CAN_SPARK_MAX: {
+                            driverFR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
+                            driverBR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_BR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
+                            driverBL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_BL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
+                            driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
+                    //rpm <=> rps <=> gearing <=> wheel circumference
+                    s2rf = robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI);
+                    break;
+                }
+                case TALON_FX: {
+                            driverFR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FR, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_FR, AbstractMotorController.SupportedMotors.TALON_FX);
+                            driverBR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BR, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_BR, AbstractMotorController.SupportedMotors.TALON_FX);
+                            driverBL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BL, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_BL, AbstractMotorController.SupportedMotors.TALON_FX);
+                            driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.TALON_FX);
+                    //Sens units / 100ms <=> rps <=> gearing <=> wheel circumference
+                    s2rf = (10.0 / robotSettings.DRIVEBASE_SENSOR_UNITS_PER_ROTATION) * robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI / 12);
+                    break;
+                }
+                default:
+                    throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
+            }
+    }
+    public void setInvert(){
+        driverFR.driver.setBrake(true);
+        driverFL.driver.setInverted(true).setBrake(true);
+        driverBR.driver.setBrake(true);
+        driverBL.driver.setInverted(true).setBrake(true);
+
+        driverFR.steering.setInverted(true);
+        driverBR.steering.setInverted(true);
+        driverBL.steering.setInverted(true);
+        driverFL.steering.setInverted(true);
+    }
+
+    public void setCANCoder() {
+        FRcoder = new CANCoder(11);
+        BRcoder = new CANCoder(12);
+        FLcoder = new CANCoder(13);
+        BLcoder = new CANCoder(14);
+    }
+
+    public void  setPIDControllers() {
+        PID steeringPID = new PID(0.0035, 0.000001, 0);
+        setDrivingPIDS(new PID(0.001, 0, 0.0001));
+
+        FLpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
+        FRpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
+        BLpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
+        BRpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
+        FLpid.enableContinuousInput(-180, 180);
+        FRpid.enableContinuousInput(-180, 180);
+        BLpid.enableContinuousInput(-180, 180);
+        BRpid.enableContinuousInput(-180, 180);
     }
 }

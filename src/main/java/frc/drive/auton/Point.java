@@ -34,8 +34,8 @@ public class Point {
      * @return the distance between this point and the passed point
      */
     public double getDistanceFromPoint(Point otherPoint) {
-        System.out.println(Math.pow(Y - -otherPoint.Y, 2));
-        return Math.sqrt(Math.pow(X - otherPoint.X, 2) + Math.pow(Y - -otherPoint.Y, 2));
+        System.out.println(Math.pow(Y + otherPoint.Y, 2));
+        return Math.sqrt(Math.pow(X - otherPoint.X, 2) + Math.pow(Y + otherPoint.Y, 2));
     }
 
     public boolean isWithinEllipse(double distx, double disty, Point otherPoint) {

@@ -128,6 +128,15 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
     public int[] DRIVE_FOLLOWERS_L_IDS; //talon
     public int DRIVE_LEADER_R_ID; //talon
     public int[] DRIVE_FOLLOWERS_R_IDS; //talon
+    //Swerve Drive Motors
+    public int SWERVE_DRIVE_FR;
+    public int SWERVE_TURN_FR;
+    public int SWERVE_DRIVE_FL;
+    public int SWERVE_TURN_FL;
+    public int SWERVE_DRIVE_BR;
+    public int SWERVE_TURN_BR;
+    public int SWERVE_DRIVE_BL;
+    public int SWERVE_TURN_BL;
     //Shooter Motors
     public int SHOOTER_LEADER_ID = 7; //talon
     public int SHOOTER_FOLLOWER_ID = 8; //talon

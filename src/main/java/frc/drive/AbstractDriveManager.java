@@ -78,8 +78,8 @@ public abstract class AbstractDriveManager implements ISubsystem {
         return input * robotSettings.MAX_SPEED * driveScaleMult.getDouble(robotSettings.DRIVE_SCALE);
     }
 
-    protected double adjustedDriveVoltage(double input) {
-        double calc = input * (0.91 / 371.0);
+    protected double adjustedDriveVoltage(double input, double mult) {
+        double calc = input * mult;
         return (calc > 12) ? 12 : ((calc < -12) ? -12 : calc);
     }
 

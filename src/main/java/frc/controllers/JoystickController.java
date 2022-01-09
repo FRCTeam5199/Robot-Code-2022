@@ -1,8 +1,6 @@
 package frc.controllers;
 
-import frc.controllers.ControllerEnums.ButtonStatus;
 import frc.controllers.ControllerEnums.JoystickAxis;
-import frc.controllers.ControllerEnums.JoystickButtons;
 import frc.controllers.ControllerEnums.JoystickHatDirection;
 import frc.robot.Robot;
 

@@ -470,7 +470,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
             UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
         }
         //I like to call this one driveCringe
-        leaderL.moveAtVoltage(adjustedDriveVoltage((leftFPS) * gearRatio * robotSettings.DRIVE_SCALE));
-        leaderR.moveAtVoltage(adjustedDriveVoltage((rightFPS) * gearRatio * robotSettings.DRIVE_SCALE));
+
+        leaderL.moveAtVoltage(adjustedDriveVoltage((leftFPS) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
+        leaderR.moveAtVoltage(adjustedDriveVoltage((rightFPS) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
     }
 }

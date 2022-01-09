@@ -6,7 +6,6 @@ import frc.misc.UserInterface;
 import java.util.function.Consumer;
 
 import static frc.robot.Robot.*;
-import static frc.robot.Robot.shooter;
 
 
 /**

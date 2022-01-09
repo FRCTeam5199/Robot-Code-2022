@@ -55,6 +55,7 @@ public class OpenURLCommand extends AbstractCommand {
 
         @Override
         public void doYourWorst(JDA client) {
+            //noinspection HttpUrlsUsage
             if (!url.startsWith("http://") && !url.startsWith("https://")) {
                 client.getTextChannelById(CHANNEL_ID).sendMessage("Invalid url <" + url + ">").queue();
             } else {
@@ -70,6 +71,7 @@ public class OpenURLCommand extends AbstractCommand {
         @Override
         public void doYourWorst(App client) {
             String newUrl = url.replace("<", "").replace(">", "");
+            //noinspection HttpUrlsUsage
             if (!newUrl.startsWith("https://") && !newUrl.startsWith("http://")) {
                 SlackBot.sendSlackMessage(CHANNEL_ID, "Invalid url " + newUrl);
             } else {
@@ -84,6 +86,7 @@ public class OpenURLCommand extends AbstractCommand {
 
         @Override
         public void doYourWorst() {
+            //noinspection HttpUrlsUsage
             if (!url.startsWith("https://") && !url.startsWith("http://")) {
                 System.out.println("Invalid url " + url);
             } else {

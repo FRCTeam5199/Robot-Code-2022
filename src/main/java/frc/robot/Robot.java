@@ -28,6 +28,8 @@ import frc.robot.robotconfigs.twentyone.CompetitionRobot2021;
 import frc.robot.robotconfigs.twentyone.PracticeRobot2021;
 import frc.robot.robotconfigs.twentyone.Swerve2021;
 import frc.robot.robotconfigs.twentytwenty.Robot2020;
+import frc.robot.robotconfigs.twentytwo.PracticeRobot2022;
+import frc.robot.robotconfigs.twentytwo.Swerve2022;
 import frc.selfdiagnostics.ISimpleIssue;
 import frc.selfdiagnostics.IssueHandler;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
@@ -196,6 +198,10 @@ public class Robot extends TimedRobot {
                 return new CompetitionRobot2021();
             case "2021-Swivel":
                 return new Swerve2021();
+            case "2022-Prac":
+                    return new PracticeRobot2022();
+            case "2022-Swivel":
+                return new Swerve2022();
             case "ERR_NOT_FOUND":
                 throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
             default:
@@ -342,6 +348,7 @@ public class Robot extends TimedRobot {
      *
      * @param parentFolder The deploy folder/subfolders within deploy folder
      */
+    @SuppressWarnings("JavaDoc")
     private void deleteFolder(File parentFolder) {
         for (File file : parentFolder.listFiles()) {
             if (file.isDirectory()) {

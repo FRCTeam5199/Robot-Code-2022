@@ -1,7 +1,6 @@
 package frc.motors;
 
 import com.revrobotics.*;
-import com.revrobotics.REVLibError;
 import frc.misc.PID;
 import frc.robot.Robot;
 
