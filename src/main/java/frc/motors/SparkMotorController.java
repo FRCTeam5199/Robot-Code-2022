@@ -6,7 +6,7 @@ import frc.robot.Robot;
 
 import static com.revrobotics.CANSparkMax.IdleMode.kBrake;
 import static com.revrobotics.CANSparkMax.IdleMode.kCoast;
-import static com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless;
+import static com.revrobotics.CANSparkMaxLowLevel.MotorType.*;
 import static com.revrobotics.CANSparkMax.ControlType.*;
 
 /**

@@ -57,8 +57,8 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     public void init() {
         xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
         createPIDControllers(new PID(0.0035, 0.000001, 0));
-        setDrivingPIDS(new PID(0.001, 0, 0.0001));
         createDriveMotors();
+        setDrivingPIDS(new PID(0.001, 0, 0.0001));
         setCANCoder();
         setupSteeringEncoders();
     }

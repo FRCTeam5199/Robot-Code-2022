@@ -74,7 +74,7 @@ public abstract class DefaultConfig {
     //UI Styles
     public AbstractDriveManager.DriveControlStyles DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
     public Shooter.ShootingControlStyles SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD;
-public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.STANDARD;
+    public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.STANDARD;
     public Climber.ClimberControlStyles CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD;
 
     public AbstractMotorController.SupportedMotors SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
@@ -246,6 +246,7 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
      * Prints out all of the id's for anything that needs an id
      */
     public void printMappings() {
+        /*
         System.out.println("-------------------<RobotSettingspings>-----------------");
         System.out.println("                    Goal cam name: " + GOAL_CAM_NAME);
         System.out.println("                    Ball cam name: " + BALL_CAM_NAME);
@@ -258,5 +259,6 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
         System.out.println("                        Intake id: " + INTAKE_MOTOR_ID);
         System.out.println("                           IMU id: " + IMU_ID);
         System.out.println("-------------------</RobotSettingspings>-----------------");
+   */
     }
 }

@@ -14,6 +14,7 @@ import frc.climber.Climber;
 import frc.discordslackbot.MessageHandler;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
+import frc.drive.DriveManagerSwerve;
 import frc.drive.OldDriveManagerSwerve;
 import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.AutonType;
@@ -90,7 +91,7 @@ public class Robot extends TimedRobot {
             if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD)
                 driver = new DriveManagerStandard();
             else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL)
-                driver = new OldDriveManagerSwerve();
+                driver = new DriveManagerSwerve();
         }
         if (robotSettings.ENABLE_LEDS) {
             leds = new LEDs();

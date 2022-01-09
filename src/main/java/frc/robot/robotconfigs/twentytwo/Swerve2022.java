@@ -53,7 +53,7 @@ public class Swerve2022 extends DefaultConfig {
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
         SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.ACCURACY_2021;//ShootingControlStyles.ACCURACY_2021;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.STANDARD;
-        DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+        DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         DRIVE_BASE = AbstractDriveManager.DriveBases.SWIVEL;
         SWERVE_SDS_DRIVE_BASE = SdsModuleConfigurations.MK3_STANDARD;
