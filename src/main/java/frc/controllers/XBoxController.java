@@ -55,6 +55,8 @@ public class XBoxController extends BaseController {
     public ButtonStatus get(ControllerInterfaces.IDiscreteInput button) {
         if (button instanceof ControllerEnums.XBoxButtons || Robot.robotSettings.PERMIT_ROUGE_INPUT_MAPPING)
             return ControllerEnums.ButtonStatus.get(controller.getRawButton(button.getChannel()));
+        //if(button instanceof  ControllerEnums.XBoxPOVButtons)
+          //  return ControllerEnums.XBoxPOVButtons
         throw new IllegalArgumentException("Wrong mapping. Expected an enum of type " + ControllerEnums.XBoxButtons.class.toString() + " but got " + button.getClass().toString() + " instead");
     }
 
