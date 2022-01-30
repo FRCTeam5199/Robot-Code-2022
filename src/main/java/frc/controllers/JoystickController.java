@@ -1,10 +1,6 @@
 package frc.controllers;
 
 import frc.controllers.ControllerEnums.JoystickAxis;
-<<<<<<< Updated upstream
-import frc.controllers.ControllerEnums.JoystickHatDirection;
-=======
->>>>>>> Stashed changes
 import frc.robot.Robot;
 
 /**
