@@ -1,7 +1,7 @@
 package frc.drive;
 
 import com.ctre.phoenix.sensors.CANCoder;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+//import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -200,7 +200,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         driverBL.driver.moveAtVelocity(FPS_BL);
          */
 
-        double gearRatio = robotSettings.SWERVE_SDS_DRIVE_BASE.getDriveReduction() * robotSettings.SWERVE_SDS_DRIVE_BASE.getWheelDiameter();
+        double gearRatio = 1;//robotSettings.SWERVE_SDS_DRIVE_BASE.getDriveReduction() * robotSettings.SWERVE_SDS_DRIVE_BASE.getWheelDiameter();
         double voltageMult = 0.91 / 371.0;
         driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
@@ -361,9 +361,9 @@ public class DriveManagerSwerve extends AbstractDriveManager {
                 default:
                     throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
             }
-        MAX_VELOCITY_METERS_PER_SECOND = freeSpeed / 60.0 *
+        MAX_VELOCITY_METERS_PER_SECOND = freeSpeed / 60.0 */*
                 SdsModuleConfigurations.MK3_STANDARD.getDriveReduction() *
-                SdsModuleConfigurations.MK3_STANDARD.getWheelDiameter() * Math.PI;
+                SdsModuleConfigurations.MK3_STANDARD.getWheelDiameter() **/ Math.PI;
 
         driverFR.driver.setBrake(true);
         driverFL.driver.setInverted(true).setBrake(true);

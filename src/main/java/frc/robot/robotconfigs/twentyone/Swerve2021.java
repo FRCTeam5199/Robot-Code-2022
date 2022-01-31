@@ -1,6 +1,6 @@
 package frc.robot.robotconfigs.twentyone;
 
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+//import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.wpilibj.I2C;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
@@ -56,7 +56,7 @@ public class Swerve2021 extends DefaultConfig {
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         DRIVE_BASE = AbstractDriveManager.DriveBases.SWIVEL;
-        SWERVE_SDS_DRIVE_BASE = SdsModuleConfigurations.MK3_STANDARD;
+        //SWERVE_SDS_DRIVE_BASE = SdsModuleConfigurations.MK3_STANDARD;
 
         AUTON_TYPE = AutonType.FOLLOW_PATH;
 

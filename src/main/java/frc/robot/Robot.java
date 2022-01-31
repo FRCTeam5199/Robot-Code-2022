@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
         robotSettings.printMappings();
         robotSettings.printToggles();
         robotSettings.printNumbers();
+        robotSettings.ENABLE_INDEXER = false; //TODO remove this once Indexer comes back
         UserInterface.initRobot();
         if (robotSettings.ENABLE_MEMES) {
             Main.pipeline = ClientServerPipeline.getClient();

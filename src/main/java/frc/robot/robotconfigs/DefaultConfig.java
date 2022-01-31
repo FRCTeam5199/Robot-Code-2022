@@ -1,7 +1,7 @@
 package frc.robot.robotconfigs;
 
-import com.swervedrivespecialties.swervelib.ModuleConfiguration;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+/*import com.swervedrivespecialties.swervelib.ModuleConfiguration;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;*/
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -87,7 +87,7 @@ public abstract class DefaultConfig {
     public AutonType AUTON_TYPE = AutonType.FOLLOW_PATH;
     public AutonRoutines DEFAULT_ROUTINE = AutonRoutines.DRIVE_OFF_INIT_LINE;
     public AbstractDriveManager.DriveBases DRIVE_BASE = AbstractDriveManager.DriveBases.STANDARD;
-    public ModuleConfiguration SWERVE_SDS_DRIVE_BASE;
+    //public ModuleConfiguration SWERVE_SDS_DRIVE_BASE;
 
     public int DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
     public double DRIVEBASE_DISTANCE_BETWEEN_WHEELS = -2; //Distance in meters between wheels
