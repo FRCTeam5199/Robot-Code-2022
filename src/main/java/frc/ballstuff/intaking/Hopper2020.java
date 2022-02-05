@@ -8,8 +8,11 @@ import frc.motors.SparkMotorController;
 import frc.motors.TalonMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.vision.distancesensor.IDistanceSensor;
-//import frc.vision.distancesensor.RevDistanceSensor;
+import frc.vision.distancesensor.RevDistanceSensor;
 
+import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
+import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
+import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
 import static frc.robot.Robot.robotSettings;
 
 /**
@@ -30,7 +33,7 @@ public class Hopper2020 implements ISubsystem {
     @Override
     public void init() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            //indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
+            indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
             System.out.println("Enabling index sensor.");
         }
         if (robotSettings.ENABLE_2020_AGITATOR)
