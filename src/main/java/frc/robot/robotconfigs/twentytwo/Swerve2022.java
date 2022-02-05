@@ -18,9 +18,9 @@ public class Swerve2022 extends DefaultConfig {
         ENABLE_INTAKE = false;
         ENABLE_TURRET = false;
         ENABLE_SHOOTER = false;
-        ENABLE_HOPPER = false;
-        ENABLE_AGITATOR = false;
-        ENABLE_INDEXER = false;
+        ENABLE_2020_HOPPER = false;
+        ENABLE_2020_AGITATOR = false;
+        ENABLE_2020_INDEXER = false;
         ENABLE_MUSIC = false;
 
         //LEDS
@@ -76,7 +76,7 @@ public class Swerve2022 extends DefaultConfig {
         DRIVE_SCALE = 1;
         DRIVE_GEARING = 10 / 60.0;
 
-        SHOOTER_SENSOR_UNITS_PER_ROTATION = 2048;
+        CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         motorPulleySize = 0;//?;
         driverPulleySize = 0;//?;
         CAMERA_HEIGHT = 0; //Inches
@@ -121,7 +121,7 @@ public class Swerve2022 extends DefaultConfig {
 
         //turret
         TURRET_YAW_ID = 33; //550
-        //hopper
+        //hopper2020
         AGITATOR_MOTOR_ID = 10; //victor
         INDEXER_MOTOR_ID = 11; //victor
         //intake

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.intaking.Hopper2020;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.ArticulatedHood;
 import frc.ballstuff.shooting.Shooter;
@@ -15,7 +16,6 @@ import frc.discordslackbot.MessageHandler;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
 import frc.drive.DriveManagerSwerve;
-import frc.drive.OldDriveManagerSwerve;
 import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.AutonType;
 import frc.drive.auton.followtrajectory.Trajectories;
@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
     public static DefaultConfig robotSettings;
     public static AbstractDriveManager driver;
     public static Intake intake;
+    public static Hopper2020 hopper2020;
     public static Hopper hopper;
     public static Shooter shooter;
     public static ArticulatedHood articulatedHood;
@@ -80,7 +81,7 @@ public class Robot extends TimedRobot {
         robotSettings.printMappings();
         robotSettings.printToggles();
         robotSettings.printNumbers();
-        robotSettings.ENABLE_INDEXER = false; //TODO remove this once Indexer comes back
+        robotSettings.ENABLE_2020_INDEXER = false; //TODO remove this once Indexer comes back
         UserInterface.initRobot();
         if (robotSettings.ENABLE_MEMES) {
             Main.pipeline = ClientServerPipeline.getClient();
@@ -100,9 +101,12 @@ public class Robot extends TimedRobot {
         if (robotSettings.ENABLE_INTAKE) {
             intake = new Intake();
         }
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper = new Hopper();
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020 = new Hopper2020();
         }
+        if (robotSettings.ENABLE_HOPPER)
+            hopper = new Hopper();
+
         if (robotSettings.ENABLE_SHOOTER) {
             shooter = new Shooter();
         }
@@ -201,7 +205,7 @@ public class Robot extends TimedRobot {
             case "2021-Swivel":
                 return new Swerve2021();
             case "2022-Prac":
-                    return new PracticeRobot2022();
+                return new PracticeRobot2022();
             case "2022-Swivel":
                 return new Swerve2022();
             case "ERR_NOT_FOUND":

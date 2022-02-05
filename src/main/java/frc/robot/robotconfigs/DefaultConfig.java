@@ -5,6 +5,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;*/
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
+import frc.ballstuff.intaking.Hopper;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
 import frc.climber.Climber;
@@ -39,9 +40,13 @@ public abstract class DefaultConfig {
     public boolean ENABLE_INTAKE = false;
     public boolean ENABLE_SHOOTER = false;
     public boolean ENABLE_HOOD_ARTICULATION = false;
+    public boolean ENABLE_2020_HOPPER = false;
+    public boolean ENABLE_2020_AGITATOR = false;
+    public boolean ENABLE_2020_INDEXER = false;
     public boolean ENABLE_HOPPER = false;
-    public boolean ENABLE_AGITATOR = false;
     public boolean ENABLE_INDEXER = false;
+    public boolean ENABLE_AGITATOR = false;
+    public boolean ENABLE_AGITATOR_TOP = false;
     public boolean ENABLE_MUSIC = false;
     public boolean ENABLE_PDP = false;
     public boolean ENABLE_LEDS = false;
@@ -76,8 +81,13 @@ public abstract class DefaultConfig {
     public Shooter.ShootingControlStyles SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD;
     public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.STANDARD;
     public Climber.ClimberControlStyles CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD;
+    public Hopper.HopperControlStyles HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD;
 
+    //Motor Types
     public AbstractMotorController.SupportedMotors SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+    public AbstractMotorController.SupportedMotors INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+    public AbstractMotorController.SupportedMotors AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+    public AbstractMotorController.SupportedMotors AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
     public AbstractMotorController.SupportedMotors HOOD_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
     public AbstractMotorController.SupportedMotors DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
     public AbstractMotorController.SupportedMotors TURRET_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
@@ -107,7 +117,7 @@ public abstract class DefaultConfig {
     public PID TURRET_PID = PID.EMPTY_PID;
     public PID HEADING_PID = PID.EMPTY_PID;
     public PID TURRET_HEADING_PID = PID.EMPTY_PID;
-    public double SHOOTER_SENSOR_UNITS_PER_ROTATION = 2048;
+    public double CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
     public double motorPulleySize = 0;//?;
     public double driverPulleySize = 0;//?;
     public double CAMERA_HEIGHT = 0; //Inches
@@ -157,8 +167,9 @@ public abstract class DefaultConfig {
     //turret
     public int TURRET_YAW_ID = 33; //550
     public boolean TURRET_INVERT = false;
-    //hopper
+    //hopper2020
     public int AGITATOR_MOTOR_ID = 10; //victor
+    public int AGITATOR_TOPBAR_MOTOR_ID;
     public int INDEXER_MOTOR_ID = 11; //victor
     //intake
     public int INTAKE_MOTOR_ID = 12; //victor
@@ -214,7 +225,7 @@ public abstract class DefaultConfig {
         System.out.println("          Driving " + ENABLE_DRIVE);
         System.out.println("         Intaking " + ENABLE_INTAKE);
         System.out.println("         Shooting " + ENABLE_SHOOTER);
-        System.out.println("          Hopping " + ENABLE_HOPPER);
+        System.out.println("          Hopping " + ENABLE_2020_HOPPER);
         System.out.println("           Vision " + ENABLE_VISION);
         System.out.println("              IMU " + ENABLE_IMU);
         System.out.println("              IMU " + IMU_TYPE.name());

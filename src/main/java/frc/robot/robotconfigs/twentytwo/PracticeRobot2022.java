@@ -1,5 +1,7 @@
 package frc.robot.robotconfigs.twentytwo;
 
+import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.shooting.Shooter;
 import frc.drive.AbstractDriveManager;
 import frc.drive.auton.AutonType;
 import frc.misc.PID;
@@ -10,6 +12,11 @@ public class PracticeRobot2022 extends DefaultConfig {
     //Subsystems
     public PracticeRobot2022() {
         ENABLE_DRIVE = true;
+        ENABLE_SHOOTER = true;
+        ENABLE_HOPPER = true;
+        ENABLE_INDEXER = true;
+        ENABLE_AGITATOR = true;
+        ENABLE_AGITATOR_TOP = true;
 
         DRIVE_INVERT_LEFT = true;
         DRIVE_INVERT_RIGHT = false;
@@ -21,6 +28,8 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
+        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.PRACTICE_2022;
+        HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.PRACTICE_2022;
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.FOLLOW_PATH;
@@ -61,10 +70,26 @@ public class PracticeRobot2022 extends DefaultConfig {
         //Drive Motors
         DRIVE_LEADER_L_ID = 1; //talon
         DRIVE_FOLLOWERS_L_IDS = new int[]{2}; //talon
-
         DRIVE_LEADER_R_ID = 3; //talon
         DRIVE_FOLLOWERS_R_IDS = new int[]{4}; //talon
 
         IMU_ID = 22; //pigeon
+
+        SHOOTER_LEADER_ID = 5; //talon
+        SHOOTER_FOLLOWER_ID = 6; //talon
+        SHOOTER_USE_TWO_MOTORS = false;
+        SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+        SHOOTER_PID = new PID(0.001, 0.0000005, 0.03, 0);
+        SHOOTER_CONST_SPEED_PID = new PID(0.0001, 0.0000007, 0.05, 0);
+        SHOOTER_RECOVERY_PID = SHOOTER_PID;
+
+        ENABLE_INDEXER_AUTO_INDEX = false;
+        INDEXER_MOTOR_ID = 7;
+        AGITATOR_MOTOR_ID = 10;
+        AGITATOR_TOPBAR_MOTOR_ID = 9;
+        AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+        INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+
     }
 }

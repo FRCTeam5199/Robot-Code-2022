@@ -2,6 +2,7 @@ package frc.ballstuff.shooting;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.ballstuff.intaking.Hopper2020;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonPanelButtons;
@@ -27,7 +28,7 @@ import static frc.robot.Robot.*;
  * fast things)
  */
 public class Shooter implements ISubsystem {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     private final NetworkTableEntry P = UserInterface.SHOOTER_P.getEntry(),
             I = UserInterface.SHOOTER_I.getEntry(),
             D = UserInterface.SHOOTER_D.getEntry(),
@@ -70,6 +71,7 @@ public class Shooter implements ISubsystem {
             case BOP_IT:
                 joystickController = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
                 break;
+            case PRACTICE_2022:
             case XBOX_CONTROLLER:
                 joystickController = BaseController.createOrGet(0, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
@@ -125,6 +127,7 @@ public class Shooter implements ISubsystem {
             case BOP_IT:
                 joystickController = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
                 break;
+            case PRACTICE_2022:
             case XBOX_CONTROLLER:
                 joystickController = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
@@ -179,12 +182,12 @@ public class Shooter implements ISubsystem {
     }
 
     /**
-     * Runs the default update which unsets hopper {@link frc.ballstuff.intaking.Hopper#setAll(boolean) active flags}
+     * Runs the default update which unsets hopper2020 {@link Hopper2020#setAll(boolean) active flags}
      * and sets speed to constant speed (or 0)
      */
     private void shooterDefault() {
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(false);
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(false);
         }
         double speedYouWant = constSpeed.getDouble(0);
         if (speedYouWant != 0) {
@@ -247,8 +250,8 @@ public class Shooter implements ISubsystem {
                     ShootingEnums.FIRE_HIGH_SPEED.shoot(this);
                     isConstSpeed = false;
                 } else {
-                    if (robotSettings.ENABLE_HOPPER) {
-                        hopper.setAll(false);
+                    if (robotSettings.ENABLE_2020_HOPPER) {
+                        hopper2020.setAll(false);
                     }
                     leader.moveAtPercent(0);
                     shooting = false;
@@ -274,7 +277,7 @@ public class Shooter implements ISubsystem {
                     } else {
                         shooter.setShooting(false);
                         shooter.tryFiringBalls = false;
-                        hopper.setAll(false);
+                        hopper2020.setAll(false);
                     }
                 } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
                     tryFiringBalls = true;
@@ -284,8 +287,8 @@ public class Shooter implements ISubsystem {
                     }
                 } else {
                     tryFiringBalls = false;
-                    if (robotSettings.ENABLE_HOPPER) {
-                        hopper.setAll(false);
+                    if (robotSettings.ENABLE_2020_HOPPER) {
+                        hopper2020.setAll(false);
                     }
                     leader.moveAtPercent(0);
                     ballsShot = 0;
@@ -366,8 +369,8 @@ public class Shooter implements ISubsystem {
                     ShootingEnums.FIRE_HIGH_SPEED.shoot(this);
                     isConstSpeed = false;
                 } else {
-                    if (robotSettings.ENABLE_HOPPER) {
-                        hopper.setAll(false);
+                    if (robotSettings.ENABLE_2020_HOPPER) {
+                        hopper2020.setAll(false);
                     }
                     leader.moveAtPercent(0);
                     shooting = false;
@@ -435,6 +438,15 @@ public class Shooter implements ISubsystem {
                 }
                 break;
             }
+            case PRACTICE_2022: {
+                //if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                if (joystickController.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
+                    ShootingEnums.FIRE_SOLID_SPEED_PRACTICE2022.shoot(this);
+                } else {
+                    shooterDefault();
+                }
+                break;
+            }
             default:
                 throw new IllegalStateException("This UI not implemented for this controller");
         }
@@ -496,9 +508,9 @@ public class Shooter implements ISubsystem {
                 leader = new TalonMotorController(robotSettings.SHOOTER_LEADER_ID);
                 if (robotSettings.SHOOTER_USE_TWO_MOTORS) {
                     follower = new TalonMotorController(robotSettings.SHOOTER_FOLLOWER_ID);
-                    follower.setSensorToRealDistanceFactor(600 / robotSettings.SHOOTER_SENSOR_UNITS_PER_ROTATION);
+                    follower.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 }
-                leader.setSensorToRealDistanceFactor(600 / robotSettings.SHOOTER_SENSOR_UNITS_PER_ROTATION);
+                leader.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 break;
             default:
                 throw new IllegalStateException("No such supported shooter motor config for " + robotSettings.SHOOTER_MOTOR_TYPE.name());
@@ -579,7 +591,7 @@ public class Shooter implements ISubsystem {
         if (!singleShot) {
             shooting = false;
             setPercentSpeed(0);
-            hopper.setAll(false);
+            hopper2020.setAll(false);
         }
         updateShuffleboard();
         return !singleShot;
@@ -610,7 +622,7 @@ public class Shooter implements ISubsystem {
         if (!multiShot) {
             shooting = false;
             setPercentSpeed(0);
-            hopper.setAll(false);
+            hopper2020.setAll(false);
         }
         return !multiShot;
     }
@@ -627,7 +639,7 @@ public class Shooter implements ISubsystem {
         if (!multiShot) {
             shooting = false;
             setPercentSpeed(0);
-            hopper.setAll(false);
+            hopper2020.setAll(false);
         }
         return !multiShot;
     }
@@ -636,7 +648,7 @@ public class Shooter implements ISubsystem {
      * Used to change how the input is handled by the {@link Shooter} and what kind of controller to use
      */
     public enum ShootingControlStyles {
-        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK;
+        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022;
 
         private static SendableChooser<ShootingControlStyles> myChooser;
 

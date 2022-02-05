@@ -17,9 +17,9 @@ public class CompetitionRobot2021 extends DefaultConfig {
         ENABLE_INTAKE = false;
         ENABLE_TURRET = true;
         ENABLE_SHOOTER = true;
-        ENABLE_HOPPER = true;
-        ENABLE_AGITATOR = true;
-        ENABLE_INDEXER = true;
+        ENABLE_2020_HOPPER = true;
+        ENABLE_2020_AGITATOR = true;
+        ENABLE_2020_INDEXER = true;
         ENABLE_MUSIC = false;
         ENABLE_HOOD_ARTICULATION = true;
         ENABLE_MEMES = false;
@@ -77,7 +77,7 @@ public class CompetitionRobot2021 extends DefaultConfig {
         DRIVE_SCALE = 1;
         DRIVE_GEARING = 12.0 / 60.0;
 
-        SHOOTER_SENSOR_UNITS_PER_ROTATION = 2048;
+        CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         motorPulleySize = 0;//?;
         driverPulleySize = 0;//?;
         CAMERA_HEIGHT = 0; //Inches
@@ -125,7 +125,7 @@ public class CompetitionRobot2021 extends DefaultConfig {
 
         //turret
         TURRET_YAW_ID = 33; //neo 550
-        //hopper
+        //hopper2020
         AGITATOR_MOTOR_ID = 10; //victor
         INDEXER_MOTOR_ID = 11; //victor
         //intake

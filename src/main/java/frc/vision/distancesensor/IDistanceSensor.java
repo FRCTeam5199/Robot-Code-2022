@@ -1,13 +1,13 @@
 package frc.vision.distancesensor;
 
-import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.intaking.Hopper2020;
 import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
 
 /**
  * Used for optical distance sensors to detect distance from obstacles
  *
- * @see Hopper
+ * @see Hopper2020
  //* @see RevDistanceSensor
  */
 public interface IDistanceSensor extends ISubsystem {
