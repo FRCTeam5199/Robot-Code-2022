@@ -216,7 +216,7 @@ public class Hopper implements ISubsystem {
             case STANDARD_2022: {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
-                        if(panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN){
+                        if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN) {
                             indexer.moveAtPercent(0.3);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             indexer.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.3 : 0);
@@ -225,7 +225,7 @@ public class Hopper implements ISubsystem {
                         }
                     } //2021 COMP 4 & 2020 COMP 9
                     if (robotSettings.ENABLE_AGITATOR) {
-                        if(panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN){
+                        if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN) {
                             indexer.moveAtPercent(0.5);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             agitator.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.5 : 0);
@@ -234,7 +234,7 @@ public class Hopper implements ISubsystem {
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        if(panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN){
+                        if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN) {
                             agitatorTop.moveAtPercent(0.75);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             agitatorTop.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.75 : 0);

@@ -335,32 +335,32 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     private void createDriveMotors() throws InitializationFailureException {
-            double s2rf;
-            double freeSpeed;
-            switch (robotSettings.DRIVE_MOTOR_TYPE) {
-                case CAN_SPARK_MAX: {
-                            driverFR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
-                            driverBR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_BR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
-                            driverBL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_BL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
-                            driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
-                    //rpm <=> rps <=> gearing <=> wheel circumference
-                    s2rf = robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI);
-                    freeSpeed = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX.MAX_SPEED_RPM;
-                    break;
-                }
-                case TALON_FX: {
-                            driverFR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FR, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_FR, AbstractMotorController.SupportedMotors.TALON_FX);
-                            driverBR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BR, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_BR, AbstractMotorController.SupportedMotors.TALON_FX);
-                            driverBL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BL, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_BL, AbstractMotorController.SupportedMotors.TALON_FX);
-                            driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.TALON_FX);
-                    //Sens units / 100ms <=> rps <=> gearing <=> wheel circumference
-                    s2rf = (10.0 / robotSettings.DRIVEBASE_SENSOR_UNITS_PER_ROTATION) * robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI / 12);
-                    freeSpeed = AbstractMotorController.SupportedMotors.TALON_FX.MAX_SPEED_RPM;
-                    break;
-                }
-                default:
-                    throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
+        double s2rf;
+        double freeSpeed;
+        switch (robotSettings.DRIVE_MOTOR_TYPE) {
+            case CAN_SPARK_MAX: {
+                driverFR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
+                driverBR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_BR, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
+                driverBL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_BL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
+                driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
+                //rpm <=> rps <=> gearing <=> wheel circumference
+                s2rf = robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI);
+                freeSpeed = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX.MAX_SPEED_RPM;
+                break;
             }
+            case TALON_FX: {
+                driverFR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FR, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_FR, AbstractMotorController.SupportedMotors.TALON_FX);
+                driverBR = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BR, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_BR, AbstractMotorController.SupportedMotors.TALON_FX);
+                driverBL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BL, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_BL, AbstractMotorController.SupportedMotors.TALON_FX);
+                driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.TALON_FX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.TALON_FX);
+                //Sens units / 100ms <=> rps <=> gearing <=> wheel circumference
+                s2rf = (10.0 / robotSettings.DRIVEBASE_SENSOR_UNITS_PER_ROTATION) * robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI / 12);
+                freeSpeed = AbstractMotorController.SupportedMotors.TALON_FX.MAX_SPEED_RPM;
+                break;
+            }
+            default:
+                throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
+        }
         MAX_VELOCITY_METERS_PER_SECOND = freeSpeed / 60.0 */*
                 SdsModuleConfigurations.MK3_STANDARD.getDriveReduction() *
                 SdsModuleConfigurations.MK3_STANDARD.getWheelDiameter() **/ Math.PI;
@@ -374,7 +374,8 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         driverBR.steering.setInverted(true);
         driverBL.steering.setInverted(true);
         driverFL.steering.setInverted(true);
-   }
+    }
+
     public void setCANCoder() {
         FRcoder = new CANCoder(11);
         BRcoder = new CANCoder(12);

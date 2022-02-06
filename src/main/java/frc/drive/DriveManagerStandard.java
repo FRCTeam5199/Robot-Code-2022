@@ -148,7 +148,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 } else if (controller.get(ControllerEnums.XBoxPOVButtons.UP) == ButtonStatus.DOWN) {
                     pneumatics.ballShifter.set(DoubleSolenoid.Value.kReverse);
                     ballShifterEnabled = false;
-                } 
+                }
                 double invertedDrive = robotSettings.DRIVE_INVERT_LEFT ? -1 : 1;
                 double dynamic_gear_R = controller.get(XBoxButtons.RIGHT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
                 double dynamic_gear_L = controller.get(XBoxButtons.LEFT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;

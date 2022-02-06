@@ -7,6 +7,8 @@ import frc.misc.UserInterface;
 import frc.selfdiagnostics.BrownoutIssue;
 import frc.selfdiagnostics.UndervoltageIssue;
 
+import static frc.robot.Robot.robotSettings;
+
 /**
  * PDP (Power Distribution Panel) contains information about power, current, and voltage for the robot Is cosmetic for
  * now, but should become more useful in the future in diagnosing critical failures
@@ -21,6 +23,7 @@ public class PDP implements ISubsystem {
     //private final PowerDistributionPanel powerDistributionPanel;
     private final double peakCurrentVal = 0;
     private final double peakPowerVal = 0;
+    private final boolean DEBUG = false;
 
     public PDP(int channelID) {
         addToMetaList();
@@ -55,7 +58,8 @@ public class PDP implements ISubsystem {
     @Override
     public void updateGeneric() {
         double BatteryMinVoltage = UserInterface.PDP_BROWNOUT_MIN_OVERRIDE.getEntry().getBoolean(false) ? UserInterface.PDP_BROWNOUT_MIN_VAL.getEntry().getDouble(7) : 7;
-        //System.out.println("Read voltage: " + RobotController.getBatteryVoltage() + "V");
+        if (DEBUG && robotSettings.DEBUG)
+            System.out.println("Read voltage: " + RobotController.getBatteryVoltage() + "V");
         BrownoutIssue.handleIssue(this, RobotController.getBatteryVoltage() < BatteryMinVoltage && RobotController.getBatteryVoltage() > 0);
         UndervoltageIssue.handleIssue(this, RobotController.getBatteryVoltage() >= BatteryMinVoltage && RobotController.getBatteryVoltage() <= (BatteryMinVoltage + 2));
     }

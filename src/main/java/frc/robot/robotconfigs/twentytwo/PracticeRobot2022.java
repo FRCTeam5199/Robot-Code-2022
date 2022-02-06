@@ -19,14 +19,17 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = false;//true;
         ENABLE_INTAKE = true;
+        ENABLE_PNOOMATICS = false;
+        ENABLE_INDEXER_AUTO_INDEX = false;
+        ENABLE_IMU = false;
+        ENABLE_VISION = false;
 
         DRIVE_INVERT_LEFT = true;
         DRIVE_INVERT_RIGHT = false;
 
         //Misc
-        ENABLE_VISION = false;
         USE_PHOTONVISION = false;
-        ENABLE_IMU = false;
+
 
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
@@ -39,6 +42,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         DRIVEBASE_PID = new PID(0.0075, 0, 0.002);
         HEADING_PID = new PID(0.08, 0.000005, 0.0003);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
+        CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         DRIVEBASE_DISTANCE_BETWEEN_WHEELS = 0.524891;
         MAX_SPEED = 20; //max speed in fps
         RUMBLE_TOLERANCE_FPS = 14;
@@ -63,6 +67,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         FLIGHT_STICK_USB_SLOT = 1;
         BUTTON_PANEL_USB_SLOT = 2;
 
+        //Vision
         GOAL_CAM_NAME = "GoalCamera";
         BALL_CAM_NAME = "BallCamera";
 
@@ -77,15 +82,16 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         IMU_ID = 22; //pigeon
 
+        //Shooter
         SHOOTER_LEADER_ID = 5; //talon
         SHOOTER_FOLLOWER_ID = 6; //talon
         SHOOTER_USE_TWO_MOTORS = true;
         SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        SHOOTER_PID = new PID(1, 0.0000005, 0.03, 0.1);
+        SHOOTER_PID = new PID(0.5, 0, 0, 0);
         SHOOTER_CONST_SPEED_PID = new PID(0.0001, 0.0000007, 0.05, 0);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
 
-        ENABLE_INDEXER_AUTO_INDEX = true;
+        //Hopper
         INDEXER_DETECTION_CUTOFF_DISTANCE = 6.6;
         INDEXER_MOTOR_ID = 7;
         AGITATOR_MOTOR_ID = 10;
@@ -94,9 +100,9 @@ public class PracticeRobot2022 extends DefaultConfig {
         INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
 
+        //Intake
         INTAKE_MOTOR_ID = 32;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022;
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
-
     }
 }

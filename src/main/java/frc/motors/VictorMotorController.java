@@ -81,7 +81,7 @@ public class VictorMotorController extends AbstractMotorController {
 
     @Override
     public double getVoltage() {
-        return 0; //TODO voltage
+        return motor.getMotorOutputVoltage();
     }
 
     @Override

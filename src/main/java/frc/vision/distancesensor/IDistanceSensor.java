@@ -8,7 +8,7 @@ import frc.misc.SubsystemStatus;
  * Used for optical distance sensors to detect distance from obstacles
  *
  * @see Hopper2020
- //* @see RevDistanceSensor
+ * @see RevDistanceSensor
  */
 public interface IDistanceSensor extends ISubsystem {
     @Override

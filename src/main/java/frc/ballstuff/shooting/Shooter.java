@@ -35,9 +35,10 @@ public class Shooter implements ISubsystem {
             F = UserInterface.SHOOTER_F.getEntry(),
             constSpeed = UserInterface.SHOOTER_CONST_SPEED.getEntry(),
             calibratePID = UserInterface.SHOOTER_CALIBRATE_PID.getEntry(),
-            rpmGraph = UserInterface.SHOOTER_RPM_GRAPH.getEntry();
+            rpmGraph = UserInterface.SHOOTER_RPM_GRAPH.getEntry(),
+            rpm = UserInterface.SHOOTER_RPM.getEntry();
     public double speed = 4200;
-    public int goalTicks = 300;
+    public int goalTicks = 20 * 15; //20 ticks = 1 second
     public int ballsShot = 0, ticksPassed = 0, emptyIndexerTicks = 0, hopperCooldownTicks = 0, ballsToShoot = 0;
     public int timerTicks = 0;
     public IVision goalCamera;
@@ -175,8 +176,9 @@ public class Shooter implements ISubsystem {
                 }
             }
         }
-        UserInterface.smartDashboardPutNumber("RPM", leader.getSpeed());
+        //UserInterface.smartDashboardPutNumber("RPM", leader.getSpeed());
         rpmGraph.setNumber(leader.getSpeed());
+        rpm.setNumber(leader.getSpeed());
         UserInterface.smartDashboardPutNumber("Target RPM", speed);
         UserInterface.smartDashboardPutBoolean("atSpeed", isAtSpeed());
         UserInterface.smartDashboardPutBoolean("IS SHOOTING?", shooting);
@@ -439,7 +441,7 @@ public class Shooter implements ISubsystem {
                 }
                 break;
             }
-            case STANDARD_2022:{
+            case STANDARD_2022: {
                 if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_STANDARD2022.shoot(this);
                     isConstSpeed = false;
@@ -453,8 +455,8 @@ public class Shooter implements ISubsystem {
                     }
                 } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
                     tryFiringBalls = true;
-                        ShootingEnums.FIRE_HIGH_SPEED_2022.shoot(this);
-                        isConstSpeed = false;
+                    ShootingEnums.FIRE_HIGH_SPEED_2022.shoot(this);
+                    isConstSpeed = false;
 
                 } else {
                     tryFiringBalls = false;
@@ -660,7 +662,7 @@ public class Shooter implements ISubsystem {
     }
 
     public boolean fireTimed(int seconds) {
-        goalTicks = seconds*50; //tick = 20ms. 50 ticks in a second.
+        goalTicks = seconds * 50; //tick = 20ms. 50 ticks in a second.
         if (!shooting) {
             ticksPassed = 0;
             shooting = true;

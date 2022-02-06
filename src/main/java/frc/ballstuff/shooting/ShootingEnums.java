@@ -24,10 +24,14 @@ public enum ShootingEnums {
 
     FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
         shooter.setPercentSpeed(.58);
-        if(robotSettings.ENABLE_HOPPER){
+        if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }
         //shooter.setSpeed(1000);
+    }),
+
+    PID_TUNING(shooter -> {
+        shooter.setSpeed(2000);
     }),
 
     FIRE_SOLID_SPEED_PRACTICE2022(shooter -> {
@@ -84,7 +88,7 @@ public enum ShootingEnums {
         shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll((shooter.isAtSpeed()));
-        }else if(robotSettings.ENABLE_HOPPER){
+        } else if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed());
         }
     }),
@@ -93,7 +97,7 @@ public enum ShootingEnums {
         shooter.setSpeed(1000 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll((shooter.isAtSpeed()));
-        }else if(robotSettings.ENABLE_HOPPER){
+        } else if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed());
         }
     }),
@@ -228,7 +232,7 @@ public enum ShootingEnums {
         if (shooter.getSpeed() >= 4200) {
             shooter.timerTicks++;
             //if (++shooter.ticksPassed >= 17) {
-                hopper2020.setAll(true);
+            hopper2020.setAll(true);
             if (shooter.timerTicks >= shooter.goalTicks) {
                 shooter.multiShot = false;
                 hopper2020.setAll(false);

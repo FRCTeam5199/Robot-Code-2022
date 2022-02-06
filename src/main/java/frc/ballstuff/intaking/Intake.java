@@ -270,11 +270,11 @@ public class Intake implements ISubsystem {
                 break;
             case TALON_FX:
                 intakeMotor = new TalonMotorController(robotSettings.INTAKE_MOTOR_ID);
-                s2rf = 600.0 / 2048.0;
+                s2rf = 600.0 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
                 break;
             case VICTOR:
                 intakeMotor = new VictorMotorController(robotSettings.INTAKE_MOTOR_ID);
-                s2rf = 600.0 / 2048.0;
+                s2rf = 600.0 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
                 break;
             default:
                 throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
