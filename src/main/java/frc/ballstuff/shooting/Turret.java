@@ -216,7 +216,7 @@ public class Turret implements ISubsystem {
                         if (robotSettings.ENABLE_HOOD_ARTICULATION)
                             Robot.articulatedHood.unTargeted = true;
                         if (visionCamera.hasValidTarget()) {
-                            double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? 1 : -1);
+                            double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? -1 : 1);
                             omegaSetpoint = HEADING_PID.calculate(angle);
                         } else {
                             omegaSetpoint = scan();
@@ -229,7 +229,7 @@ public class Turret implements ISubsystem {
                         if (robotSettings.ENABLE_HOOD_ARTICULATION)
                             Robot.articulatedHood.unTargeted = true;
                         if (visionCamera.hasValidTarget()) {
-                            double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? 1 : -1);
+                            double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? -1 : 1);
                             omegaSetpoint = HEADING_PID.calculate(angle);
                         } else {
                             omegaSetpoint = scan();

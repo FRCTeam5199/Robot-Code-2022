@@ -13,9 +13,14 @@ import frc.motors.TalonMotorController;
 import frc.motors.VictorMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.vision.distancesensor.IDistanceSensor;
+import frc.vision.distancesensor.RevDistanceSensor;
 
 import java.util.Objects;
 
+import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
+import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
+import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kLongRange;
+import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
 import static frc.robot.Robot.robotSettings;
 
 /**
@@ -23,7 +28,7 @@ import static frc.robot.Robot.robotSettings;
  * is) to the {@link frc.ballstuff.shooting.Shooter shooter}.
  */
 public class Hopper implements ISubsystem {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     public AbstractMotorController agitator, agitatorTop, indexer;
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
@@ -43,6 +48,7 @@ public class Hopper implements ISubsystem {
         switch (robotSettings.HOPPER_CONTROL_STYLE) {
             case STANDARD:
                 break;
+            case STANDARD_2022:
             case PRACTICE_2022:
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
@@ -56,7 +62,7 @@ public class Hopper implements ISubsystem {
     @Override
     public void init() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            //indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
+            indexSensor = new RevDistanceSensor(kOnboard, kInches, kLongRange);
             System.out.println("Enabling index sensor.");
         }
         createAndInitMotors();
@@ -124,6 +130,8 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void updateTest() {
+        if (DEBUG && robotSettings.DEBUG)
+            UserInterface.smartDashboardPutNumber("indexer sensor", indexerSensorRange());
     }
 
     @Override
@@ -173,14 +181,14 @@ public class Hopper implements ISubsystem {
         switch (robotSettings.HOPPER_CONTROL_STYLE) {
             case STANDARD: {
                 if (!indexerActive && !agitatorActive) {
-                    if (robotSettings.ENABLE_2020_INDEXER) {
+                    if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             indexer.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.3 : 0);
                         } else {
                             indexer.moveAtPercent(0);
                         }
                     } //2021 COMP 4 & 2020 COMP 9
-                    if (robotSettings.ENABLE_2020_AGITATOR) {
+                    if (robotSettings.ENABLE_AGITATOR) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             agitator.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.5 : 0);
                         } else {
@@ -188,11 +196,53 @@ public class Hopper implements ISubsystem {
                         }
                     }
                 } else {
-                    if (robotSettings.ENABLE_2020_INDEXER) {
+                    if (robotSettings.ENABLE_INDEXER) {
                         indexer.moveAtPercent(indexerActive ? 0.9 : 0);
                     }
-                    if (robotSettings.ENABLE_2020_AGITATOR) {
+                    if (robotSettings.ENABLE_AGITATOR) {
                         agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
+                    }
+                }
+                if (robotSettings.DEBUG && DEBUG) {
+                    UserInterface.smartDashboardPutBoolean("indexer enable", indexerActive);
+                    UserInterface.smartDashboardPutBoolean("agitator enable", agitatorActive);
+                    UserInterface.smartDashboardPutNumber("indexer sensor", indexerSensorRange());
+                    UserInterface.smartDashboardPutBoolean("hopper indexed", isIndexed());
+                }
+                break;
+            }
+            case STANDARD_2022: {
+                if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
+                    if (robotSettings.ENABLE_INDEXER) {
+                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                            indexer.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.3 : 0);
+                        } else {
+                            indexer.moveAtPercent(0);
+                        }
+                    } //2021 COMP 4 & 2020 COMP 9
+                    if (robotSettings.ENABLE_AGITATOR) {
+                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                            agitator.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.5 : 0);
+                        } else {
+                            agitator.moveAtPercent(0);
+                        }
+                    }
+                    if (robotSettings.ENABLE_AGITATOR_TOP) {
+                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                            agitatorTop.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.75 : 0);
+                        } else {
+                            agitatorTop.moveAtPercent(0);
+                        }
+                    }
+                } else {
+                    if (robotSettings.ENABLE_INDEXER) {
+                        indexer.moveAtPercent(indexerActive ? 0.6 : 0);
+                    }
+                    if (robotSettings.ENABLE_AGITATOR) {
+                        agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
+                    }
+                    if (robotSettings.ENABLE_AGITATOR_TOP) {
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
                     }
                 }
                 if (robotSettings.DEBUG && DEBUG) {
@@ -205,10 +255,12 @@ public class Hopper implements ISubsystem {
             }
             case PRACTICE_2022: {
                 setAll(controller.get(ControllerEnums.XBoxButtons.X_SQUARE) == ControllerEnums.ButtonStatus.DOWN);
-
-                agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
-                agitator.moveAtPercent(agitatorActive ? 0.5 : 0);
-                indexer.moveAtPercent(indexerActive ? 0.5 : 0);
+                if (robotSettings.ENABLE_AGITATOR_TOP)
+                    agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
+                if (robotSettings.ENABLE_AGITATOR)
+                    agitator.moveAtPercent(agitatorActive ? 0.5 : 0);
+                if (robotSettings.ENABLE_INDEXER)
+                    indexer.moveAtPercent(indexerActive ? 0.5 : 0);
                 break;
             }
         }
@@ -241,7 +293,7 @@ public class Hopper implements ISubsystem {
 
     @Override
     public String getSubsystemName() {
-        return "Hopper2020";
+        return "Hopper";
     }
 
     /**
@@ -295,7 +347,7 @@ public class Hopper implements ISubsystem {
      * Used to change how the input is handled by the {@link Shooter} and what kind of controller to use
      */
     public enum HopperControlStyles {
-        STANDARD, PRACTICE_2022;
+        STANDARD, STANDARD_2022, PRACTICE_2022;
 
         private static SendableChooser<Shooter.ShootingControlStyles> myChooser;
 

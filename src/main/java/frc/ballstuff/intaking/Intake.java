@@ -12,6 +12,7 @@ import frc.misc.Servo;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;
+import frc.motors.SparkMotorController;
 import frc.motors.TalonMotorController;
 import frc.motors.VictorMotorController;
 import frc.robot.Robot;
@@ -131,6 +132,14 @@ public class Intake implements ISubsystem {
                     throw new IllegalStateException("You're unable to use the intake style ROBOT_2021 without a Servo as your motor type.");
                 }
                 break;
+            case ROBOT_2022: {
+                if (joystick.get(ControllerEnums.XBoxButtons.Y_TRIANGLE) == ButtonStatus.DOWN) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
+                    setIntake(IntakeDirection.IN);
+                } else {
+                    setIntake(IntakeDirection.OFF);
+                }
+                break;
+            }
             case DRUM_TIME:
                 if (joystick.get(ControllerEnums.DrumButton.TWO) == ButtonStatus.DOWN)
                     setIntake(IntakeDirection.IN);
@@ -222,6 +231,9 @@ public class Intake implements ISubsystem {
     private void createControllers() {
         switch (robotSettings.INTAKE_CONTROL_STYLE) {
             case FLIGHT_STICK:
+            case ROBOT_2022:
+                joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
             case ROBOT_2021:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
@@ -253,6 +265,7 @@ public class Intake implements ISubsystem {
         double s2rf;
         switch (robotSettings.INTAKE_MOTOR_TYPE) {
             case CAN_SPARK_MAX:
+                intakeMotor = new SparkMotorController(robotSettings.INTAKE_MOTOR_ID);
                 s2rf = 1;
                 break;
             case TALON_FX:
@@ -292,6 +305,7 @@ public class Intake implements ISubsystem {
     public enum IntakeControlStyles {
         STANDARD,
         ROBOT_2021,
+        ROBOT_2022,
         WII,
         DRUM_TIME,
         GUITAR,

@@ -1,6 +1,7 @@
 package frc.robot.robotconfigs.twentytwo;
 
 import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
 import frc.drive.AbstractDriveManager;
 import frc.drive.auton.AutonType;
@@ -17,6 +18,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_INDEXER = true;
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = false;//true;
+        ENABLE_INTAKE = true;
 
         DRIVE_INVERT_LEFT = true;
         DRIVE_INVERT_RIGHT = false;
@@ -29,7 +31,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
         SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.PRACTICE_2022;
-        HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.PRACTICE_2022;
+        HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD_2022;
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.FOLLOW_PATH;
@@ -83,13 +85,18 @@ public class PracticeRobot2022 extends DefaultConfig {
         SHOOTER_CONST_SPEED_PID = new PID(0.0001, 0.0000007, 0.05, 0);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
 
-        ENABLE_INDEXER_AUTO_INDEX = false;
+        ENABLE_INDEXER_AUTO_INDEX = true;
+        INDEXER_DETECTION_CUTOFF_DISTANCE = 6.6;
         INDEXER_MOTOR_ID = 7;
         AGITATOR_MOTOR_ID = 10;
         AGITATOR_TOPBAR_MOTOR_ID = 9;
         AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+
+        INTAKE_MOTOR_ID = 32;
+        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022;
+        INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
 
     }
 }

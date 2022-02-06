@@ -6,6 +6,7 @@ import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;
 import frc.motors.SparkMotorController;
 import frc.motors.TalonMotorController;
+import frc.motors.VictorMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.vision.distancesensor.IDistanceSensor;
 import frc.vision.distancesensor.RevDistanceSensor;
@@ -46,8 +47,12 @@ public class Hopper2020 implements ISubsystem {
                     agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
                     agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                     break;
+                case VICTOR:
+                    agitator = new VictorMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    break;
                 default:
-                    throw new IllegalStateException("No such supported shooter motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
+                    throw new IllegalStateException("No such supported hopper motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
             }
         if (robotSettings.ENABLE_2020_INDEXER)
             switch (robotSettings.INDEXER_MOTOR_TYPE) {
@@ -59,8 +64,12 @@ public class Hopper2020 implements ISubsystem {
                     indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
                     indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                     break;
+                case VICTOR:
+                    indexer = new VictorMotorController(robotSettings.INDEXER_MOTOR_ID);
+                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    break;
                 default:
-                    throw new IllegalStateException("No such supported shooter motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
+                    throw new IllegalStateException("No such supported hopper motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
             }
     }
 

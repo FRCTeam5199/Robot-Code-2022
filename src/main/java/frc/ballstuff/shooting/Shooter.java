@@ -442,7 +442,11 @@ public class Shooter implements ISubsystem {
                 //if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                 if (joystickController.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_PRACTICE2022.shoot(this);
+                    if (joystickController.get(ControllerEnums.XBoxButtons.X_SQUARE) == ButtonStatus.DOWN) {
+                        hopper.setAll(true);
+                    }
                 } else {
+                    hopper.setAll(false);
                     shooterDefault();
                 }
                 break;

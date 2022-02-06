@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.intaking.Hopper2020;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
 import frc.climber.Climber;
@@ -74,7 +75,7 @@ public abstract class DefaultConfig {
 
     //INTAKE
     public boolean ENABLE_INDEXER_AUTO_INDEX = true;
-    public int INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
+    public double INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
 
     //UI Styles
     public AbstractDriveManager.DriveControlStyles DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
