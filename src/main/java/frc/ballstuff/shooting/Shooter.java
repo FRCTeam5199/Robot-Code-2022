@@ -59,6 +59,7 @@ public class Shooter implements ISubsystem {
     @Override
     public void init() throws IllegalStateException {
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
+            case STANDARD_2022:
             case ACCURACY_2021:
             case SPEED_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
@@ -438,6 +439,33 @@ public class Shooter implements ISubsystem {
                 }
                 break;
             }
+            case STANDARD_2022:{
+                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                    ShootingEnums.FIRE_SOLID_SPEED_STANDARD2022.shoot(this);
+                    isConstSpeed = false;
+                } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN)) {
+                    shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
+                    if (joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                        ShootingEnums.FIRE_HIGH_SPEED_SPINUP_2022.shoot(this);
+                    } else {
+                        shooter.setShooting(false);
+                        shooter.tryFiringBalls = false;
+                    }
+                } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                    tryFiringBalls = true;
+                        ShootingEnums.FIRE_HIGH_SPEED_2022.shoot(this);
+                        isConstSpeed = false;
+
+                } else {
+                    tryFiringBalls = false;
+                    leader.moveAtPercent(0);
+                    ballsShot = 0;
+                    shooterDefault();
+                }
+
+
+                break;
+            }
             case PRACTICE_2022: {
                 //if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                 if (joystickController.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
@@ -652,7 +680,7 @@ public class Shooter implements ISubsystem {
      * Used to change how the input is handled by the {@link Shooter} and what kind of controller to use
      */
     public enum ShootingControlStyles {
-        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022;
+        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022;
 
         private static SendableChooser<ShootingControlStyles> myChooser;
 

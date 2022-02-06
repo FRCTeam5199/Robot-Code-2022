@@ -22,6 +22,14 @@ public enum ShootingEnums {
         }
     }),
 
+    FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
+        shooter.setPercentSpeed(.58);
+        if(robotSettings.ENABLE_HOPPER){
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        }
+        //shooter.setSpeed(1000);
+    }),
+
     FIRE_SOLID_SPEED_PRACTICE2022(shooter -> {
         shooter.setPercentSpeed(.58);
         //shooter.setSpeed(1000);
@@ -76,6 +84,17 @@ public enum ShootingEnums {
         shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll((shooter.isAtSpeed()));
+        }else if(robotSettings.ENABLE_HOPPER){
+            hopper.setAll(shooter.isAtSpeed());
+        }
+    }),
+
+    FIRE_HIGH_SPEED_2022(shooter -> {
+        shooter.setSpeed(1000 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll((shooter.isAtSpeed()));
+        }else if(robotSettings.ENABLE_HOPPER){
+            hopper.setAll(shooter.isAtSpeed());
         }
     }),
 
@@ -85,6 +104,19 @@ public enum ShootingEnums {
             shooter.setShooting(true);
             shooter.tryFiringBalls = true;
             hopper2020.setAll((shooter.isAtSpeed()));
+        }
+    }),
+
+    FIRE_HIGH_SPEED_SPINUP_2022(shooter -> {
+        shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            shooter.setShooting(true);
+            shooter.tryFiringBalls = true;
+            hopper2020.setAll((shooter.isAtSpeed()));
+        } else if (robotSettings.ENABLE_HOPPER) {
+            shooter.setShooting(true);
+            shooter.tryFiringBalls = true;
+            hopper.setAll(shooter.isAtSpeed());
         }
     }),
 

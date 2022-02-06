@@ -32,7 +32,7 @@ public class Hopper implements ISubsystem {
     public AbstractMotorController agitator, agitatorTop, indexer;
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
-    private BaseController controller;
+    private BaseController controller, panel;
 
     public Hopper() {
         addToMetaList();
@@ -49,6 +49,8 @@ public class Hopper implements ISubsystem {
             case STANDARD:
                 break;
             case STANDARD_2022:
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                break;
             case PRACTICE_2022:
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
@@ -214,21 +216,27 @@ public class Hopper implements ISubsystem {
             case STANDARD_2022: {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
-                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                        if(panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN){
+                            indexer.moveAtPercent(0.3);
+                        } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             indexer.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.3 : 0);
                         } else {
                             indexer.moveAtPercent(0);
                         }
                     } //2021 COMP 4 & 2020 COMP 9
                     if (robotSettings.ENABLE_AGITATOR) {
-                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                        if(panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN){
+                            indexer.moveAtPercent(0.5);
+                        } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             agitator.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.5 : 0);
                         } else {
                             agitator.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                        if(panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN){
+                            agitatorTop.moveAtPercent(0.75);
+                        } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             agitatorTop.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.75 : 0);
                         } else {
                             agitatorTop.moveAtPercent(0);
