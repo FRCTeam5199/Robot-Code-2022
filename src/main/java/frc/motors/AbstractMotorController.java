@@ -231,6 +231,8 @@ public abstract class AbstractMotorController {
      */
     public abstract int getID();
 
+    public abstract int getMaxRPM();
+
 
     /**
      * This should be one-for-one replicated for each {@link AbstractMotorController motor controller} in order to
@@ -238,7 +240,7 @@ public abstract class AbstractMotorController {
      */
     public enum SupportedMotors {
         //Spark = Neo 550, Talon = Falcon 500, Victor = 775pros, Servo = whatever servo you put in. I didn't have a better place for this so it's here
-        CAN_SPARK_MAX(11710), TALON_FX(6380), VICTOR(18730), SERVO;
+        CAN_SPARK_MAX(11710), /*TALON_FX(6380) 5385rpm for some reason*/TALON_FX(5380), VICTOR(18730), SERVO;
 
         /**
          * Read the name!

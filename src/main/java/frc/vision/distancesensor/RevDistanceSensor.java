@@ -20,6 +20,7 @@ public class RevDistanceSensor extends Rev2mDistanceSensor implements IDistanceS
         addToMetaList();
         setEnabled(true);
         setAutomaticMode(true);
+
     }
 
     @Override

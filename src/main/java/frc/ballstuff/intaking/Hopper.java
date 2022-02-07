@@ -19,7 +19,6 @@ import java.util.Objects;
 
 import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
 import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
-import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kLongRange;
 import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
 import static frc.robot.Robot.robotSettings;
 
@@ -64,7 +63,7 @@ public class Hopper implements ISubsystem {
     @Override
     public void init() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            indexSensor = new RevDistanceSensor(kOnboard, kInches, kLongRange);
+            indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
             System.out.println("Enabling index sensor.");
         }
         createAndInitMotors();
@@ -123,6 +122,7 @@ public class Hopper implements ISubsystem {
                 default:
                     throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
             }
+        agitatorTop.setInverted(true);
     }
 
     @Override
@@ -132,8 +132,10 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void updateTest() {
-        if (DEBUG && robotSettings.DEBUG)
+        if (DEBUG && robotSettings.DEBUG) {
             UserInterface.smartDashboardPutNumber("indexer sensor", indexerSensorRange());
+            UserInterface.smartDashboardPutBoolean("isIndexed", isIndexed());
+        }
     }
 
     @Override
@@ -171,7 +173,9 @@ public class Hopper implements ISubsystem {
     }
 
     public boolean isIndexed() {
-        return robotSettings.ENABLE_INDEXER_AUTO_INDEX && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE;
+        return robotSettings.ENABLE_INDEXER_AUTO_INDEX
+                && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE
+                && indexerSensorRange() > 0;
     }
 
     /**
@@ -185,21 +189,21 @@ public class Hopper implements ISubsystem {
                 if (!indexerActive && !agitatorActive) {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            indexer.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.3 : 0);
+                            indexer.moveAtPercent(!isIndexed() ? 0.3 : 0);
                         } else {
                             indexer.moveAtPercent(0);
                         }
                     } //2021 COMP 4 & 2020 COMP 9
                     if (robotSettings.ENABLE_AGITATOR) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitator.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.5 : 0);
+                            agitator.moveAtPercent(!isIndexed() ? 0.5 : 0);
                         } else {
                             agitator.moveAtPercent(0);
                         }
                     }
                 } else {
                     if (robotSettings.ENABLE_INDEXER) {
-                        indexer.moveAtPercent(indexerActive ? 0.9 : 0);
+                        agitator.moveAtPercent(indexerActive ? 0.9 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
                         agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
@@ -216,28 +220,30 @@ public class Hopper implements ISubsystem {
             case STANDARD_2022: {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
-                        if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN) {
-                            indexer.moveAtPercent(0.3);
-                        } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            indexer.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.3 : 0);
+                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                            indexer.moveAtPercent(!isIndexed() ? 0.15 : 0);
                         } else {
                             indexer.moveAtPercent(0);
                         }
-                    } //2021 COMP 4 & 2020 COMP 9
+                    }
                     if (robotSettings.ENABLE_AGITATOR) {
                         if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN) {
-                            indexer.moveAtPercent(0.5);
+                            agitator.moveAtPercent(0.5);
+                        } else if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_OUT) == ControllerEnums.ButtonStatus.DOWN) {
+                            agitator.moveAtPercent(-0.5);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitator.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.5 : 0);
+                            agitator.moveAtPercent(!isIndexed() ? 0.3 : 0);
                         } else {
                             agitator.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN) {
-                            agitatorTop.moveAtPercent(0.75);
+                            agitatorTop.moveAtPercent(0.5);
+                        } else if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_OUT) == ControllerEnums.ButtonStatus.DOWN) {
+                            agitatorTop.moveAtPercent(-0.5);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(indexerSensorRange() > robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE ? 0.75 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.4 : 0);
                         } else {
                             agitatorTop.moveAtPercent(0);
                         }
@@ -256,6 +262,7 @@ public class Hopper implements ISubsystem {
                 if (robotSettings.DEBUG && DEBUG) {
                     UserInterface.smartDashboardPutBoolean("indexer enable", indexerActive);
                     UserInterface.smartDashboardPutBoolean("agitator enable", agitatorActive);
+                    UserInterface.smartDashboardPutBoolean("agitator top enable", agitatorTopbarActive);
                     UserInterface.smartDashboardPutNumber("indexer sensor", indexerSensorRange());
                     UserInterface.smartDashboardPutBoolean("hopper indexed", isIndexed());
                 }

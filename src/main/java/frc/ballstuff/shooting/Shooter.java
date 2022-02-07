@@ -130,6 +130,7 @@ public class Shooter implements ISubsystem {
                 joystickController = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
                 break;
             case PRACTICE_2022:
+            case STANDARD_2022:
             case XBOX_CONTROLLER:
                 joystickController = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
@@ -555,6 +556,8 @@ public class Shooter implements ISubsystem {
             follower.follow(leader, !robotSettings.SHOOTER_INVERTED).setCurrentLimit(80).setBrake(false);
         }
         leader.setCurrentLimit(80).setBrake(false).setOpenLoopRampRate(40).resetEncoder();
+        leader.setOpenLoopRampRate(0);
+        follower.setOpenLoopRampRate(0);
     }
 
     /**
@@ -637,6 +640,7 @@ public class Shooter implements ISubsystem {
      * @param percentSpeed percent from -1 to 1 to move the shooter at
      */
     public void setPercentSpeed(double percentSpeed) {
+        speed = percentSpeed * leader.getMaxRPM();
         leader.moveAtPercent(percentSpeed);
     }
 

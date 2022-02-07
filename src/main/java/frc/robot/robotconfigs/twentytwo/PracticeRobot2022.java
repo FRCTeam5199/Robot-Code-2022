@@ -17,10 +17,10 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_HOPPER = true;
         ENABLE_INDEXER = true;
         ENABLE_AGITATOR = true;
-        ENABLE_AGITATOR_TOP = false;//true;
+        ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
         ENABLE_PNOOMATICS = false;
-        ENABLE_INDEXER_AUTO_INDEX = false;
+        ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = false;
         ENABLE_VISION = false;
 
@@ -33,13 +33,14 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
-        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.PRACTICE_2022;
+        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD_2022;
         HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD_2022;
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.FOLLOW_PATH;
 
-        DRIVEBASE_PID = new PID(0.0075, 0, 0.002);
+        DRIVEBASE_VOLTAGE_MULTIPLIER = 3.4635 / 2825; //3.4635 volts = 2825 RPM. 4 is a completely random number that doesn't mean SHIT.
+        DRIVEBASE_PID = new PID(0.1, 0, 0);
         HEADING_PID = new PID(0.08, 0.000005, 0.0003);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
         CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
@@ -92,7 +93,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
 
         //Hopper
-        INDEXER_DETECTION_CUTOFF_DISTANCE = 6.6;
+        INDEXER_DETECTION_CUTOFF_DISTANCE = 4.7;
         INDEXER_MOTOR_ID = 7;
         AGITATOR_MOTOR_ID = 10;
         AGITATOR_TOPBAR_MOTOR_ID = 9;

@@ -33,7 +33,7 @@ public abstract class DefaultConfig {
     public static final String BOTKEY = loadEnvVariable("bottoken");
     public static final String SLACKBOTKEY = loadEnvVariable("slackbottoken");
     public static final String SLACKSOCKETKEY = loadEnvVariable("slacksockettoken");
-    public final boolean DEBUG = true;
+    public final boolean DEBUG = false;
     public String AUTON_COMPLETE_NOISE = "";
     public boolean autonComplete = false;
     //Subsystems
@@ -103,6 +103,7 @@ public abstract class DefaultConfig {
 
     public int DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
     public double DRIVEBASE_DISTANCE_BETWEEN_WHEELS = -2; //Distance in meters between wheels
+    public double DRIVEBASE_VOLTAGE_MULTIPLIER = 1;
     public double MAX_SPEED = 0; //max speed in fps - REAL IS 10(for 4in wheels)
     public double RUMBLE_TOLERANCE_FPS = 0; //The minimum value in which the controller will begin rumbling
     public double MAX_ROTATION = 0; //max rotational speed in radians per second - REAL IS 11.2(for 4in wheels)

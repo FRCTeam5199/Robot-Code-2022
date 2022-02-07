@@ -113,6 +113,11 @@ public class VictorMotorController extends AbstractMotorController {
     }
 
     @Override
+    public int getMaxRPM() {
+        return SupportedMotors.VICTOR.MAX_SPEED_RPM;
+    }
+
+    @Override
     public void moveAtPercent(double percent) {
         if (isTemperatureAcceptable())
             motor.set(PercentOutput, percent);

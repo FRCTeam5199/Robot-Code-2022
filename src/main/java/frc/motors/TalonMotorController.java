@@ -124,6 +124,11 @@ public class TalonMotorController extends AbstractMotorController {
     }
 
     @Override
+    public int getMaxRPM() {
+        return SupportedMotors.TALON_FX.MAX_SPEED_RPM;
+    }
+
+    @Override
     public void moveAtPosition(double pos) {
         motor.set(Position, pos);
         if (!this.isFollower) {

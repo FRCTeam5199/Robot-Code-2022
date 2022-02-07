@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.INTAKE_DOWN;
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.INTAKE_UP;
+import static frc.robot.Robot.hopper;
 import static frc.robot.Robot.robotSettings;
 
 /**
@@ -132,11 +133,23 @@ public class Intake implements ISubsystem {
                     throw new IllegalStateException("You're unable to use the intake style ROBOT_2021 without a Servo as your motor type.");
                 }
                 break;
-            case ROBOT_2022: {
+            case ROBOT_PRACTICE_2022: {
                 if (joystick.get(ControllerEnums.XBoxButtons.Y_TRIANGLE) == ButtonStatus.DOWN) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
                     setIntake(IntakeDirection.IN);
                 } else {
                     setIntake(IntakeDirection.OFF);
+                }
+                break;
+            }
+            case ROBOT_2022: {
+                if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
+                    setIntake(IntakeDirection.IN);
+                    hopper.setAgitatorTopbar(true);
+                } else if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.UP)) {
+                    setIntake(IntakeDirection.OUT);
+                } else {
+                    setIntake(IntakeDirection.OFF);
+                    hopper.setAgitatorTopbar(false);
                 }
                 break;
             }
@@ -231,12 +244,13 @@ public class Intake implements ISubsystem {
     private void createControllers() {
         switch (robotSettings.INTAKE_CONTROL_STYLE) {
             case FLIGHT_STICK:
-            case ROBOT_2022:
+            case ROBOT_PRACTICE_2022:
                 joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
             case ROBOT_2021:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
+            case ROBOT_2022:
             case STANDARD:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
@@ -305,6 +319,7 @@ public class Intake implements ISubsystem {
     public enum IntakeControlStyles {
         STANDARD,
         ROBOT_2021,
+        ROBOT_PRACTICE_2022,
         ROBOT_2022,
         WII,
         DRUM_TIME,

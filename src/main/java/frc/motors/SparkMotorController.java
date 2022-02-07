@@ -200,6 +200,11 @@ public class SparkMotorController extends AbstractMotorController {
         myPid.setReference(pos / sensorToRealDistanceFactor, kSmartMotion, 0);
     }
 
+    @Override
+    public int getMaxRPM() {
+        return SupportedMotors.CAN_SPARK_MAX.MAX_SPEED_RPM;
+    }
+
     public void setAllowedClosedLoopError(double threshold) {
         myPid.setSmartMotionAllowedClosedLoopError(threshold, 0);
     }

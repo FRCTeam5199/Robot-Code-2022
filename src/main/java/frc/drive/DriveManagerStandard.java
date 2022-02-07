@@ -463,15 +463,19 @@ public class DriveManagerStandard extends AbstractDriveManager {
         double leftFPS = Units.metersToFeet(wheelSpeeds.leftMetersPerSecond);
         double rightFPS = Units.metersToFeet(wheelSpeeds.rightMetersPerSecond);
         //todo get rid of this
-        double gearRatio = 28.6472 * 12;
-        if (/*robotSettings.DEBUG &&*/ DEBUG) {
+        double leftRPM = (leftFPS * 60) / (Math.PI * robotSettings.WHEEL_DIAMETER) * robotSettings.DRIVE_GEARING;
+        double rightRPM = (rightFPS * 60) / (Math.PI * robotSettings.WHEEL_DIAMETER) * robotSettings.DRIVE_GEARING;
+        double gearRatio = (leftFPS * 60) / (Math.PI * robotSettings.WHEEL_DIAMETER / robotSettings.DRIVE_GEARING); //28.6472 * 12; //FPS TO RPM. ((FPS * 60) / pi * diameter)
+        //if (/*robotSettings.DEBUG &&*/ DEBUG) {
             System.out.println("FPS: " + leftFPS + "  " + rightFPS + " (" + gearRatio + ")");
             UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
             UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
-        }
+        //}
         //I like to call this one driveCringe
 
-        leaderL.moveAtVoltage(adjustedDriveVoltage((leftFPS) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
-        leaderR.moveAtVoltage(adjustedDriveVoltage((rightFPS) * gearRatio * robotSettings.DRIVE_SCALE, 0.91 / 371.0));
+        leaderL.moveAtVoltage(adjustedDriveVoltage(leftRPM * robotSettings.DRIVE_SCALE, robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER));
+        leaderR.moveAtVoltage(adjustedDriveVoltage(rightRPM * robotSettings.DRIVE_SCALE, robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER));
+        System.out.println("VOLTAGE: " + leaderL.getVoltage() + "at mult " + robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER);
+        System.out.println("VELOCITY: " + (leaderL.getSpeed() / leaderL.sensorToRealDistanceFactor));
     }
 }
