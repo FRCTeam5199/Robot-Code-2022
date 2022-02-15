@@ -3,6 +3,7 @@ package frc.ballstuff.shooting;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.ballstuff.intaking.Hopper2020;
+import frc.climber.Climber;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonPanelButtons;
@@ -28,7 +29,7 @@ import static frc.robot.Robot.*;
  * fast things)
  */
 public class Shooter implements ISubsystem {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     private final NetworkTableEntry P = UserInterface.SHOOTER_P.getEntry(),
             I = UserInterface.SHOOTER_I.getEntry(),
             D = UserInterface.SHOOTER_D.getEntry(),
@@ -99,7 +100,16 @@ public class Shooter implements ISubsystem {
      */
     @Override
     public void updateTest() {
-
+        //goalCamera.setLedMode(IVision.VisionLEDMode.ON);
+        switch (robotSettings.SHOOTER_CONTROL_STYLE) {
+            case STANDARD_2022: {
+                goalCamera.setLedMode((panel.get(ButtonPanelButtons.BUDDY_CLIMB) == ButtonStatus.DOWN) ? IVision.VisionLEDMode.ON : IVision.VisionLEDMode.OFF);
+            }
+            break;
+            /*default:
+                throw new IllegalStateException("There is no UI configuration for " + robotSettings.SHOOTER_CONTROL_STYLE.name() + " to control the shooter. Please implement me");
+            */
+        }
     }
 
     /**
@@ -446,7 +456,7 @@ public class Shooter implements ISubsystem {
                 if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_STANDARD2022.shoot(this);
                     isConstSpeed = false;
-                } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN)) {
+                } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) && robotSettings.CLIMBER_CONTROL_STYLE != Climber.ClimberControlStyles.STANDARD_2022) {
                     shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
                     if (joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
                         ShootingEnums.FIRE_HIGH_SPEED_SPINUP_2022.shoot(this);
@@ -640,7 +650,7 @@ public class Shooter implements ISubsystem {
      * @param percentSpeed percent from -1 to 1 to move the shooter at
      */
     public void setPercentSpeed(double percentSpeed) {
-        speed = percentSpeed * leader.getMaxRPM();
+        speed = percentSpeed * leader.getMaxRPM() * robotSettings.SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER;
         leader.moveAtPercent(percentSpeed);
     }
 
@@ -661,6 +671,31 @@ public class Shooter implements ISubsystem {
             shooting = false;
             setPercentSpeed(0);
             hopper2020.setAll(false);
+        }
+        return !multiShot;
+    }
+
+    /**
+     * Fires multiple balls without caring if it sees the target. Good for autonomous and the discord/slaque bot
+     * Used for the 2022 ball shooter
+     *
+     * @param seconds how many seconds to run the shooter
+     * @return if the balls have finished shooting
+     * @author Smaltin
+     */
+    public boolean fireAmount2022(int seconds) {
+        goalTicks = seconds * 50; //tick = 20ms. 50 ticks in a second.
+        if (!shooting) {
+            ticksPassed = 0;
+            shooting = true;
+            multiShot = true;
+        }
+        ShootingEnums.FIRE_TIMED_2022.shoot(this);
+        updateShuffleboard();
+        if (!multiShot) {
+            shooting = false;
+            setPercentSpeed(0);
+            hopper.setAll(false);
         }
         return !multiShot;
     }

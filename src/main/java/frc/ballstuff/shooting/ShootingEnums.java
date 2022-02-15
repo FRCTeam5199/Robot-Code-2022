@@ -17,13 +17,15 @@ public enum ShootingEnums {
     //TODO make controller dynamic
     FIRE_SOLID_SPEED_FLIGHTSTICK(shooter -> {
         shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
-        if (robotSettings.ENABLE_HOPPER) {
+        if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        } else if (robotSettings.ENABLE_HOPPER) {
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }
     }),
 
     FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
-        shooter.setPercentSpeed(.46);
+        shooter.setPercentSpeed(shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));//.46);
         //shooter.setPercentSpeed(.3);
         if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
@@ -224,6 +226,17 @@ public enum ShootingEnums {
         shooter.setSpeed(4200);
     }),
 
+    FIRE_TIMED_2022(shooter -> {
+        shooter.setSpeed(1700);
+        if (shooter.getSpeed() >= 1675) {
+            shooter.timerTicks++;
+            hopper.setAll(true);
+            if (shooter.timerTicks >= shooter.goalTicks) {
+                shooter.multiShot = false;
+                hopper.setAll(false);
+            }
+        }
+    }),
     FIRE_TIMED(shooter -> {
         shooter.setSpeed(4200);
         if (Shooter.DEBUG) {

@@ -33,7 +33,7 @@ public abstract class DefaultConfig {
     public static final String BOTKEY = loadEnvVariable("bottoken");
     public static final String SLACKBOTKEY = loadEnvVariable("slackbottoken");
     public static final String SLACKSOCKETKEY = loadEnvVariable("slacksockettoken");
-    public final boolean DEBUG = false;
+    public final boolean DEBUG = true;
     public String AUTON_COMPLETE_NOISE = "";
     public boolean autonComplete = false;
     //Subsystems
@@ -94,6 +94,7 @@ public abstract class DefaultConfig {
     public AbstractMotorController.SupportedMotors DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
     public AbstractMotorController.SupportedMotors TURRET_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
     public AbstractMotorController.SupportedMotors CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+    public AbstractMotorController.SupportedMotors CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
     public AbstractMotorController.SupportedMotors INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
     public AbstractIMU.SupportedIMU IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
     public AutonType AUTON_TYPE = AutonType.FOLLOW_PATH;
@@ -167,6 +168,8 @@ public abstract class DefaultConfig {
     public double INITIATION_LINE_HOOD_POSITION;
     public double[][] CALIBRATED_HOOD_POSITION_ARRAY;
 
+    public double SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 1;
+
     //turret
     public int TURRET_YAW_ID = 33; //550
     public boolean TURRET_INVERT = false;
@@ -203,6 +206,8 @@ public abstract class DefaultConfig {
 
     //climber
     public int[] CLIMBER_MOTOR_IDS;
+    public int CLIMBER_STG1_MOTOR_ID;
+    public int CLIMBER_STG2_MOTOR_ID;
 
     /**
      * Must be one of the following: {@link I2C.Port} {@link SerialPort.Port} {@link SPI.Port}

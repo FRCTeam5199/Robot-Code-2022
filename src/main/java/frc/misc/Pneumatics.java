@@ -1,8 +1,10 @@
 package frc.misc;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import frc.climber.Climber;
 
 import static frc.robot.Robot.robotSettings;
 
@@ -18,6 +20,7 @@ public class Pneumatics implements ISubsystem {
     public DoubleSolenoid ballShifter;
     public DoubleSolenoid buddyClimberLock;
     public Solenoid shooterCooling;
+    public Compressor compressor;
 
     public Pneumatics() {
         addToMetaList();
@@ -26,6 +29,8 @@ public class Pneumatics implements ISubsystem {
 
     @Override
     public void init() {
+        compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+        compressor.enableDigital();
         if (robotSettings.ENABLE_INTAKE && robotSettings.ENABLE_PNOOMATICS) {
             solenoidIntake = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.INTAKE_OUT_ID, robotSettings.INTAKE_IN_ID);
         }

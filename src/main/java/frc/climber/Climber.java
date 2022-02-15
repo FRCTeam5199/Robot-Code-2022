@@ -27,6 +27,7 @@ import static frc.robot.Robot.robotSettings;
 public class Climber implements ISubsystem {
     public BaseController joystick, buttonpanel;
     private AbstractMotorController[] climberMotors;
+    private AbstractMotorController climberStg1, climberStg2;
     private boolean isLocked = false;
 
     public Climber() {
@@ -36,7 +37,10 @@ public class Climber implements ISubsystem {
 
     @Override
     public void init() {
-        createMotors();
+        if (robotSettings.CLIMBER_CONTROL_STYLE != ClimberControlStyles.STANDARD_2022)
+            createMotors();
+        else
+            createCoolerMotors();
         createControllers();
     }
 
@@ -62,28 +66,48 @@ public class Climber implements ISubsystem {
 
     @Override
     public void updateGeneric() {
-        if (robotSettings.CLIMBER_CONTROL_STYLE == ClimberControlStyles.STANDARD) {
-            if (buttonpanel.get(LOWER_CLIMBER) == ButtonStatus.DOWN) {
-                for (AbstractMotorController motor : climberMotors) {
-                    motor.moveAtPercent(-0.8);
+        switch (robotSettings.CLIMBER_CONTROL_STYLE) {
+            case STANDARD: {
+                if (buttonpanel.get(LOWER_CLIMBER) == ButtonStatus.DOWN) {
+                    for (AbstractMotorController motor : climberMotors) {
+                        motor.moveAtPercent(-0.8);
+                    }
+                } else if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN && !isLocked) {
+                    for (AbstractMotorController motor : climberMotors) {
+                        motor.moveAtPercent(0.8);
+                    }
+                } else {
+                    for (AbstractMotorController motor : climberMotors) {
+                        motor.moveAtPercent(0);
+                    }
                 }
-            } else if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN && !isLocked) {
-                for (AbstractMotorController motor : climberMotors) {
-                    motor.moveAtPercent(0.8);
-                }
-            } else {
-                for (AbstractMotorController motor : climberMotors) {
-                    motor.moveAtPercent(0);
+                if (buttonpanel.get(CLIMBER_LOCK) == ButtonStatus.DOWN) {
+                    climberLocks(true);
+                } else if (buttonpanel.get(CLIMBER_UNLOCK) == ButtonStatus.DOWN) {
+                    climberLocks(false);
                 }
             }
-            if (buttonpanel.get(CLIMBER_LOCK) == ButtonStatus.DOWN) {
-                climberLocks(true);
-            } else if (buttonpanel.get(CLIMBER_UNLOCK) == ButtonStatus.DOWN) {
-                climberLocks(false);
+            break;
+            case STANDARD_2022: {
+                if (buttonpanel.get(AUX_TOP) == ButtonStatus.DOWN) {
+                    climberStg1.moveAtPercent(0.8);
+                } else if (buttonpanel.get(AUX_BOTTOM) == ButtonStatus.DOWN) {
+                    climberStg1.moveAtPercent(-0.8);
+                } else if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
+                    climberStg2.moveAtPercent(0.8);
+                } else if (buttonpanel.get(LOWER_CLIMBER) == ButtonStatus.DOWN) {
+                    climberStg2.moveAtPercent(-0.8);
+                } else {
+                    climberStg1.moveAtPercent(0);
+                    climberStg2.moveAtPercent(0);
+                }
             }
-        } else {
-            throw new IllegalStateException("There is no UI configuration for " + robotSettings.CLIMBER_CONTROL_STYLE.name() + " to control the climber. Please implement me");
+            break;
+            default: {
+                throw new IllegalStateException("There is no UI configuration for " + robotSettings.CLIMBER_CONTROL_STYLE.name() + " to control the climber. Please implement me");
+            }
         }
+        //if (robotSettings.CLIMBER_CONTROL_STYLE == ClimberControlStyles.STANDARD || robotSettings.CLIMBER_CONTROL_STYLE == ClimberControlStyles.STANDARD_2022) {
     }
 
     @Override
@@ -122,6 +146,50 @@ public class Climber implements ISubsystem {
         isLocked = deployed;
     }
 
+    private void createCoolerMotors() {
+        double s2rfstg1 = 1;
+        switch (robotSettings.CLIMBER_MOTOR_TYPE) {
+            case TALON_FX: {
+                climberStg1 = new TalonMotorController(robotSettings.CLIMBER_STG1_MOTOR_ID);
+                s2rfstg1 = 600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
+            }
+            break;
+            case VICTOR: {
+                climberStg1 = new VictorMotorController(robotSettings.CLIMBER_STG1_MOTOR_ID);
+                s2rfstg1 = 600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
+            }
+            break;
+            case CAN_SPARK_MAX: {
+                climberStg1 = new SparkMotorController(robotSettings.CLIMBER_STG1_MOTOR_ID);
+            }
+            break;
+            default:
+                throw new IllegalStateException("No such supported climber motor config for " + robotSettings.CLIMBER_MOTOR_TYPE.name());
+        }
+        climberStg1.setSensorToRealDistanceFactor(s2rfstg1);
+
+        double s2rfstg2 = 1;
+        switch (robotSettings.CLIMBER_STG2_MOTOR_TYPE) {
+            case TALON_FX: {
+                climberStg2 = new TalonMotorController(robotSettings.CLIMBER_STG2_MOTOR_ID);
+                s2rfstg2 = 600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
+            }
+            break;
+            case VICTOR: {
+                climberStg2 = new VictorMotorController(robotSettings.CLIMBER_STG2_MOTOR_ID);
+                s2rfstg2 = 600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
+            }
+            break;
+            case CAN_SPARK_MAX: {
+                climberStg2 = new SparkMotorController(robotSettings.CLIMBER_STG2_MOTOR_ID);
+            }
+            break;
+            default:
+                throw new IllegalStateException("No such supported stage 2 climber motor config for " + robotSettings.CLIMBER_MOTOR_TYPE.name());
+        }
+        climberStg2.setSensorToRealDistanceFactor(s2rfstg2);
+    }
+
     private void createMotors() {
         climberMotors = new AbstractMotorController[robotSettings.CLIMBER_MOTOR_IDS.length];
         for (int indexer = 0; indexer < robotSettings.CLIMBER_MOTOR_IDS.length; indexer++) {
@@ -148,11 +216,14 @@ public class Climber implements ISubsystem {
         switch (robotSettings.INTAKE_CONTROL_STYLE) {
             case FLIGHT_STICK:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                break;
+            case ROBOT_2022:
             case STANDARD:
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 break;
             case XBOX_CONTROLLER:
                 joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
             case BOP_IT:
                 joystick = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
                 break;
@@ -172,6 +243,7 @@ public class Climber implements ISubsystem {
 
     public enum ClimberControlStyles {
         STANDARD,
+        STANDARD_2022,
         WII,
         DRUM_TIME,
         GUITAR,

@@ -1,5 +1,6 @@
 package frc.drive;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -23,6 +24,7 @@ import frc.motors.followers.SparkFollowerMotorsController;
 import frc.motors.followers.TalonFollowerMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.telemetry.RobotTelemetryStandard;
+import frc.vision.camera.IVision;
 
 import static frc.robot.Robot.pneumatics;
 import static frc.robot.Robot.robotSettings;
@@ -50,6 +52,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
     private BaseController controller;
     private PID lastPID = PID.EMPTY_PID;
     private boolean ballShifterEnabled = false;
+    private IVision visionCamera;
+    private PIDController HEADING_PID;
 
     public DriveManagerStandard() throws UnsupportedOperationException, InitializationFailureException {
         super();
@@ -67,6 +71,9 @@ public class DriveManagerStandard extends AbstractDriveManager {
         initPID();
         initMisc();
         createTelem();
+        if (robotSettings.ENABLE_VISION) {
+            visionCamera = IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE);
+        }
     }
 
     @Override
@@ -116,6 +123,29 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     controller.rumble(0);
                 }
                 drive(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
+            }
+            break;
+            case STANDARD_2022: {
+                double invertedDrive = robotSettings.DRIVE_INVERT_LEFT ? -1 : 1;
+                double dynamic_gear_R = controller.get(XBoxButtons.RIGHT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_L = controller.get(XBoxButtons.LEFT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
+                boolean a = false;
+                UserInterface.smartDashboardPutBoolean("Drive using PID?", a);
+                if (a) {
+                    drive(controller.get(XboxAxes.LEFT_JOY_Y), controller.get(XboxAxes.RIGHT_JOY_X));
+                } else if (controller.get(XBoxButtons.X_SQUARE) == ButtonStatus.DOWN) {
+                    double neededRot;
+                    visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+                    if (visionCamera.hasValidTarget()) {
+                        neededRot = adjustedRotation(HEADING_PID.calculate(visionCamera.getPitch()));
+                    } else {
+                        neededRot = -controller.get(XboxAxes.RIGHT_JOY_X);
+                    }
+                    driveCringe(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), -neededRot * dynamic_gear_R);
+                } else {
+                    visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
+                    driveCringe(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
+                }
             }
             break;
             case BALL_SHIFTING_STANDARD: {
@@ -190,6 +220,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
             default:
                 throw new IllegalStateException("Invalid drive type");
         }
+
     }
 
     @Override
@@ -386,6 +417,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
      */
     private void initPID() {
         setPID(robotSettings.DRIVEBASE_PID);
+        HEADING_PID = new PIDController(0.005, 0.00001, 0.0005);
     }
 
     /**
@@ -398,6 +430,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
         switch (robotSettings.DRIVE_STYLE) {
             case EXPERIMENTAL:
             case BALL_SHIFTING_STANDARD:
+            case OPENLOOP_BALL_SHIFTING_STANDARD:
+            case STANDARD_2022:
             case STANDARD:
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
@@ -445,6 +479,31 @@ public class DriveManagerStandard extends AbstractDriveManager {
         leaderR.setPid(pid);
     }
 
+    public boolean aimAtTarget() {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            double neededRot = adjustedRotation(HEADING_PID.calculate(visionCamera.getPitch()));
+            driveCringe(0, -neededRot);
+            return Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 3.5;
+        } else {
+            driveCringe(0, .75);
+            return false;
+        }
+    }
+
+    public boolean rotate180() {
+        double gotoo = guidance.imu.relativeYaw()+180;
+        while (guidance.imu.relativeYaw() <= gotoo) {
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED);
+        }
+        /*
+        double needToTurnTo = yawBeforeTurn + 180;
+        driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED);
+        return guidance.imu.relativeYaw() >= needToTurnTo;
+         */
+        return true;
+    }
+
     public void driveCringe(double forward, double rotation) {
         /*
         drivePure(adjustedDrive(forward), adjustedRotation(rotation)); //double FPS, double omega
@@ -462,20 +521,26 @@ public class DriveManagerStandard extends AbstractDriveManager {
         DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(cringChassis);
         double leftFPS = Units.metersToFeet(wheelSpeeds.leftMetersPerSecond);
         double rightFPS = Units.metersToFeet(wheelSpeeds.rightMetersPerSecond);
-        //todo get rid of this
-        double leftRPM = (leftFPS * 60) / (Math.PI * robotSettings.WHEEL_DIAMETER) * robotSettings.DRIVE_GEARING;
-        double rightRPM = (rightFPS * 60) / (Math.PI * robotSettings.WHEEL_DIAMETER) * robotSettings.DRIVE_GEARING;
-        double gearRatio = (leftFPS * 60) / (Math.PI * robotSettings.WHEEL_DIAMETER / robotSettings.DRIVE_GEARING); //28.6472 * 12; //FPS TO RPM. ((FPS * 60) / pi * diameter)
-        //if (/*robotSettings.DEBUG &&*/ DEBUG) {
-            System.out.println("FPS: " + leftFPS + "  " + rightFPS + " (" + gearRatio + ")");
-            UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
-            UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
-        //}
+
+        double leftRPMWheel = (leftFPS / (Math.PI * (robotSettings.WHEEL_DIAMETER / 12))) * 60;
+        double rightRPMWheel = (rightFPS / (Math.PI * (robotSettings.WHEEL_DIAMETER / 12))) * 60;
+        double leftRPM = leftRPMWheel / robotSettings.DRIVE_GEARING;
+        double rightRPM = rightRPMWheel / robotSettings.DRIVE_GEARING;
+        //double FPSToRPM = (leftFPS / (Math.PI * robotSettings.WHEEL_DIAMETER / robotSettings.DRIVE_GEARING)) * 60; //28.6472 * 12; //FPS TO RPM. ((FPS * 60) / pi * diameter)
+
+        if (DEBUG && robotSettings.DEBUG)
+            System.out.println("WANTED FPS: " + leftFPS + "  " + rightFPS);//+ " (" + FPSToRPM + ")");
+        UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
+        UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
         //I like to call this one driveCringe
 
         leaderL.moveAtVoltage(adjustedDriveVoltage(leftRPM * robotSettings.DRIVE_SCALE, robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER));
         leaderR.moveAtVoltage(adjustedDriveVoltage(rightRPM * robotSettings.DRIVE_SCALE, robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER));
-        System.out.println("VOLTAGE: " + leaderL.getVoltage() + "at mult " + robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER);
-        System.out.println("VELOCITY: " + (leaderL.getSpeed() / leaderL.sensorToRealDistanceFactor));
+        if (DEBUG && robotSettings.DEBUG) {
+            System.out.println("ACTUAL FPS: " + (leaderL.getSpeed() / leaderL.sensorToRealDistanceFactor) + " " + (leaderR.getSpeed() / leaderR.sensorToRealDistanceFactor));
+            System.out.println("WANTED RPM - L: " + leftRPM + " R: " + rightRPM);
+            System.out.println("VOLTAGE: " + leaderL.getVoltage() + " at mult " + robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER);
+            System.out.println("VELOCITY: " + (leaderL.getSpeed() / leaderL.sensorToRealDistanceFactor));
+        }
     }
 }

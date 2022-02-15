@@ -21,7 +21,7 @@ import static frc.robot.Robot.robotSettings;
  * is ) to the {@link frc.ballstuff.shooting.Shooter}
  */
 public class Hopper2020 implements ISubsystem {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     public AbstractMotorController agitator, indexer;
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false;

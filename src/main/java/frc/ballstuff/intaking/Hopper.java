@@ -19,6 +19,7 @@ import java.util.Objects;
 
 import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
 import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
+import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighSpeed;
 import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
 import static frc.robot.Robot.robotSettings;
 

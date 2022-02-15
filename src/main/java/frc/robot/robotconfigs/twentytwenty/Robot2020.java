@@ -21,6 +21,7 @@ public class Robot2020 extends DefaultConfig {
         ENABLE_TURRET = true;
         ENABLE_SHOOTER = true;
         ENABLE_2020_HOPPER = true;
+        ENABLE_HOPPER = false;
         ENABLE_2020_AGITATOR = true;
         ENABLE_2020_INDEXER = true;
         ENABLE_MUSIC = false;
@@ -28,6 +29,8 @@ public class Robot2020 extends DefaultConfig {
         ENABLE_PNOOMATICS = true;
         ENABLE_CLIMBER = true;
         ENABLE_BUDDY_CLIMBER = true;
+
+        DRIVEBASE_VOLTAGE_MULTIPLIER = 0.91 / 371.0; // 2.359 / 143.0 calculated 2/8/2022. Likely bad
 
         AUTON_COMPLETE_NOISE = "";//"LevelComplete_4_6000";
 

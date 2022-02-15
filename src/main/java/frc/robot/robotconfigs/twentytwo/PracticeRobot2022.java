@@ -3,11 +3,14 @@ package frc.robot.robotconfigs.twentytwo;
 import frc.ballstuff.intaking.Hopper;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
+import frc.climber.Climber;
 import frc.drive.AbstractDriveManager;
 import frc.drive.auton.AutonType;
 import frc.misc.PID;
 import frc.motors.AbstractMotorController;
 import frc.robot.robotconfigs.DefaultConfig;
+import frc.telemetry.imu.AbstractIMU;
+import frc.vision.camera.IVision;
 
 public class PracticeRobot2022 extends DefaultConfig {
     //Subsystems
@@ -19,10 +22,14 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
-        ENABLE_PNOOMATICS = false;
+        ENABLE_PNOOMATICS = true;
         ENABLE_INDEXER_AUTO_INDEX = true;
-        ENABLE_IMU = false;
-        ENABLE_VISION = false;
+        ENABLE_IMU = true;
+
+        ENABLE_VISION = true;
+        ENABLE_CLIMBER = true;
+
+        IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
 
         DRIVE_INVERT_LEFT = true;
         DRIVE_INVERT_RIGHT = false;
@@ -32,14 +39,21 @@ public class PracticeRobot2022 extends DefaultConfig {
 
 
         //UI Styles
-        DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
+        DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD_2022;
         SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD_2022;
         HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD_2022;
+        CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD_2022;
+
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+        CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+        CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
 
-        AUTON_TYPE = AutonType.FOLLOW_PATH;
+        AUTON_TYPE = AutonType.POINT_TO_POINT;
+        AUTO_SPEED = 1;
+        AUTO_ROTATION_SPEED = 1;
+        GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
 
-        DRIVEBASE_VOLTAGE_MULTIPLIER = 3.4635 / 2825; //3.4635 volts = 2825 RPM. 4 is a completely random number that doesn't mean SHIT.
+        DRIVEBASE_VOLTAGE_MULTIPLIER = 3.5 * (1.050830889540567 / 2145); //3.4635 volts = 2825 RPM.
         DRIVEBASE_PID = new PID(0.1, 0, 0);
         HEADING_PID = new PID(0.08, 0.000005, 0.0003);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
@@ -47,7 +61,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         DRIVEBASE_DISTANCE_BETWEEN_WHEELS = 0.524891;
         MAX_SPEED = 20; //max speed in fps
         RUMBLE_TOLERANCE_FPS = 14;
-        MAX_ROTATION = 11.2; //max rotational speed in radians per second - REAL IS 11.2(for 4in wheels)
+        MAX_ROTATION = 11.2 * 1.5; //max rotational speed in radians per second - REAL IS 11.2(for 4in wheels)
         WHEEL_DIAMETER = 4; //inches. update: now it's used once
         TURN_SCALE = 0.7;
         DRIVE_SCALE = 1;
@@ -91,9 +105,10 @@ public class PracticeRobot2022 extends DefaultConfig {
         SHOOTER_PID = new PID(0.5, 0, 0, 0);
         SHOOTER_CONST_SPEED_PID = new PID(0.0001, 0.0000007, 0.05, 0);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
+        SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
 
         //Hopper
-        INDEXER_DETECTION_CUTOFF_DISTANCE = 4.7;
+        INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 7;
         AGITATOR_MOTOR_ID = 10;
         AGITATOR_TOPBAR_MOTOR_ID = 9;
@@ -105,5 +120,15 @@ public class PracticeRobot2022 extends DefaultConfig {
         INTAKE_MOTOR_ID = 32;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022;
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        INTAKE_IN_ID = 0;
+        INTAKE_OUT_ID = 1;
+
+        //Climber
+        CLIMBER_STG1_MOTOR_ID = 11;
+        CLIMBER_STG2_MOTOR_ID = 12;
+        CLIMBER_IN_ID = 2;
+        CLIMBER_OUT_ID = 3;
+
+        PCM_ID = 33;
     }
 }

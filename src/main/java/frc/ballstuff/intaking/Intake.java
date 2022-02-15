@@ -29,7 +29,7 @@ import static frc.robot.Robot.robotSettings;
  * The "Intake" is referring to the part that picks up power cells from the floor
  */
 public class Intake implements ISubsystem {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     public AbstractMotorController intakeMotor;
     public Servo intakeServo1;
     public Servo intakeServo2;
@@ -104,12 +104,7 @@ public class Intake implements ISubsystem {
                 } else {
                     setIntake(IntakeDirection.OFF);
                 }
-
-                if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN) {
-                    deployIntake(false);
-                } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN) {
-                    deployIntake(true);
-                }
+                doIntakeArticulation();
                 break;
             case ROBOT_2021:
                 if (robotSettings.ENABLE_INTAKE_SERVOS) {
@@ -139,6 +134,7 @@ public class Intake implements ISubsystem {
                 } else {
                     setIntake(IntakeDirection.OFF);
                 }
+                doIntakeArticulation();
                 break;
             }
             case ROBOT_2022: {
@@ -185,6 +181,14 @@ public class Intake implements ISubsystem {
         }
         if (robotSettings.DEBUG && DEBUG) {
             UserInterface.smartDashboardPutNumber("Intake Speed", intakeMult);
+        }
+    }
+
+    public void doIntakeArticulation() {
+        if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN) {
+            deployIntake(false);
+        } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN) {
+            deployIntake(true);
         }
     }
 

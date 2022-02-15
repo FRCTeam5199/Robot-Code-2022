@@ -16,13 +16,36 @@ public enum AutonRoutines {
     DO_NOTHING(
             new AutonWaypoint(new Point(0, 0))
     ),
+    /*
     RESET_INTAKE_DO_NOTHING(
             new AutonWaypoint(new Point(0, 0), INTAKE_UP)
     ),
+     */
     DRIVE_OFF_INIT_LINE(
             new AutonWaypoint(new Point(0, 0)),
             new AutonWaypoint(new Point(1.25, 0))
     ),
+    /*
+    DRIVE_OFF_TARMAC_BACKWARDS(
+            new AutonWaypoint(new Point(0, 0)),
+            new AutonWaypoint(new Point(-1.5, 0), -1)
+    ),
+    AIM_ROBOT_AT_TARGET(
+            new AutonWaypoint(new Point(0, 0), AIM_ROBOT_AT_TARGET_PITCH)
+    ),
+    ROTATE_180_DRIVE_FORWARD(
+            new AutonWaypoint(new Point(0, 0), DRIVE_180),
+            new AutonWaypoint(new Point(-1, 0))
+    ),
+     */
+    _2022_PICKUP_ONE_SHOOT_TWO(
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(2.5, 0), 1, INTAKE_OFF),
+            new AutonWaypoint(new Point(2.5, 0), 1, DRIVE_180),
+            new AutonWaypoint(new Point(2.5, 0), 1, AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(new Point(2.5, 0), 1, SHOOT_ALL_2022)
+    ),
+    /*
     DRIVE_OFF_SHOOT_3(
             new AutonWaypoint(new Point(0, 0)),
             new AutonWaypoint(new Point(1.25, 0), AIM_AT_TARGET_TRENCH),
@@ -65,7 +88,7 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(4.5, 0), AIM_AT_TARGET_END_TRENCH),
             new AutonWaypoint(new Point(4.5, 0), INTAKE_OFF),
             new AutonWaypoint(new Point(4.5, 0), SHOOT_THREE)
-    )/*,
+    ),
 
     AUTON_TUNING(
             new AutonWaypoint(new Point(0, 0), INTAKE_UP),

@@ -141,6 +141,11 @@ public class TalonMotorController extends AbstractMotorController {
     @Override
     public void moveAtVoltage(double voltin) {
         motor.setVoltage(voltin);
+        if (!this.isFollower) {
+            for (AbstractMotorController followerMotor : motorFollowerList) {
+                followerMotor.moveAtVoltage(voltin);
+            }
+        }
     }
 
     @Override
