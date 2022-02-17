@@ -1,4 +1,6 @@
-package frc.robot.robotconfigs.twentyone;
+package frc.robot.robotconfigs.twentytwo;
+
+//import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.wpilibj.I2C;
 import frc.ballstuff.intaking.Intake;
@@ -11,57 +13,55 @@ import frc.robot.robotconfigs.DefaultConfig;
 import frc.telemetry.imu.AbstractIMU;
 import frc.vision.camera.IVision;
 
-public class CompetitionRobot2021 extends DefaultConfig {
-    public CompetitionRobot2021() {
+public class Swerve2022 extends DefaultConfig {
+    public Swerve2022() {
         ENABLE_DRIVE = true;
         ENABLE_INTAKE = false;
-        ENABLE_TURRET = true;
-        ENABLE_SHOOTER = true;
-        ENABLE_2020_HOPPER = true;
-        ENABLE_2020_AGITATOR = true;
-        ENABLE_2020_INDEXER = true;
+        ENABLE_TURRET = false;
+        ENABLE_SHOOTER = false;
+        ENABLE_2020_HOPPER = false;
+        ENABLE_2020_AGITATOR = false;
+        ENABLE_2020_INDEXER = false;
         ENABLE_MUSIC = false;
-        ENABLE_HOOD_ARTICULATION = true;
-        ENABLE_MEMES = false;
-        ENABLE_OVERHEAT_DETECTION = false;
-        ENABLE_INTAKE_SERVOS = true;
+
+        //LEDS
+        ENABLE_LEDS = false;
+        LED_STRAND_LENGTH = 300; //strand of 300, suggested 100
+        LED_STRAND_PORT_ID = 0;
 
         DRIVE_INVERT_LEFT = true;
         DRIVE_INVERT_RIGHT = false;
 
-        TURRET_INVERT = true;
-
         //Misc
-        ENABLE_VISION = true;
+        ENABLE_VISION = false;
         USE_PHOTONVISION = false;
         ENABLE_IMU = true;
         IMU_NAVX_PORT = I2C.Port.kMXP;
+        IMU_ID = 22; //pigeon
 
         //SHOOTER
-        SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;//SupportedMotors.TALON_FX;
         SHOOTER_USE_TWO_MOTORS = true;
         SHOOTER_INVERTED = false;
         GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
+        ENABLE_HOOD_ARTICULATION = false;
         INDEXER_DETECTION_CUTOFF_DISTANCE = 5;
-        CALIBRATED_HOOD_POSITION_ARRAY = new double[][]{
-                {2.415, 0.05},
-                {1.466, 0.77},
-                {0.925, 1.05},
-                {0.481, 1.135},
-        };
 
         //INTAKE
-        ENABLE_INDEXER_AUTO_INDEX = true;
+        ENABLE_INDEXER_AUTO_INDEX = false;
 
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
-        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD_OFFSEASON_2021;//ShootingControlStyles.ACCURACY_2021;
-        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2021;
-        DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.ACCURACY_2021;//ShootingControlStyles.ACCURACY_2021;
+        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.STANDARD;
+        DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
-        AUTON_TYPE = AutonType.POINT_TO_POINT;
+        DRIVE_BASE = AbstractDriveManager.DriveBases.SWIVEL;
+        //SWERVE_SDS_DRIVE_BASE = SdsModuleConfigurations.MK3_STANDARD;
 
-        DRIVEBASE_PID = new PID(0.00075, 0, 0.002);
+        AUTON_TYPE = AutonType.FOLLOW_PATH;
+
+        DRIVEBASE_PID = new PID(0.0000001, 0, 0.0001);
         SHOOTER_PID = new PID(0.001, 0.0000005, 0.03, 0);//Accuracy. SPEED = new PID(0.0004, 0.0000007, 0.03, 0);
         SHOOTER_CONST_SPEED_PID = new PID(0.0001, 0.0000007, 0.05, 0);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
@@ -72,10 +72,10 @@ public class CompetitionRobot2021 extends DefaultConfig {
         MAX_SPEED = 10; //max speed in fps - REAL IS 10(for 4in wheels)
         RUMBLE_TOLERANCE_FPS = 8;
         MAX_ROTATION = 11.2; //max rotational speed in radians per second - REAL IS 11.2(for 4in wheels)
-        WHEEL_DIAMETER = 5; //update: now it's used once
+        WHEEL_DIAMETER = 4; //update: now it's used once
         TURN_SCALE = 0.7;
         DRIVE_SCALE = 1;
-        DRIVE_GEARING = 12.0 / 60.0;
+        DRIVE_GEARING = 10 / 60.0;
 
         CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         motorPulleySize = 0;//?;
@@ -85,14 +85,14 @@ public class CompetitionRobot2021 extends DefaultConfig {
         TARGET_HEIGHT = 0;//2.44; //Meters
 
         XBOX_CONTROLLER_DEADZONE = 0.07;
-        MOTOR_SPROCKET_SIZE = 1.25;
+        MOTOR_SPROCKET_SIZE = 1;
         TURRET_SPROCKET_SIZE = 11.1;
         TURRET_GEAR_RATIO = 7;
-        TURRET_MAX_POS = 385;
+        TURRET_MAX_POS = 520;
         TURRET_MIN_POS = -2;
         TURRET_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
-        AUTON_TOLERANCE = 0.05;
-        AUTO_SPEED = 1.00;//3;
+        AUTON_TOLERANCE = 0.1;
+        AUTO_SPEED = 3;
         AUTO_ROTATION_SPEED = 1;
         XBOX_CONTROLLER_USB_SLOT = 0;
         FLIGHT_STICK_USB_SLOT = 1;
@@ -102,35 +102,30 @@ public class CompetitionRobot2021 extends DefaultConfig {
         BALL_CAM_NAME = "BallCamera";
 
         //PDP
+        ENABLE_PDP = true;
         PDP_ID = 0;
 
         //Drive Motors
-        DRIVE_LEADER_L_ID = 1; //talon
-        DRIVE_FOLLOWERS_L_IDS = new int[]{2}; //talon
-
-        DRIVE_LEADER_R_ID = 3; //talon
-        DRIVE_FOLLOWERS_R_IDS = new int[]{4}; //talon
+        SWERVE_DRIVE_FR = 1;
+        SWERVE_TURN_FR = 2;
+        SWERVE_DRIVE_FL = 7;
+        SWERVE_TURN_FL = 8;
+        SWERVE_DRIVE_BR = 4;
+        SWERVE_TURN_BR = 3;
+        SWERVE_DRIVE_BL = 6;
+        SWERVE_TURN_BL = 5;
 
         //Shooter Motors
-        SHOOTER_LEADER_ID = 7; //neo
-        SHOOTER_FOLLOWER_ID = 8; //neo
+        SHOOTER_LEADER_ID = 7; //talon
+        SHOOTER_FOLLOWER_ID = 8; //talon
         SHOOTER_HOOD_ID = 32;
-        SHOOTER_HOOD_MAX_POS = 47;//11 on 9x;
-        SHOOTER_HOOD_MIN_POS = -0.1;
-        SHOOTER_HOOD_INVERT_MOTOR = false;
-        SHOOTER_HOOD_CONTROL_SPEED = 0.5;
-        SHOOTER_HOOD_OUT_OF_BOUNDS_SPEED = 0.3;
-        TRENCH_FRONT_HOOD_POSITION = SHOOTER_HOOD_MAX_POS * (27.0 / 57);
-        INITIATION_LINE_HOOD_POSITION = SHOOTER_HOOD_MAX_POS * (13.0 / 57);
 
         //turret
-        TURRET_YAW_ID = 33; //neo 550
+        TURRET_YAW_ID = 33; //550
         //hopper2020
         AGITATOR_MOTOR_ID = 10; //victor
         INDEXER_MOTOR_ID = 11; //victor
         //intake
         INTAKE_MOTOR_ID = 12; //victor
-        INTAKE_SERVO_R_ID = 2;
-        INTAKE_SERVO_L_ID = 3;
     }
 }

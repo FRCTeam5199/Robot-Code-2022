@@ -9,6 +9,7 @@ import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.Point;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
+import frc.misc.UtilFunctions;
 import frc.motors.SparkMotorController;
 import frc.robot.Robot;
 import frc.telemetry.RobotTelemetryStandard;
@@ -87,9 +88,8 @@ public class AutonManager extends AbstractAutonManager {
         updateGeneric();
         System.out.println("Home is: " + autonPath.WAYPOINTS.get(0).LOCATION + " and im going to " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION));
         Point point = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION);
-        if (attackPoint(point, 1)) {
+        if (attackPoint(point, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED)) {
             System.out.println("IN TOLERANCE");
-
             System.out.println("Special Action: " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.toString());
             switch (autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION) {
                 case NONE:
@@ -145,6 +145,15 @@ public class AutonManager extends AbstractAutonManager {
                 case RESET_SHOOTER:
                     specialActionComplete = Robot.turret.resetShooter();
                     break;
+                case AIM_ROBOT_AT_TARGET_PITCH:
+                    specialActionComplete = ((DriveManagerStandard)Robot.driver).aimAtTarget();
+                    break;
+                case DRIVE_180:
+                    specialActionComplete = ((DriveManagerStandard)Robot.driver).rotate180();
+                    break;
+                case SHOOT_ALL_2022:
+                    specialActionComplete = Robot.shooter.fireAmount2022(5);
+                    break;
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
             }
@@ -152,9 +161,9 @@ public class AutonManager extends AbstractAutonManager {
                 if (++autonPath.currentWaypoint < autonPath.WAYPOINTS.size()) {
                     //throw new IllegalStateException("Holy crap theres no way it worked. This is illegal");
                     Point b = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION);
-                    attackPoint(b, 1);
-                    specialActionComplete = false;
                     setupNextPosition(b);
+                    //attackPoint(b, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED);
+                    specialActionComplete = false;
                 } else {
                     onFinish();
                 }
@@ -186,8 +195,12 @@ public class AutonManager extends AbstractAutonManager {
         if (!inTolerance) {
             double turned = (drivingChild.guidance.imu.relativeYaw() - yawBeforeTurn) * -1;
             UserInterface.smartDashboardPutNumber("Turned", turned);
-            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, -ROT_PID.calculate(turned - -rotationOffset) * robotSettings.AUTO_ROTATION_SPEED);
 
+            rotationOffset = Math.toDegrees(Math.toRadians(rotationOffset) + Math.PI);
+            while (rotationOffset >= 360) rotationOffset -= 360;
+            while (rotationOffset <= -360) rotationOffset += 360;
+
+            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, -ROT_PID.calculate(turned + rotationOffset) * robotSettings.AUTO_ROTATION_SPEED);
             //-rotationOffset * robotSettings.AUTO_ROTATION_SPEED);
             //System.out.println("DrivePure @ " + robotSettings.AUTO_SPEED * speed);
             //System.out.println("Driving FPS " + robotSettings.AUTO_SPEED * speed);

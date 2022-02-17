@@ -60,7 +60,7 @@ public class ControllerEnums {
             for (int angle : ACCEPTED_VALUES)
                 if (angle == angleIn)
                     return true;
-                return false;
+            return false;
         }
     }
 

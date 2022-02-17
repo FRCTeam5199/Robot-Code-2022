@@ -13,7 +13,7 @@ import frc.misc.UtilFunctions;
 import static frc.robot.Robot.robotSettings;
 
 public class RobotTelemetryStandard extends AbstractRobotTelemetry implements ISubsystem {
-    private final boolean DEBUG = false;
+    private final boolean DEBUG = true;
     private final NetworkTableEntry robotLocation = UserInterface.ROBOT_LOCATION.getEntry();
     public DifferentialDriveOdometry odometer;
 
@@ -43,9 +43,9 @@ public class RobotTelemetryStandard extends AbstractRobotTelemetry implements IS
         if (robotSettings.ENABLE_IMU) {
             robotPose = odometer.update(new Rotation2d(Units.degreesToRadians(imu.absoluteYaw())), Units.inchesToMeters(((DriveManagerStandard) driver).leaderL.getRotations()), Units.inchesToMeters(((DriveManagerStandard) driver).leaderR.getRotations()));
             super.updateGeneric();
-        }
-        if (DEBUG) {
-            robotLocation.setString("(" + odometer.getPoseMeters().getX() + ", " + odometer.getPoseMeters().getY() + ")");
+            if (DEBUG && robotSettings.DEBUG) {
+                robotLocation.setString("(" + odometer.getPoseMeters().getX() + ", " + odometer.getPoseMeters().getY() + ")");
+            }
         }
     }
 

@@ -2,7 +2,6 @@ package frc.motors;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.Faults;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import frc.misc.PID;
 import frc.robot.Robot;
@@ -82,7 +81,7 @@ public class VictorMotorController extends AbstractMotorController {
 
     @Override
     public double getVoltage() {
-        return 0; //TODO voltage
+        return motor.getMotorOutputVoltage();
     }
 
     @Override
@@ -111,6 +110,11 @@ public class VictorMotorController extends AbstractMotorController {
     @Override
     public AbstractMotorController setCurrentLimit(int limit) {
         return this;
+    }
+
+    @Override
+    public int getMaxRPM() {
+        return SupportedMotors.VICTOR.MAX_SPEED_RPM;
     }
 
     @Override

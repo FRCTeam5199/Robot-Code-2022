@@ -54,7 +54,7 @@ public class Chirp extends Orchestra implements ISubsystem {
                 continue;
             }
             if (!songnames.containsKey(filename.split("_")[0])) {
-                songnames.put(filename.split("_")[0], new ArrayList<String>(Collections.singleton(filename)));
+                songnames.put(filename.split("_")[0], new ArrayList<>(Collections.singleton(filename)));
             } else {
                 songnames.get(filename.split("_")[0]).add(filename);
             }

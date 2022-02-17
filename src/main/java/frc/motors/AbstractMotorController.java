@@ -67,7 +67,7 @@ public abstract class AbstractMotorController {
     public abstract AbstractMotorController setPid(PID pid);
 
     /**
-     * @param amount requested drive velocity
+     * @param amount requested drive velocity in RPM
      */
     public abstract void moveAtVelocity(double amount);
 
@@ -230,6 +230,8 @@ public abstract class AbstractMotorController {
      * @return the device id this object controls
      */
     public abstract int getID();
+
+    public abstract int getMaxRPM();
 
 
     /**

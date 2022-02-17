@@ -1,5 +1,6 @@
 package frc.misc;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
@@ -86,7 +87,7 @@ public class UserInterface {
             PDP_BROWNOUT_MIN_VAL = PDP_SETTINGS_LAYOUT.add("Minimum Brownout Voltage", 9),
     //DANGER PANEL
     GET_RANDOM_FIX = ROBOT_TAB.add("Get random fix", false).withWidget(BuiltInWidgets.kToggleButton),
-    MORGANNE_MODE = ROBOT_TAB.add("isMorganne", true).withWidget(BuiltInWidgets.kToggleSwitch);
+            MORGANNE_MODE = ROBOT_TAB.add("isMorganne", true).withWidget(BuiltInWidgets.kToggleSwitch);
     public static final HashMap<AbstractMotorController, SimpleWidget> motorTemperatureMonitors = new HashMap<>();
 
     //STATIC STUFF
@@ -116,10 +117,10 @@ public class UserInterface {
             MUSIC_SELECTOR = MUSICK_TAB.add("SongSelector", Chirp.MUSIC_SELECTION).withWidget(BuiltInWidgets.kComboBoxChooser);
         }
         if (robotSettings.ENABLE_PDP) {
-            //PDP_DISPLAY = PDP_TAB.add("PDPDisplay", new PowerDistributionPanel(robotSettings.PDP_ID)).withWidget(BuiltInWidgets.kPowerDistributionPanel);
+            //PDP_DISPLAY = PDP_TAB.add("PDPDisplay", new PowerDistribution(robotSettings.PDP_ID, PowerDistribution.ModuleType.kCTRE)).withWidget(BuiltInWidgets.kPowerDistributionPanel);
         }
         if (robotSettings.ENABLE_SHOOTER) {
-            SHOOTER_RPM = SHOOTER_TAB.add("RPM", 0); //TODO Edit shooter line 195
+            SHOOTER_RPM = SHOOTER_TAB.add("RPM", 0);
         }
     }
 }

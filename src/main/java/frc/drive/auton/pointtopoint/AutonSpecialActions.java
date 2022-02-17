@@ -75,5 +75,20 @@ public enum AutonSpecialActions {
     /**
      * Resets the hood to 0 and the turret angle to (relatively) 0
      */
-    RESET_SHOOTER
+    RESET_SHOOTER,
+
+    /**
+     * Uses the pitch of the vision camera to rotate the bot towards the target
+     */
+    AIM_ROBOT_AT_TARGET_PITCH,
+
+    /**
+     * Rotates the robot 180 degrees
+     */
+    DRIVE_180,
+
+    /**
+     * Shoots the two balls in the hopper for 2022
+     */
+    SHOOT_ALL_2022
 }

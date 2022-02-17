@@ -420,7 +420,7 @@ public class ArticulatedHood implements ISubsystem {
                 break;
             case TALON_FX:
                 hoodMotor = new TalonMotorController(robotSettings.SHOOTER_HOOD_ID);
-                hoodMotor.setSensorToRealDistanceFactor(600 / robotSettings.SHOOTER_SENSOR_UNITS_PER_ROTATION);
+                hoodMotor.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 break;
             default:
                 throw new IllegalStateException("No such supported hood config for " + robotSettings.HOOD_MOTOR_TYPE.name());

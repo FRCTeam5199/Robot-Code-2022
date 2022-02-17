@@ -88,6 +88,15 @@ public class Turret implements ISubsystem {
                 break;
             case GUITAR:
                 joy = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
+                break;
+                /*
+            case XBOX_CONTROLLER:
+                joy = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
+            case FLIGHT_STICK:
+                joy = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                break;
+                 */
             default:
                 throw new UnsupportedOperationException("This control style is not supported here in TurretLand inc.");
                 //TODO add Xbox and (standalone) Flightstick
@@ -135,8 +144,7 @@ public class Turret implements ISubsystem {
     public void updateGeneric() {
         if (Shooter.ShootingControlStyles.getSendableChooser().getSelected() != null && robotSettings.SHOOTER_CONTROL_STYLE != Shooter.ShootingControlStyles.getSendableChooser().getSelected()) {
             robotSettings.SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.getSendableChooser().getSelected();
-            if (Robot.shooter != null)
-                Robot.shooter.createControllers();
+            if (Robot.shooter != null) Robot.shooter.createControllers();
             createControllers();
         }
         MotorDisconnectedIssue.handleIssue(this, turretMotor);
@@ -176,8 +184,7 @@ public class Turret implements ISubsystem {
                         if (robotSettings.DEBUG && DEBUG) {
                             System.out.println("I'm looking. Target is valid? " + visionCamera.hasValidTarget());
                         }
-                        if (robotSettings.ENABLE_HOOD_ARTICULATION)
-                            Robot.articulatedHood.unTargeted = true;
+                        if (robotSettings.ENABLE_HOOD_ARTICULATION) Robot.articulatedHood.unTargeted = true;
                         if (visionCamera.hasValidTarget()) {
                             double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? 1 : -1);
                             if (angle > 0.005) {
@@ -213,10 +220,9 @@ public class Turret implements ISubsystem {
                         if (robotSettings.DEBUG && DEBUG) {
                             System.out.println("I'm looking. Target is valid? " + visionCamera.hasValidTarget());
                         }
-                        if (robotSettings.ENABLE_HOOD_ARTICULATION)
-                            Robot.articulatedHood.unTargeted = true;
+                        if (robotSettings.ENABLE_HOOD_ARTICULATION) Robot.articulatedHood.unTargeted = true;
                         if (visionCamera.hasValidTarget()) {
-                            double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? 1 : -1);
+                            double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? -1 : 1);
                             omegaSetpoint = HEADING_PID.calculate(angle);
                         } else {
                             omegaSetpoint = scan();
@@ -226,10 +232,9 @@ public class Turret implements ISubsystem {
                         if (robotSettings.DEBUG && DEBUG) {
                             System.out.println("I'm looking. Target is valid? " + visionCamera.hasValidTarget());
                         }
-                        if (robotSettings.ENABLE_HOOD_ARTICULATION)
-                            Robot.articulatedHood.unTargeted = true;
+                        if (robotSettings.ENABLE_HOOD_ARTICULATION) Robot.articulatedHood.unTargeted = true;
                         if (visionCamera.hasValidTarget()) {
-                            double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? 1 : -1);
+                            double angle = (visionCamera.getAngle() + camoffset) * (robotSettings.TURRET_INVERT ? -1 : 1);
                             omegaSetpoint = HEADING_PID.calculate(angle);
                         } else {
                             omegaSetpoint = scan();
@@ -250,12 +255,10 @@ public class Turret implements ISubsystem {
             }
             case BOP_IT:
                 //System.out.println("Shooting bop it");
-                if (joy.get(ControllerEnums.BopItButtons.TWISTIT) == ButtonStatus.DOWN)
-                    omegaSetpoint = scan();
+                if (joy.get(ControllerEnums.BopItButtons.TWISTIT) == ButtonStatus.DOWN) omegaSetpoint = scan();
                 break;
             case DRUM_TIME: {
-                if (joy.get(ControllerEnums.DrumButton.PEDAL) == ButtonStatus.DOWN)
-                    omegaSetpoint = scan();
+                if (joy.get(ControllerEnums.DrumButton.PEDAL) == ButtonStatus.DOWN) omegaSetpoint = scan();
                 break;
             }
             case WII: {
@@ -422,13 +425,11 @@ public class Turret implements ISubsystem {
         double angle = 0;
         if (robotSettings.ENABLE_VISION)
             visionCamera.setLedMode(IVision.VisionLEDMode.ON); //If targeting, then use the LL
-        if (robotSettings.ENABLE_HOOD_ARTICULATION)
-            articulatedHood.autoHoodAngle();
+        if (robotSettings.ENABLE_HOOD_ARTICULATION) articulatedHood.autoHoodAngle();
         if (robotSettings.DEBUG && DEBUG) {
             System.out.println("I'm looking. Target is valid? " + visionCamera.hasValidTarget());
         }
-        if (robotSettings.ENABLE_HOOD_ARTICULATION)
-            Robot.articulatedHood.unTargeted = true;
+        if (robotSettings.ENABLE_HOOD_ARTICULATION) Robot.articulatedHood.unTargeted = true;
         if (visionCamera.hasValidTarget()) {
             angle = -visionCamera.getAngle() + camoffset;
             omegaSetpoint = -HEADING_PID.calculate(angle);
@@ -451,8 +452,7 @@ public class Turret implements ISubsystem {
         }
 
         if (isSafe() && !Robot.shooter.isShooting()) {
-            if (!criteria)
-                rotateTurret(omegaSetpoint);
+            if (!criteria) rotateTurret(omegaSetpoint);
             if (robotSettings.DEBUG && DEBUG) {
                 System.out.println("Attempting to rotate the POS at" + omegaSetpoint);
             }
@@ -475,13 +475,11 @@ public class Turret implements ISubsystem {
         double angle = 0;
         if (robotSettings.ENABLE_VISION)
             visionCamera.setLedMode(IVision.VisionLEDMode.ON); //If targeting, then use the LL
-        if (robotSettings.ENABLE_HOOD_ARTICULATION)
-            articulatedHood.autoHoodAngle();
+        if (robotSettings.ENABLE_HOOD_ARTICULATION) articulatedHood.autoHoodAngle();
         if (robotSettings.DEBUG && DEBUG) {
             System.out.println("I'm looking. Target is valid? " + visionCamera.hasValidTarget());
         }
-        if (robotSettings.ENABLE_HOOD_ARTICULATION)
-            Robot.articulatedHood.unTargeted = true;
+        if (robotSettings.ENABLE_HOOD_ARTICULATION) Robot.articulatedHood.unTargeted = true;
         if (visionCamera.hasValidTarget()) {
             angle = -visionCamera.getAngle() + camoffset;
             omegaSetpoint = -HEADING_PID.calculate(angle);
@@ -504,8 +502,7 @@ public class Turret implements ISubsystem {
         }
 
         if (isSafe() && !Robot.shooter.isShooting()) {
-            if (!criteria)
-                rotateTurret(omegaSetpoint);
+            if (!criteria) rotateTurret(omegaSetpoint);
             if (robotSettings.DEBUG && DEBUG) {
                 System.out.println("Attempting to rotate the POS at" + omegaSetpoint);
             }

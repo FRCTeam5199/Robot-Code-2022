@@ -6,7 +6,6 @@ import frc.misc.UserInterface;
 import java.util.function.Consumer;
 
 import static frc.robot.Robot.*;
-import static frc.robot.Robot.shooter;
 
 
 /**
@@ -18,80 +17,133 @@ public enum ShootingEnums {
     //TODO make controller dynamic
     FIRE_SOLID_SPEED_FLIGHTSTICK(shooter -> {
         shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        } else if (robotSettings.ENABLE_HOPPER) {
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        }
+    }),
+
+    FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
+        shooter.setPercentSpeed(shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));//.46);
+        //shooter.setPercentSpeed(.3);
         if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        }
+        //shooter.setSpeed(1000);
+    }),
+
+    PID_TUNING(shooter -> {
+        //shooter.setPercentSpeed(1);
+        shooter.setSpeed(1700); //error of 500
+    }),
+
+    FIRE_SOLID_SPEED_PRACTICE2022(shooter -> {
+        shooter.setPercentSpeed(.58);
+        //shooter.setSpeed(1000);
+    }),
+
+    FIRE_TEST_SPEED_2022(shooter -> {
+        //shooter.setPercentSpeed(1);
+        shooter.setSpeed(2000);
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(shooter.isAtSpeed());
         }
     }),
 
     FIRE_SOLID_SPEED_OFFSEASON21(shooter -> {
         shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && (shooter.isValidTarget() || shooter.joystickController.get(ControllerEnums.JoystickButtons.TWO) == ControllerEnums.ButtonStatus.DOWN) && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(shooter.isAtSpeed() && (shooter.isValidTarget() || shooter.joystickController.get(ControllerEnums.JoystickButtons.TWO) == ControllerEnums.ButtonStatus.DOWN) && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }
     }),
 
     FIRE_SOLID_SPEED_WII(shooter -> {
         shooter.setSpeed(shooter.speed);
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.WiiButton.A) == ControllerEnums.ButtonStatus.DOWN);
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.WiiButton.A) == ControllerEnums.ButtonStatus.DOWN);
         }
     }),
 
     FIRE_SOLID_SPEED_DRUMS(shooter -> {
         shooter.setSpeed(shooter.speed);
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.DrumButton.B) == ControllerEnums.ButtonStatus.DOWN);
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.DrumButton.B) == ControllerEnums.ButtonStatus.DOWN);
         }
     }),
 
     FIRE_SOLID_SPEED_XBOX_CONTROLLER(shooter -> {
         shooter.setSpeed(shooter.speed);
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed());
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(shooter.isAtSpeed());
         }
     }),
 
     FIRE_TEST_SPEED(shooter -> {
         //shooter.setPercentSpeed(1);
         shooter.setSpeed(4200);
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed());
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(shooter.isAtSpeed());
         }
     }),
 
     //Used by our current vision tracking
     FIRE_HIGH_SPEED(shooter -> {
         shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll((shooter.isAtSpeed()));
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll((shooter.isAtSpeed()));
+        } else if (robotSettings.ENABLE_HOPPER) {
+            hopper.setAll(shooter.isAtSpeed());
+        }
+    }),
+
+    FIRE_HIGH_SPEED_2022(shooter -> {
+        shooter.setSpeed(1000 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll((shooter.isAtSpeed()));
+        } else if (robotSettings.ENABLE_HOPPER) {
+            hopper.setAll(shooter.isAtSpeed());
         }
     }),
 
     FIRE_HIGH_SPEED_SPINUP(shooter -> {
         shooter.setSpeed(3700 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
-        if (robotSettings.ENABLE_HOPPER) {
+        if (robotSettings.ENABLE_2020_HOPPER) {
             shooter.setShooting(true);
             shooter.tryFiringBalls = true;
-            hopper.setAll((shooter.isAtSpeed()));
+            hopper2020.setAll((shooter.isAtSpeed()));
+        }
+    }),
+
+    FIRE_HIGH_SPEED_SPINUP_2022(shooter -> {
+        shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            shooter.setShooting(true);
+            shooter.tryFiringBalls = true;
+            hopper2020.setAll((shooter.isAtSpeed()));
+        } else if (robotSettings.ENABLE_HOPPER) {
+            shooter.setShooting(true);
+            shooter.tryFiringBalls = true;
+            hopper.setAll(shooter.isAtSpeed());
         }
     }),
 
     FIRE_HIGH_SPEED_ADJUSTABLE(shooter -> {
         shooter.setSpeed(Math.ceil(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.0714 + 1)));
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll((shooter.isAtSpeed()));
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll((shooter.isAtSpeed()));
         }
     }),
 
     FIRE_SINGLE_SHOT(shooter -> {
-        if (robotSettings.ENABLE_HOPPER) {
+        if (robotSettings.ENABLE_2020_HOPPER) {
             shooter.ticksPassed = (shooter.isAtSpeed() ? shooter.ticksPassed + 1 : 0);
             if (shooter.ticksPassed >= 50) {
-                hopper.setIndexer(true);
+                hopper2020.setIndexer(true);
             }
-            if (!hopper.isIndexed()) {
+            if (!hopper2020.isIndexed()) {
                 shooter.singleShot = false;
-                hopper.setAgitator(false);
+                hopper2020.setAgitator(false);
                 shooter.ticksPassed = 0;
             }
         }
@@ -100,13 +152,13 @@ public enum ShootingEnums {
     FIRE_MULTIPLE_SHOTS(shooter -> {
         if (shooter.ballsToShoot > shooter.ballsShot && shooter.ballsToShoot != -1) {
             shooter.setSpeed(4300); //The speed to run the shooter at during firing, typically 4200
-            if (robotSettings.ENABLE_HOPPER) {
-                shooter.ticksPassed = (shooter.isAtSpeed(4210) && hopper.isIndexed() && shooter.checkForDips ? shooter.ticksPassed + 1 : 0); //Shooter is at speed ticks
+            if (robotSettings.ENABLE_2020_HOPPER) {
+                shooter.ticksPassed = (shooter.isAtSpeed(4210) && hopper2020.isIndexed() && shooter.checkForDips ? shooter.ticksPassed + 1 : 0); //Shooter is at speed ticks
                 if (shooter.ticksPassed >= 10) { //You're good to shoot, 0.2 seconds passed @ speed
-                    hopper.setIndexer(true); //Run the indexer, fire away!
+                    hopper2020.setIndexer(true); //Run the indexer, fire away!
                 }
 
-                if (!hopper.isIndexed() && !shooter.loadingIndexer) {
+                if (!hopper2020.isIndexed() && !shooter.loadingIndexer) {
                     shooter.emptyIndexerTicks++;
                 } else {
                     shooter.emptyIndexerTicks = 0;
@@ -116,7 +168,7 @@ public enum ShootingEnums {
                     shooter.checkForDips = true;
                 }
 
-                if (hopper.isIndexed()) { //Oh look there's a ball
+                if (hopper2020.isIndexed()) { //Oh look there's a ball
                     shooter.loadingIndexer = false; //Stop the cooldown
                     shooter.hopperCooldownTicks = 0; //Reset the cooldown ticks
                     shooter.emptyIndexerTicks = 0; //Indexer isn't searching if it's filled
@@ -124,10 +176,10 @@ public enum ShootingEnums {
                 if (shooter.getSpeed() < 4180 && shooter.checkForDips) {
                     //if (shooter.emptyIndexerTicks > 50) { //It's been 0.2 second and there's no ball indexed.
                     shooter.loadingIndexer = true; //Start the cooldown to load a ball into the indexer
-                    hopper.setAll(false); //Give the hopper free reign over auto indexing
+                    hopper2020.setAll(false); //Give the hopper2020 free reign over auto indexing
                     shooter.ballsShot++; //I must've fired a ball.
                     shooter.ticksPassed = 0; //Reset the 1 second sped-up cooldown just in case, give it a chance to recover
-                    shooter.emptyIndexerTicks = 0; //Reset empty hopper ticks as we're about to use this variable
+                    shooter.emptyIndexerTicks = 0; //Reset empty hopper2020 ticks as we're about to use this variable
                     shooter.checkForDips = false;
                 }
 
@@ -143,9 +195,9 @@ public enum ShootingEnums {
                 if (robotSettings.DEBUG && DEBUG) {
                     UserInterface.smartDashboardPutNumber("Balls To Shoot", shooter.ballsToShoot);
                     UserInterface.smartDashboardPutNumber("Balls Shot", shooter.ballsShot);
-                    UserInterface.smartDashboardPutNumber("Hopper Cooldown Ticks", shooter.hopperCooldownTicks);
+                    UserInterface.smartDashboardPutNumber("Hopper2020 Cooldown Ticks", shooter.hopperCooldownTicks);
                     UserInterface.smartDashboardPutNumber("Shooter Ticks Passed", shooter.ticksPassed);
-                    UserInterface.smartDashboardPutNumber("Empty Hopper Ticks", shooter.emptyIndexerTicks);
+                    UserInterface.smartDashboardPutNumber("Empty Hopper2020 Ticks", shooter.emptyIndexerTicks);
                     UserInterface.smartDashboardPutBoolean("Loading Indexer", shooter.loadingIndexer);
                 }
             }
@@ -158,23 +210,34 @@ public enum ShootingEnums {
             shooter.emptyIndexerTicks = 0;
             shooter.loadingIndexer = false;
             shooter.checkForDips = false;
-            hopper.setAll(false); //We're done here. Relinquish control over the hopper.
+            hopper2020.setAll(false); //We're done here. Relinquish control over the hopper2020.
         }
     }),
 
     FIRE_SINGLE_ASAP(shooter -> {
-        if (robotSettings.ENABLE_HOPPER) {
+        if (robotSettings.ENABLE_2020_HOPPER) {
             if (shooter.isAtSpeed()) {
-                hopper.setIndexer(true);
+                hopper2020.setIndexer(true);
             }
-            if (!hopper.isIndexed()) {
+            if (!hopper2020.isIndexed()) {
                 shooter.singleShot = false;
-                hopper.setAgitator(false);
+                hopper2020.setAgitator(false);
             }
         }
         shooter.setSpeed(4200);
     }),
 
+    FIRE_TIMED_2022(shooter -> {
+        shooter.setSpeed(1700);
+        if (shooter.getSpeed() >= 1675) {
+            shooter.timerTicks++;
+            hopper.setAll(true);
+            if (shooter.timerTicks >= shooter.goalTicks) {
+                shooter.multiShot = false;
+                hopper.setAll(false);
+            }
+        }
+    }),
     FIRE_TIMED(shooter -> {
         shooter.setSpeed(4200);
         if (Shooter.DEBUG) {
@@ -184,10 +247,10 @@ public enum ShootingEnums {
         if (shooter.getSpeed() >= 4200) {
             shooter.timerTicks++;
             //if (++shooter.ticksPassed >= 17) {
-                hopper.setAll(true);
+            hopper2020.setAll(true);
             if (shooter.timerTicks >= shooter.goalTicks) {
                 shooter.multiShot = false;
-                hopper.setAll(false);
+                hopper2020.setAll(false);
             }
         } else {
             //shooter.ticksPassed = 0;
@@ -196,15 +259,15 @@ public enum ShootingEnums {
 
     FIRE_WITH_NO_REGARD_TO_ACCURACY(shooter -> {
         shooter.setSpeed(4400);
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.getSpeed() >= 4200);
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setAll(shooter.getSpeed() >= 4200);
         }
     }),
     FIRE_WITH_HOPPER_CONTROLLED(shooter -> {
         shooter.setSpeed(4400);
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper.setIndexer(shooter.getSpeed() >= 4200);
-            hopper.setAgitator(!hopper.isIndexed() && shooter.getSpeed() >= 4200);
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020.setIndexer(shooter.getSpeed() >= 4200);
+            hopper2020.setAgitator(!hopper2020.isIndexed() && shooter.getSpeed() >= 4200);
         }
     });
     public final Consumer<Shooter> function;

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.intaking.Hopper2020;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.ArticulatedHood;
 import frc.ballstuff.shooting.Shooter;
@@ -14,7 +15,7 @@ import frc.climber.Climber;
 import frc.discordslackbot.MessageHandler;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
-import frc.drive.OldDriveManagerSwerve;
+import frc.drive.DriveManagerSwerve;
 import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.AutonType;
 import frc.drive.auton.followtrajectory.Trajectories;
@@ -28,6 +29,8 @@ import frc.robot.robotconfigs.twentyone.CompetitionRobot2021;
 import frc.robot.robotconfigs.twentyone.PracticeRobot2021;
 import frc.robot.robotconfigs.twentyone.Swerve2021;
 import frc.robot.robotconfigs.twentytwenty.Robot2020;
+import frc.robot.robotconfigs.twentytwo.PracticeRobot2022;
+import frc.robot.robotconfigs.twentytwo.Swerve2022;
 import frc.selfdiagnostics.ISimpleIssue;
 import frc.selfdiagnostics.IssueHandler;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
@@ -51,6 +54,7 @@ public class Robot extends TimedRobot {
     public static DefaultConfig robotSettings;
     public static AbstractDriveManager driver;
     public static Intake intake;
+    public static Hopper2020 hopper2020;
     public static Hopper hopper;
     public static Shooter shooter;
     public static ArticulatedHood articulatedHood;
@@ -88,7 +92,7 @@ public class Robot extends TimedRobot {
             if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD)
                 driver = new DriveManagerStandard();
             else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL)
-                driver = new OldDriveManagerSwerve();
+                driver = new DriveManagerSwerve();
         }
         if (robotSettings.ENABLE_LEDS) {
             leds = new LEDs();
@@ -96,9 +100,12 @@ public class Robot extends TimedRobot {
         if (robotSettings.ENABLE_INTAKE) {
             intake = new Intake();
         }
-        if (robotSettings.ENABLE_HOPPER) {
-            hopper = new Hopper();
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020 = new Hopper2020();
         }
+        if (robotSettings.ENABLE_HOPPER)
+            hopper = new Hopper();
+
         if (robotSettings.ENABLE_SHOOTER) {
             shooter = new Shooter();
         }
@@ -196,6 +203,10 @@ public class Robot extends TimedRobot {
                 return new CompetitionRobot2021();
             case "2021-Swivel":
                 return new Swerve2021();
+            case "2022-Prac":
+                return new PracticeRobot2022();
+            case "2022-Swivel":
+                return new Swerve2022();
             case "ERR_NOT_FOUND":
                 throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
             default:
@@ -342,6 +353,7 @@ public class Robot extends TimedRobot {
      *
      * @param parentFolder The deploy folder/subfolders within deploy folder
      */
+    @SuppressWarnings("JavaDoc")
     private void deleteFolder(File parentFolder) {
         for (File file : parentFolder.listFiles()) {
             if (file.isDirectory()) {

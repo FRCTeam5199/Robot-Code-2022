@@ -160,7 +160,7 @@ public class Logger {
     public int writeData(double... data_elements) {
         String line_to_write = "";
 
-        if (log_open == false) {
+        if (!log_open) {
             if (!errorSent) {
                 System.out.println("Error - Log is not yet opened, cannot write!");
                 errorSent = true;
@@ -200,7 +200,7 @@ public class Logger {
      * @return Returns 0 on flush success or -1 on failure.
      */
     public int forceSync() {
-        if (log_open == false) {
+        if (!log_open) {
             System.out.println("Error - Log is not yet opened, cannot sync!");
             return -1;
         }
@@ -225,7 +225,7 @@ public class Logger {
      */
     public int close() {
         System.out.println("attempting to close log");
-        if (log_open == false) {
+        if (!log_open) {
             System.out.println("Warning - Log is not yet opened, nothing to close.");
             return 0;
         }

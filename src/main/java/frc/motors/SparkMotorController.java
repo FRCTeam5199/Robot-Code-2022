@@ -1,13 +1,12 @@
 package frc.motors;
 
 import com.revrobotics.*;
-import com.revrobotics.REVLibError;
 import frc.misc.PID;
 import frc.robot.Robot;
 
 import static com.revrobotics.CANSparkMax.IdleMode.kBrake;
 import static com.revrobotics.CANSparkMax.IdleMode.kCoast;
-import static com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless;
+import static com.revrobotics.CANSparkMaxLowLevel.MotorType.*;
 import static com.revrobotics.CANSparkMax.ControlType.*;
 
 /**
@@ -199,6 +198,11 @@ public class SparkMotorController extends AbstractMotorController {
 
     public void moveAtPositionSmart(double pos) {
         myPid.setReference(pos / sensorToRealDistanceFactor, kSmartMotion, 0);
+    }
+
+    @Override
+    public int getMaxRPM() {
+        return SupportedMotors.CAN_SPARK_MAX.MAX_SPEED_RPM;
     }
 
     public void setAllowedClosedLoopError(double threshold) {

@@ -124,6 +124,11 @@ public class TalonMotorController extends AbstractMotorController {
     }
 
     @Override
+    public int getMaxRPM() {
+        return SupportedMotors.TALON_FX.MAX_SPEED_RPM;
+    }
+
+    @Override
     public void moveAtPosition(double pos) {
         motor.set(Position, pos);
         if (!this.isFollower) {
@@ -136,6 +141,11 @@ public class TalonMotorController extends AbstractMotorController {
     @Override
     public void moveAtVoltage(double voltin) {
         motor.setVoltage(voltin);
+        if (!this.isFollower) {
+            for (AbstractMotorController followerMotor : motorFollowerList) {
+                followerMotor.moveAtVoltage(voltin);
+            }
+        }
     }
 
     @Override
@@ -161,7 +171,7 @@ public class TalonMotorController extends AbstractMotorController {
 
     @Override
     public double getVoltage() {
-        return 0; //TODO voltage
+        return motor.getMotorOutputVoltage();
     }
 
     @Override

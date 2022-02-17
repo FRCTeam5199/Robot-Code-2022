@@ -17,9 +17,9 @@ public class PracticeRobot2021 extends DefaultConfig {
         ENABLE_INTAKE = false;
         ENABLE_SHOOTER = true;
         ENABLE_TURRET = true;
-        ENABLE_HOPPER = true;
-        ENABLE_AGITATOR = true;
-        ENABLE_INDEXER = true;
+        ENABLE_2020_HOPPER = true;
+        ENABLE_2020_AGITATOR = true;
+        ENABLE_2020_INDEXER = true;
         ENABLE_MUSIC = true;
         ENABLE_MEMES = true;
         ENABLE_OVERHEAT_DETECTION = true;
@@ -67,7 +67,7 @@ public class PracticeRobot2021 extends DefaultConfig {
         TURN_SCALE = 0.7;
         DRIVE_SCALE = 1;
         DRIVE_GEARING = 12 / 60.0;
-        SHOOTER_SENSOR_UNITS_PER_ROTATION = 2048;
+        CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         motorPulleySize = 0;//?;
         driverPulleySize = 0;//?;
         CAMERA_HEIGHT = 0; //Inches
@@ -108,7 +108,7 @@ public class PracticeRobot2021 extends DefaultConfig {
         //turret
         TURRET_YAW_ID = 33;
 
-        //hopper
+        //hopper2020
         AGITATOR_MOTOR_ID = 10; //victor
         INDEXER_MOTOR_ID = 11; //victor
 

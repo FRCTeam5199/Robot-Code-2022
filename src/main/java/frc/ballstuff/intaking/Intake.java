@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonStatus;
-import frc.controllers.ControllerEnums.JoystickHatDirection;
 import frc.drive.auton.AutonType;
 import frc.misc.ISubsystem;
 import frc.misc.InitializationFailureException;
@@ -13,6 +12,7 @@ import frc.misc.Servo;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;
+import frc.motors.SparkMotorController;
 import frc.motors.TalonMotorController;
 import frc.motors.VictorMotorController;
 import frc.robot.Robot;
@@ -22,13 +22,14 @@ import java.util.Objects;
 
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.INTAKE_DOWN;
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.INTAKE_UP;
+import static frc.robot.Robot.hopper;
 import static frc.robot.Robot.robotSettings;
 
 /**
  * The "Intake" is referring to the part that picks up power cells from the floor
  */
 public class Intake implements ISubsystem {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     public AbstractMotorController intakeMotor;
     public Servo intakeServo1;
     public Servo intakeServo2;
@@ -103,12 +104,7 @@ public class Intake implements ISubsystem {
                 } else {
                     setIntake(IntakeDirection.OFF);
                 }
-
-                if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN) {
-                    deployIntake(false);
-                } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN) {
-                    deployIntake(true);
-                }
+                doIntakeArticulation();
                 break;
             case ROBOT_2021:
                 if (robotSettings.ENABLE_INTAKE_SERVOS) {
@@ -132,6 +128,27 @@ public class Intake implements ISubsystem {
                     throw new IllegalStateException("You're unable to use the intake style ROBOT_2021 without a Servo as your motor type.");
                 }
                 break;
+            case ROBOT_PRACTICE_2022: {
+                if (joystick.get(ControllerEnums.XBoxButtons.Y_TRIANGLE) == ButtonStatus.DOWN) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
+                    setIntake(IntakeDirection.IN);
+                } else {
+                    setIntake(IntakeDirection.OFF);
+                }
+                doIntakeArticulation();
+                break;
+            }
+            case ROBOT_2022: {
+                if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
+                    setIntake(IntakeDirection.IN);
+                    hopper.setAgitatorTopbar(true);
+                } else if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.UP)) {
+                    setIntake(IntakeDirection.OUT);
+                } else {
+                    setIntake(IntakeDirection.OFF);
+                    hopper.setAgitatorTopbar(false);
+                }
+                break;
+            }
             case DRUM_TIME:
                 if (joystick.get(ControllerEnums.DrumButton.TWO) == ButtonStatus.DOWN)
                     setIntake(IntakeDirection.IN);
@@ -164,6 +181,14 @@ public class Intake implements ISubsystem {
         }
         if (robotSettings.DEBUG && DEBUG) {
             UserInterface.smartDashboardPutNumber("Intake Speed", intakeMult);
+        }
+    }
+
+    public void doIntakeArticulation() {
+        if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN) {
+            deployIntake(false);
+        } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN) {
+            deployIntake(true);
         }
     }
 
@@ -223,9 +248,13 @@ public class Intake implements ISubsystem {
     private void createControllers() {
         switch (robotSettings.INTAKE_CONTROL_STYLE) {
             case FLIGHT_STICK:
+            case ROBOT_PRACTICE_2022:
+                joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
             case ROBOT_2021:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
+            case ROBOT_2022:
             case STANDARD:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
@@ -254,15 +283,16 @@ public class Intake implements ISubsystem {
         double s2rf;
         switch (robotSettings.INTAKE_MOTOR_TYPE) {
             case CAN_SPARK_MAX:
+                intakeMotor = new SparkMotorController(robotSettings.INTAKE_MOTOR_ID);
                 s2rf = 1;
                 break;
             case TALON_FX:
                 intakeMotor = new TalonMotorController(robotSettings.INTAKE_MOTOR_ID);
-                s2rf = 600.0 / 2048.0;
+                s2rf = 600.0 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
                 break;
             case VICTOR:
                 intakeMotor = new VictorMotorController(robotSettings.INTAKE_MOTOR_ID);
-                s2rf = 600.0 / 2048.0;
+                s2rf = 600.0 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
                 break;
             default:
                 throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
@@ -293,6 +323,8 @@ public class Intake implements ISubsystem {
     public enum IntakeControlStyles {
         STANDARD,
         ROBOT_2021,
+        ROBOT_PRACTICE_2022,
+        ROBOT_2022,
         WII,
         DRUM_TIME,
         GUITAR,

@@ -20,14 +20,17 @@ public class Robot2020 extends DefaultConfig {
         ENABLE_INTAKE = true;
         ENABLE_TURRET = true;
         ENABLE_SHOOTER = true;
-        ENABLE_HOPPER = true;
-        ENABLE_AGITATOR = true;
-        ENABLE_INDEXER = true;
+        ENABLE_2020_HOPPER = true;
+        ENABLE_HOPPER = false;
+        ENABLE_2020_AGITATOR = true;
+        ENABLE_2020_INDEXER = true;
         ENABLE_MUSIC = false;
         ENABLE_HOOD_ARTICULATION = true;
         ENABLE_PNOOMATICS = true;
         ENABLE_CLIMBER = true;
         ENABLE_BUDDY_CLIMBER = true;
+
+        DRIVEBASE_VOLTAGE_MULTIPLIER = 0.91 / 371.0; // 2.359 / 143.0 calculated 2/8/2022. Likely bad
 
         AUTON_COMPLETE_NOISE = "";//"LevelComplete_4_6000";
 
@@ -92,7 +95,7 @@ public class Robot2020 extends DefaultConfig {
         DRIVE_SCALE = 1;
         DRIVE_GEARING = 1.0 / 9.0;
 
-        SHOOTER_SENSOR_UNITS_PER_ROTATION = 2048;
+        CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         motorPulleySize = 0;//?;
         driverPulleySize = 0;//?;
         CAMERA_HEIGHT = 0; //Inches
@@ -145,7 +148,7 @@ public class Robot2020 extends DefaultConfig {
         //turret
         TURRET_YAW_ID = 33; //550
 
-        //hopper
+        //hopper2020
         AGITATOR_MOTOR_ID = 10; //victor
         INDEXER_MOTOR_ID = 11; //victor
 

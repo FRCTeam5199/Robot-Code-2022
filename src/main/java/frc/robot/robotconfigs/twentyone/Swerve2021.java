@@ -1,5 +1,7 @@
 package frc.robot.robotconfigs.twentyone;
 
+//import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+
 import edu.wpi.first.wpilibj.I2C;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
@@ -17,9 +19,9 @@ public class Swerve2021 extends DefaultConfig {
         ENABLE_INTAKE = false;
         ENABLE_TURRET = false;
         ENABLE_SHOOTER = false;
-        ENABLE_HOPPER = false;
-        ENABLE_AGITATOR = false;
-        ENABLE_INDEXER = false;
+        ENABLE_2020_HOPPER = false;
+        ENABLE_2020_AGITATOR = false;
+        ENABLE_2020_INDEXER = false;
         ENABLE_MUSIC = false;
 
         //LEDS
@@ -55,6 +57,7 @@ public class Swerve2021 extends DefaultConfig {
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         DRIVE_BASE = AbstractDriveManager.DriveBases.SWIVEL;
+        //SWERVE_SDS_DRIVE_BASE = SdsModuleConfigurations.MK3_STANDARD;
 
         AUTON_TYPE = AutonType.FOLLOW_PATH;
 
@@ -74,7 +77,7 @@ public class Swerve2021 extends DefaultConfig {
         DRIVE_SCALE = 1;
         DRIVE_GEARING = 10 / 60.0;
 
-        SHOOTER_SENSOR_UNITS_PER_ROTATION = 2048;
+        CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         motorPulleySize = 0;//?;
         driverPulleySize = 0;//?;
         CAMERA_HEIGHT = 0; //Inches
@@ -116,7 +119,7 @@ public class Swerve2021 extends DefaultConfig {
 
         //turret
         TURRET_YAW_ID = 33; //550
-        //hopper
+        //hopper2020
         AGITATOR_MOTOR_ID = 10; //victor
         INDEXER_MOTOR_ID = 11; //victor
         //intake

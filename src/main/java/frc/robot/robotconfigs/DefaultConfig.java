@@ -1,8 +1,13 @@
 package frc.robot.robotconfigs;
 
+/*import com.swervedrivespecialties.swervelib.ModuleConfiguration;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;*/
+
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
+import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.intaking.Hopper2020;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
 import frc.climber.Climber;
@@ -37,9 +42,13 @@ public abstract class DefaultConfig {
     public boolean ENABLE_INTAKE = false;
     public boolean ENABLE_SHOOTER = false;
     public boolean ENABLE_HOOD_ARTICULATION = false;
+    public boolean ENABLE_2020_HOPPER = false;
+    public boolean ENABLE_2020_AGITATOR = false;
+    public boolean ENABLE_2020_INDEXER = false;
     public boolean ENABLE_HOPPER = false;
-    public boolean ENABLE_AGITATOR = false;
     public boolean ENABLE_INDEXER = false;
+    public boolean ENABLE_AGITATOR = false;
+    public boolean ENABLE_AGITATOR_TOP = false;
     public boolean ENABLE_MUSIC = false;
     public boolean ENABLE_PDP = false;
     public boolean ENABLE_LEDS = false;
@@ -67,27 +76,35 @@ public abstract class DefaultConfig {
 
     //INTAKE
     public boolean ENABLE_INDEXER_AUTO_INDEX = true;
-    public int INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
+    public double INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
 
     //UI Styles
     public AbstractDriveManager.DriveControlStyles DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
     public Shooter.ShootingControlStyles SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD;
-public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.STANDARD;
+    public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.STANDARD;
     public Climber.ClimberControlStyles CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD;
+    public Hopper.HopperControlStyles HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD;
 
+    //Motor Types
     public AbstractMotorController.SupportedMotors SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+    public AbstractMotorController.SupportedMotors INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+    public AbstractMotorController.SupportedMotors AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+    public AbstractMotorController.SupportedMotors AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
     public AbstractMotorController.SupportedMotors HOOD_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
     public AbstractMotorController.SupportedMotors DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
     public AbstractMotorController.SupportedMotors TURRET_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
     public AbstractMotorController.SupportedMotors CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+    public AbstractMotorController.SupportedMotors CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
     public AbstractMotorController.SupportedMotors INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
     public AbstractIMU.SupportedIMU IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
     public AutonType AUTON_TYPE = AutonType.FOLLOW_PATH;
     public AutonRoutines DEFAULT_ROUTINE = AutonRoutines.DRIVE_OFF_INIT_LINE;
     public AbstractDriveManager.DriveBases DRIVE_BASE = AbstractDriveManager.DriveBases.STANDARD;
+    //public ModuleConfiguration SWERVE_SDS_DRIVE_BASE;
 
     public int DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
     public double DRIVEBASE_DISTANCE_BETWEEN_WHEELS = -2; //Distance in meters between wheels
+    public double DRIVEBASE_VOLTAGE_MULTIPLIER = 1;
     public double MAX_SPEED = 0; //max speed in fps - REAL IS 10(for 4in wheels)
     public double RUMBLE_TOLERANCE_FPS = 0; //The minimum value in which the controller will begin rumbling
     public double MAX_ROTATION = 0; //max rotational speed in radians per second - REAL IS 11.2(for 4in wheels)
@@ -104,7 +121,7 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
     public PID TURRET_PID = PID.EMPTY_PID;
     public PID HEADING_PID = PID.EMPTY_PID;
     public PID TURRET_HEADING_PID = PID.EMPTY_PID;
-    public double SHOOTER_SENSOR_UNITS_PER_ROTATION = 2048;
+    public double CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
     public double motorPulleySize = 0;//?;
     public double driverPulleySize = 0;//?;
     public double CAMERA_HEIGHT = 0; //Inches
@@ -128,6 +145,15 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
     public int[] DRIVE_FOLLOWERS_L_IDS; //talon
     public int DRIVE_LEADER_R_ID; //talon
     public int[] DRIVE_FOLLOWERS_R_IDS; //talon
+    //Swerve Drive Motors
+    public int SWERVE_DRIVE_FR;
+    public int SWERVE_TURN_FR;
+    public int SWERVE_DRIVE_FL;
+    public int SWERVE_TURN_FL;
+    public int SWERVE_DRIVE_BR;
+    public int SWERVE_TURN_BR;
+    public int SWERVE_DRIVE_BL;
+    public int SWERVE_TURN_BL;
     //Shooter Motors
     public int SHOOTER_LEADER_ID = 7; //talon
     public int SHOOTER_FOLLOWER_ID = 8; //talon
@@ -142,11 +168,14 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
     public double INITIATION_LINE_HOOD_POSITION;
     public double[][] CALIBRATED_HOOD_POSITION_ARRAY;
 
+    public double SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 1;
+
     //turret
     public int TURRET_YAW_ID = 33; //550
     public boolean TURRET_INVERT = false;
-    //hopper
+    //hopper2020
     public int AGITATOR_MOTOR_ID = 10; //victor
+    public int AGITATOR_TOPBAR_MOTOR_ID;
     public int INDEXER_MOTOR_ID = 11; //victor
     //intake
     public int INTAKE_MOTOR_ID = 12; //victor
@@ -177,6 +206,8 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
 
     //climber
     public int[] CLIMBER_MOTOR_IDS;
+    public int CLIMBER_STG1_MOTOR_ID;
+    public int CLIMBER_STG2_MOTOR_ID;
 
     /**
      * Must be one of the following: {@link I2C.Port} {@link SerialPort.Port} {@link SPI.Port}
@@ -202,7 +233,7 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
         System.out.println("          Driving " + ENABLE_DRIVE);
         System.out.println("         Intaking " + ENABLE_INTAKE);
         System.out.println("         Shooting " + ENABLE_SHOOTER);
-        System.out.println("          Hopping " + ENABLE_HOPPER);
+        System.out.println("          Hopping " + ENABLE_2020_HOPPER);
         System.out.println("           Vision " + ENABLE_VISION);
         System.out.println("              IMU " + ENABLE_IMU);
         System.out.println("              IMU " + IMU_TYPE.name());
@@ -234,6 +265,7 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
      * Prints out all of the id's for anything that needs an id
      */
     public void printMappings() {
+        /*
         System.out.println("-------------------<RobotSettingspings>-----------------");
         System.out.println("                    Goal cam name: " + GOAL_CAM_NAME);
         System.out.println("                    Ball cam name: " + BALL_CAM_NAME);
@@ -246,5 +278,6 @@ public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlSty
         System.out.println("                        Intake id: " + INTAKE_MOTOR_ID);
         System.out.println("                           IMU id: " + IMU_ID);
         System.out.println("-------------------</RobotSettingspings>-----------------");
+   */
     }
 }

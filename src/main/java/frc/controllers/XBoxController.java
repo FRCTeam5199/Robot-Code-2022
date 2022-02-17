@@ -3,7 +3,6 @@ package frc.controllers;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.controllers.ControllerEnums.ButtonStatus;
 import frc.controllers.ControllerEnums.XBoxButtons;
-import frc.controllers.ControllerEnums.XBoxPOVButtons;
 import frc.controllers.ControllerEnums.XboxAxes;
 import frc.robot.Robot;
 
@@ -36,7 +35,7 @@ public class XBoxController extends BaseController {
     @Override
     public double get(ControllerInterfaces.IContinuousInput axis) {
         if (axis instanceof ControllerEnums.XboxAxes)
-            if (Math.abs(controller.getRawAxis(axis.getChannel())) > ((XboxAxes)axis).DEADZONE) //makes sure axis is outside of the deadzone
+            if (Math.abs(controller.getRawAxis(axis.getChannel())) > ((XboxAxes) axis).DEADZONE) //makes sure axis is outside of the deadzone
                 return controller.getRawAxis(axis.getChannel());
             else
                 return 0;
@@ -56,6 +55,8 @@ public class XBoxController extends BaseController {
     public ButtonStatus get(ControllerInterfaces.IDiscreteInput button) {
         if (button instanceof ControllerEnums.XBoxButtons || Robot.robotSettings.PERMIT_ROUGE_INPUT_MAPPING)
             return ControllerEnums.ButtonStatus.get(controller.getRawButton(button.getChannel()));
+        if (button instanceof ControllerEnums.XBoxPOVButtons)
+            return ControllerEnums.ButtonStatus.get(controller.getPOV() == button.getChannel());
         throw new IllegalArgumentException("Wrong mapping. Expected an enum of type " + ControllerEnums.XBoxButtons.class.toString() + " but got " + button.getClass().toString() + " instead");
     }
 
