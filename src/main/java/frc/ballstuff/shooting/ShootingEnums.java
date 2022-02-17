@@ -34,7 +34,8 @@ public enum ShootingEnums {
     }),
 
     PID_TUNING(shooter -> {
-        shooter.setSpeed(2000);
+        //shooter.setPercentSpeed(1);
+        shooter.setSpeed(1700); //error of 500
     }),
 
     FIRE_SOLID_SPEED_PRACTICE2022(shooter -> {

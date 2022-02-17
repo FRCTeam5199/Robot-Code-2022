@@ -454,7 +454,8 @@ public class Shooter implements ISubsystem {
             }
             case STANDARD_2022: {
                 if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
-                    ShootingEnums.FIRE_SOLID_SPEED_STANDARD2022.shoot(this);
+                    //ShootingEnums.FIRE_SOLID_SPEED_STANDARD2022.shoot(this);
+                    ShootingEnums.PID_TUNING.shoot(this);
                     isConstSpeed = false;
                 } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) && robotSettings.CLIMBER_CONTROL_STYLE != Climber.ClimberControlStyles.STANDARD_2022) {
                     shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
@@ -565,9 +566,9 @@ public class Shooter implements ISubsystem {
         if (robotSettings.SHOOTER_USE_TWO_MOTORS) {
             follower.follow(leader, !robotSettings.SHOOTER_INVERTED).setCurrentLimit(80).setBrake(false);
         }
-        leader.setCurrentLimit(80).setBrake(false).setOpenLoopRampRate(40).resetEncoder();
-        leader.setOpenLoopRampRate(0);
-        follower.setOpenLoopRampRate(0);
+        leader.setCurrentLimit(80).setBrake(false).setOpenLoopRampRate(1).resetEncoder();
+        //leader.setOpenLoopRampRate(0);
+        //follower.setOpenLoopRampRate(0);
     }
 
     /**

@@ -23,7 +23,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
         ENABLE_PNOOMATICS = true;
-        ENABLE_INDEXER_AUTO_INDEX = true;
+        ENABLE_INDEXER_AUTO_INDEX = false;
         ENABLE_IMU = true;
 
         ENABLE_VISION = true;
@@ -102,8 +102,8 @@ public class PracticeRobot2022 extends DefaultConfig {
         SHOOTER_FOLLOWER_ID = 6; //talon
         SHOOTER_USE_TWO_MOTORS = true;
         SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        SHOOTER_PID = new PID(0.5, 0, 0, 0);
-        SHOOTER_CONST_SPEED_PID = new PID(0.0001, 0.0000007, 0.05, 0);
+        SHOOTER_PID = new PID(1.9, .0001, 70, 0.0851136);
+        SHOOTER_CONST_SPEED_PID = new PID(1.9, .0001, 70, 0.0851136);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
         SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
 
