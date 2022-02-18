@@ -22,8 +22,8 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
-        ENABLE_PNOOMATICS = true;
-        ENABLE_INDEXER_AUTO_INDEX = false;
+        ENABLE_PNOOMATICS = false;
+        ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
 
         ENABLE_VISION = true;

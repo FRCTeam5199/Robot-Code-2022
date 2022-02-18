@@ -139,7 +139,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     if (visionCamera.hasValidTarget()) {
                         neededRot = adjustedRotation(HEADING_PID.calculate(visionCamera.getPitch()));
                     } else {
-                        neededRot = -controller.get(XboxAxes.RIGHT_JOY_X);
+                        neededRot = controller.get(XboxAxes.RIGHT_JOY_X);
                     }
                     driveCringe(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), -neededRot * dynamic_gear_R);
                 } else {
