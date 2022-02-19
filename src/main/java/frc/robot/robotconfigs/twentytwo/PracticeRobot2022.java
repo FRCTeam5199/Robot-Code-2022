@@ -22,7 +22,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
-        ENABLE_PNOOMATICS = true;
+        ENABLE_PNOOMATICS = false;
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
 
@@ -108,8 +108,8 @@ public class PracticeRobot2022 extends DefaultConfig {
         SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
 
         //Hopper
-        ENABLE_BREAK_BREAM = true;
-        BREAK_BREAM_ID = 9;
+        ENABLE_BREAK_BEAM = true;
+        BREAK_BEAM_ID = 9;
         INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 7;
         AGITATOR_MOTOR_ID = 10;

@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
     public static Climber climber;
     public static BuddyClimber buddyClimber;
     public static Flashlight flashlight;
+    public static BreakBeamSensor breakBeam;
     public static AbstractAutonManager autonManager;
     public static boolean SECOND_TRY;
     public static String lastFoundSong = "";
@@ -131,6 +132,9 @@ public class Robot extends TimedRobot {
         }
         if (robotSettings.ENABLE_FLASHLIGHT) {
             flashlight = new Flashlight();
+        }
+        if (robotSettings.ENABLE_BREAK_BEAM) {
+            breakBeam = new BreakBeamSensor();
         }
 
         if (robotSettings.ENABLE_DRIVE && robotSettings.ENABLE_IMU) {

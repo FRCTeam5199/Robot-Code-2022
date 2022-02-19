@@ -27,7 +27,7 @@ public enum ShootingEnums {
     FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
         //shooter.setPercentSpeed(shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));//.46);
         //shooter.setPercentSpeed(.3);
-        shooter.setSpeed(shooter.leader.getMaxRPM() * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));
+        shooter.setSpeed(2000 + (shooter.leader.getMaxRPM() - 2000) * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));
         if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }

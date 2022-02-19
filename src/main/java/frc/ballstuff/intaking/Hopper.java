@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.ballstuff.shooting.Shooter;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
-import frc.misc.BreakBeamSensor;
 import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
@@ -21,6 +20,7 @@ import java.util.Objects;
 import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
 import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
 import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
+import static frc.robot.Robot.breakBeam;
 import static frc.robot.Robot.robotSettings;
 
 /**
@@ -33,7 +33,6 @@ public class Hopper implements ISubsystem {
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
     private BaseController controller, panel;
-    public BreakBeamSensor breakBeam;
 
     public Hopper() {
         addToMetaList();
@@ -58,18 +57,13 @@ public class Hopper implements ISubsystem {
             default:
                 throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.DRIVE_STYLE.name() + " to control the drivetrain. Please implement me");
         }
-        if (robotSettings.DEBUG && DEBUG && controller != null)
-            System.out.println("Created a " + controller);
+        if (robotSettings.DEBUG && DEBUG && controller != null) System.out.println("Created a " + controller);
     }
 
     @Override
     public void init() {
-        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            if(robotSettings.ENABLE_BREAK_BREAM){
-                breakBeam = new BreakBeamSensor(robotSettings.BREAK_BREAM_ID);
-            }else {
-                indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
-            }
+        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX && !robotSettings.ENABLE_BREAK_BEAM) {
+            indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
             System.out.println("Enabling index sensor.");
         }
         createAndInitMotors();
@@ -78,56 +72,53 @@ public class Hopper implements ISubsystem {
 
 
     private void createAndInitMotors() throws IllegalStateException {
-        if (robotSettings.ENABLE_AGITATOR)
-            switch (robotSettings.AGITATOR_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    agitator = new SparkMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(1);
-                    break;
-                case TALON_FX:
-                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    agitator = new VictorMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
-            }
-        if (robotSettings.ENABLE_AGITATOR_TOP)
-            switch (robotSettings.AGITATOR_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    agitatorTop = new SparkMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(1);
-                case TALON_FX:
-                    agitatorTop = new TalonMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    agitatorTop = new VictorMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper agitator topbar motor config for " + robotSettings.AGITATOR_TOP_MOTOR_TYPE.name());
-            }
-        if (robotSettings.ENABLE_INDEXER)
-            switch (robotSettings.INDEXER_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    indexer = new SparkMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(1);
-                    break;
-                case TALON_FX:
-                    indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    indexer = new VictorMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
-            }
+        if (robotSettings.ENABLE_AGITATOR) switch (robotSettings.AGITATOR_MOTOR_TYPE) {
+            case CAN_SPARK_MAX:
+                agitator = new SparkMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                agitator.setSensorToRealDistanceFactor(1);
+                break;
+            case TALON_FX:
+                agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                break;
+            case VICTOR:
+                agitator = new VictorMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                break;
+            default:
+                throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
+        }
+        if (robotSettings.ENABLE_AGITATOR_TOP) switch (robotSettings.AGITATOR_MOTOR_TYPE) {
+            case CAN_SPARK_MAX:
+                agitatorTop = new SparkMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
+                agitatorTop.setSensorToRealDistanceFactor(1);
+            case TALON_FX:
+                agitatorTop = new TalonMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
+                agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                break;
+            case VICTOR:
+                agitatorTop = new VictorMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
+                agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                break;
+            default:
+                throw new IllegalStateException("No such supported hopper agitator topbar motor config for " + robotSettings.AGITATOR_TOP_MOTOR_TYPE.name());
+        }
+        if (robotSettings.ENABLE_INDEXER) switch (robotSettings.INDEXER_MOTOR_TYPE) {
+            case CAN_SPARK_MAX:
+                indexer = new SparkMotorController(robotSettings.INDEXER_MOTOR_ID);
+                indexer.setSensorToRealDistanceFactor(1);
+                break;
+            case TALON_FX:
+                indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
+                indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                break;
+            case VICTOR:
+                indexer = new VictorMotorController(robotSettings.INDEXER_MOTOR_ID);
+                indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                break;
+            default:
+                throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
+        }
         agitatorTop.setInverted(true);
     }
 
@@ -155,12 +146,9 @@ public class Hopper implements ISubsystem {
             updateTeleop();
             //agitator.moveAtPercent(0.6);
         } else {
-            if (robotSettings.ENABLE_AGITATOR)
-                agitator.moveAtPercent(0);
-            if (robotSettings.ENABLE_INDEXER)
-                indexer.moveAtPercent(0);
-            if (robotSettings.ENABLE_AGITATOR_TOP)
-                agitatorTop.moveAtPercent(0);
+            if (robotSettings.ENABLE_AGITATOR) agitator.moveAtPercent(0);
+            if (robotSettings.ENABLE_INDEXER) indexer.moveAtPercent(0);
+            if (robotSettings.ENABLE_AGITATOR_TOP) agitatorTop.moveAtPercent(0);
         }
     }
 
@@ -173,20 +161,20 @@ public class Hopper implements ISubsystem {
      */
     public double indexerSensorRange() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            if(!robotSettings.ENABLE_BREAK_BREAM) {
+            if (!robotSettings.ENABLE_BREAK_BEAM) {
                 return indexSensor.getDistance();
+            } else {
+                return -3;
             }
         }
         return -2;
     }
 
     public boolean isIndexed() {
-        if(robotSettings.ENABLE_BREAK_BREAM){
-           return breakBeam.getBroken();
-        }else {
-            return robotSettings.ENABLE_INDEXER_AUTO_INDEX
-                    && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE
-                    && indexerSensorRange() > 0;
+        if (robotSettings.ENABLE_BREAK_BEAM) {
+            return breakBeam.getBroken();
+        } else {
+            return robotSettings.ENABLE_INDEXER_AUTO_INDEX && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE && indexerSensorRange() > 0;
         }
     }
 
@@ -282,12 +270,9 @@ public class Hopper implements ISubsystem {
             }
             case PRACTICE_2022: {
                 setAll(controller.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ControllerEnums.ButtonStatus.DOWN);
-                if (robotSettings.ENABLE_AGITATOR_TOP)
-                    agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
-                if (robotSettings.ENABLE_AGITATOR)
-                    agitator.moveAtPercent(agitatorActive ? 0.5 : 0);
-                if (robotSettings.ENABLE_INDEXER)
-                    indexer.moveAtPercent(indexerActive ? 0.5 : 0);
+                if (robotSettings.ENABLE_AGITATOR_TOP) agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
+                if (robotSettings.ENABLE_AGITATOR) agitator.moveAtPercent(agitatorActive ? 0.5 : 0);
+                if (robotSettings.ENABLE_INDEXER) indexer.moveAtPercent(indexerActive ? 0.5 : 0);
                 break;
             }
         }

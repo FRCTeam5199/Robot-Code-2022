@@ -180,8 +180,8 @@ public abstract class DefaultConfig {
     public int AGITATOR_MOTOR_ID = 10; //victor
     public int AGITATOR_TOPBAR_MOTOR_ID;
     public int INDEXER_MOTOR_ID = 11; //victor
-    public int BREAK_BREAM_ID;
-    public Boolean ENABLE_BREAK_BREAM = false;
+    public int BREAK_BEAM_ID;
+    public Boolean ENABLE_BREAK_BEAM = false;
     //intake
     public int INTAKE_MOTOR_ID = 12; //victor
     public int INTAKE_SERVO_L_ID = 0;
