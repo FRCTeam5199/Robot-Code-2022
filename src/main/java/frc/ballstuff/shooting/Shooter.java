@@ -443,7 +443,7 @@ public class Shooter implements ISubsystem {
                 }
             }
             case XBOX_CONTROLLER: {
-                if (joystickController.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) > 0.1) {
+                if (joystickController.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER) > 0.1) {
                     ShootingEnums.FIRE_SOLID_SPEED_XBOX_CONTROLLER.shoot(this);
                 } else {
                     leader.moveAtPercent(0);
@@ -496,7 +496,7 @@ public class Shooter implements ISubsystem {
                 //if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                 if (joystickController.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_PRACTICE2022.shoot(this);
-                    if (joystickController.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER) != 0) {
+                    if (joystickController.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ButtonStatus.DOWN) {
                         hopper.setAll(true);
                     }
                 } else {

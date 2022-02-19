@@ -171,7 +171,7 @@ public class Intake implements ISubsystem {
                 setIntake(joystick.get(ControllerEnums.SixKeyGuitarAxis.STRUM));
                 break;
             case XBOX_CONTROLLER:
-                speed = joystick.get(ControllerEnums.XboxAxes.LEFT_TRIGGER);
+                speed = joystick.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER);
                 if (Math.abs(speed) >= 0.1) {
                     setIntake(speed);
                 }

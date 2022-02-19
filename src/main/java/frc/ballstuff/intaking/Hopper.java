@@ -281,7 +281,7 @@ public class Hopper implements ISubsystem {
                 break;
             }
             case PRACTICE_2022: {
-                setAll(controller.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER) != 0);
+                setAll(controller.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ControllerEnums.ButtonStatus.DOWN);
                 if (robotSettings.ENABLE_AGITATOR_TOP)
                     agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
                 if (robotSettings.ENABLE_AGITATOR)
