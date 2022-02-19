@@ -125,7 +125,7 @@ public class ControllerEnums {
      * @see XBoxController
      */
     public enum XBoxButtons implements ControllerInterfaces.IDiscreteInput {
-        A_CROSS(1), B_CIRCLE(2), RIGHT_JOYSTICK_BUTTON(10), Y_TRIANGLE(4), LEFT_BUMPER(5), RIGHT_BUMPER(6), GUIDE(7), MENU(8), X_SQUARE(3);
+        A_CROSS(1), B_CIRCLE(2), LEFT_JOYSTICK_BUTTON(9), RIGHT_JOYSTICK_BUTTON(10), Y_TRIANGLE(4), LEFT_BUMPER(5), RIGHT_BUMPER(6), GUIDE(7), MENU(8), X_SQUARE(3);
 
         public final int AXIS_VALUE;
 

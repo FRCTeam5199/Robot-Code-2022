@@ -133,7 +133,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 UserInterface.smartDashboardPutBoolean("Drive using PID?", a);
                 if (a) {
                     drive(controller.get(XboxAxes.LEFT_JOY_Y), controller.get(XboxAxes.RIGHT_JOY_X));
-                } else if (controller.get(XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ButtonStatus.DOWN) {
+                } else if (controller.get(XboxAxes.RIGHT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
                     double neededRot;
                     visionCamera.setLedMode(IVision.VisionLEDMode.ON);
                     if (visionCamera.hasValidTarget()) {
