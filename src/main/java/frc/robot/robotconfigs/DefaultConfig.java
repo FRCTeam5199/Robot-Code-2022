@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.ballstuff.intaking.Hopper;
-import frc.ballstuff.intaking.Hopper2020;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
 import frc.climber.Climber;
@@ -72,6 +71,7 @@ public abstract class DefaultConfig {
     //SHOOTER
     public boolean SHOOTER_USE_TWO_MOTORS = true;
     public boolean SHOOTER_INVERTED = true;
+    public boolean SHOOTER_BACKSPIN_USE = false;
     public IVision.SupportedVision GOAL_CAMERA_TYPE = IVision.SupportedVision.PHOTON;
 
     //INTAKE
@@ -121,6 +121,7 @@ public abstract class DefaultConfig {
     public PID TURRET_PID = PID.EMPTY_PID;
     public PID HEADING_PID = PID.EMPTY_PID;
     public PID TURRET_HEADING_PID = PID.EMPTY_PID;
+    public PID BACKSPIN_PID = PID.EMPTY_PID;
     public double CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
     public double motorPulleySize = 0;//?;
     public double driverPulleySize = 0;//?;
@@ -155,6 +156,8 @@ public abstract class DefaultConfig {
     public int SWERVE_DRIVE_BL;
     public int SWERVE_TURN_BL;
     //Shooter Motors
+    public Boolean BACKSPIN_INVERTED = false;
+    public int BACKSPIN_ID;
     public int SHOOTER_LEADER_ID = 7; //talon
     public int SHOOTER_FOLLOWER_ID = 8; //talon
     //hood
@@ -177,6 +180,8 @@ public abstract class DefaultConfig {
     public int AGITATOR_MOTOR_ID = 10; //victor
     public int AGITATOR_TOPBAR_MOTOR_ID;
     public int INDEXER_MOTOR_ID = 11; //victor
+    public int BREAK_BREAM_ID;
+    public Boolean ENABLE_BREAK_BREAM = false;
     //intake
     public int INTAKE_MOTOR_ID = 12; //victor
     public int INTAKE_SERVO_L_ID = 0;

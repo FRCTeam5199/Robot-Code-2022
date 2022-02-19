@@ -46,6 +46,8 @@ public class UserInterface {
             SHOOTER_CALIBRATE_PID = SHOOTER_PID_LAYOUT.add("Tune PID", false).withWidget(BuiltInWidgets.kToggleSwitch),
             SHOOTER_OVERRIDE_LED = SHOOTER_TAB.add("Override LED", false).withWidget(BuiltInWidgets.kToggleSwitch),
             SHOOTER_RPM_GRAPH = SHOOTER_TAB.add("RPM Graph", 0).withWidget(BuiltInWidgets.kGraph).withSize(3, 3),
+            BACKSPIN_RPM = SHOOTER_TAB.add("Constant Speed Back Spin", 0.0),
+
     //HOOD
     HOOD_HEIGHT = HOOD_HEIGHT_LAYOUT.add("Height", 0),
             HOOD_OVERRIDE_HEIGHT = HOOD_HEIGHT_LAYOUT.add("Override", false).withWidget(BuiltInWidgets.kToggleSwitch),

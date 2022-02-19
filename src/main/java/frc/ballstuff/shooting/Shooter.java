@@ -43,7 +43,7 @@ public class Shooter implements ISubsystem {
     public int ballsShot = 0, ticksPassed = 0, emptyIndexerTicks = 0, hopperCooldownTicks = 0, ballsToShoot = 0;
     public int timerTicks = 0;
     public IVision goalCamera;
-    public AbstractMotorController leader, follower;
+    public AbstractMotorController leader, follower, backSpin;
     public boolean isConstSpeed, isConstSpeedLast = false, shooting = false, isSpinningUp = false, isSpinningUpHeld, singleShot = false, multiShot = false, loadingIndexer = false;
     public boolean checkForDips = false;
     public boolean tryFiringBalls = false;
@@ -480,11 +480,23 @@ public class Shooter implements ISubsystem {
 
                 break;
             }
+            case  BACKSPINTEST: {
+                if(panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN){
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN2022.shoot(this);
+                }else{
+                    tryFiringBalls = false;
+                    leader.moveAtPercent(0);
+                    backSpin.moveAtPosition(0);
+                    ballsShot = 0;
+                    shooterDefault();
+                }
+                break;
+            }
             case PRACTICE_2022: {
                 //if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                 if (joystickController.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_PRACTICE2022.shoot(this);
-                    if (joystickController.get(ControllerEnums.XBoxButtons.X_SQUARE) == ButtonStatus.DOWN) {
+                    if (joystickController.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ButtonStatus.DOWN) {
                         hopper.setAll(true);
                     }
                 } else {
@@ -527,6 +539,9 @@ public class Shooter implements ISubsystem {
             leader.setPid(new PID(0.0025, 0.0000007, 0.03, 0));
         } else {
             leader.setPid(robotSettings.SHOOTER_PID);
+            if(robotSettings.SHOOTER_BACKSPIN_USE){
+                backSpin.setPid(robotSettings.BACKSPIN_PID);
+            }
         }
     }
 
@@ -556,6 +571,10 @@ public class Shooter implements ISubsystem {
                     follower = new TalonMotorController(robotSettings.SHOOTER_FOLLOWER_ID);
                     follower.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 }
+                if(robotSettings.SHOOTER_BACKSPIN_USE){
+                    backSpin = new TalonMotorController(robotSettings.BACKSPIN_ID);
+                    backSpin.setSensorToRealDistanceFactor(600/ robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                }
                 leader.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 break;
             default:
@@ -565,6 +584,8 @@ public class Shooter implements ISubsystem {
         leader.setInverted(robotSettings.SHOOTER_INVERTED);
         if (robotSettings.SHOOTER_USE_TWO_MOTORS) {
             follower.follow(leader, !robotSettings.SHOOTER_INVERTED).setCurrentLimit(80).setBrake(false);
+        }if(robotSettings.SHOOTER_BACKSPIN_USE){
+            backSpin.setInverted(robotSettings.BACKSPIN_INVERTED);
         }
         leader.setCurrentLimit(80).setBrake(false).setOpenLoopRampRate(1).resetEncoder();
         //leader.setOpenLoopRampRate(0);
@@ -610,6 +631,15 @@ public class Shooter implements ISubsystem {
         }
         speed = rpm;
         leader.moveAtVelocity(rpm);
+    }
+
+    public void setSpeed(double rpm, double backSpinRPM) {
+        if (robotSettings.DEBUG && DEBUG) {
+            System.out.println("set shooter speed to " + rpm);
+        }
+        speed = rpm;
+        leader.moveAtVelocity(rpm);
+        backSpin.moveAtPercent(backSpinRPM);
     }
 
     /**
@@ -722,7 +752,7 @@ public class Shooter implements ISubsystem {
      * Used to change how the input is handled by the {@link Shooter} and what kind of controller to use
      */
     public enum ShootingControlStyles {
-        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022;
+        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022, BACKSPINTEST;
 
         private static SendableChooser<ShootingControlStyles> myChooser;
 

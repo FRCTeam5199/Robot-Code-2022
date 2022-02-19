@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.ballstuff.shooting.Shooter;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
+import frc.misc.BreakBeamSensor;
 import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
@@ -19,7 +20,6 @@ import java.util.Objects;
 
 import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
 import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
-import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighSpeed;
 import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
 import static frc.robot.Robot.robotSettings;
 
@@ -33,6 +33,7 @@ public class Hopper implements ISubsystem {
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
     private BaseController controller, panel;
+    public BreakBeamSensor breakBeam;
 
     public Hopper() {
         addToMetaList();
@@ -64,7 +65,11 @@ public class Hopper implements ISubsystem {
     @Override
     public void init() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
+            if(robotSettings.ENABLE_BREAK_BREAM){
+                breakBeam = new BreakBeamSensor(robotSettings.BREAK_BREAM_ID);
+            }else {
+                indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
+            }
             System.out.println("Enabling index sensor.");
         }
         createAndInitMotors();
@@ -168,15 +173,21 @@ public class Hopper implements ISubsystem {
      */
     public double indexerSensorRange() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            return indexSensor.getDistance();
+            if(!robotSettings.ENABLE_BREAK_BREAM) {
+                return indexSensor.getDistance();
+            }
         }
         return -2;
     }
 
     public boolean isIndexed() {
-        return robotSettings.ENABLE_INDEXER_AUTO_INDEX
-                && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE
-                && indexerSensorRange() > 0;
+        if(robotSettings.ENABLE_BREAK_BREAM){
+           return breakBeam.getBroken();
+        }else {
+            return robotSettings.ENABLE_INDEXER_AUTO_INDEX
+                    && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE
+                    && indexerSensorRange() > 0;
+        }
     }
 
     /**
@@ -270,7 +281,7 @@ public class Hopper implements ISubsystem {
                 break;
             }
             case PRACTICE_2022: {
-                setAll(controller.get(ControllerEnums.XBoxButtons.X_SQUARE) == ControllerEnums.ButtonStatus.DOWN);
+                setAll(controller.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ControllerEnums.ButtonStatus.DOWN);
                 if (robotSettings.ENABLE_AGITATOR_TOP)
                     agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
                 if (robotSettings.ENABLE_AGITATOR)
