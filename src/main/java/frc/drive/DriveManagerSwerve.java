@@ -148,7 +148,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     private boolean dorifto() {
-        return xbox.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER) > 0.1;
+        return xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) > 0.1;
     }
 
     /**
