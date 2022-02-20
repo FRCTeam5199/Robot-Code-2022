@@ -37,7 +37,11 @@ public class Shooter implements ISubsystem {
             constSpeed = UserInterface.SHOOTER_CONST_SPEED.getEntry(),
             calibratePID = UserInterface.SHOOTER_CALIBRATE_PID.getEntry(),
             rpmGraph = UserInterface.SHOOTER_RPM_GRAPH.getEntry(),
-            rpm = UserInterface.SHOOTER_RPM.getEntry();
+            rpm = UserInterface.SHOOTER_RPM.getEntry(),
+            BACKSPIN_P = UserInterface.BACKSPIN_P.getEntry(),
+            BACKSPIN_I = UserInterface.BACKSPIN_I.getEntry(),
+            BACKSPIN_D = UserInterface.BACKSPIN_D.getEntry(),
+            BACKSPIN_F = UserInterface.BACKSPIN_F.getEntry();
     public double speed = 4200;
     public int goalTicks = 20 * 15; //20 ticks = 1 second
     public int ballsShot = 0, ticksPassed = 0, emptyIndexerTicks = 0, hopperCooldownTicks = 0, ballsToShoot = 0;
@@ -49,6 +53,7 @@ public class Shooter implements ISubsystem {
     public boolean tryFiringBalls = false;
     BaseController panel, joystickController, xbox;
     private PID lastPID = PID.EMPTY_PID;
+    private PID backspinLastPID = PID.EMPTY_PID;
 
     public Shooter() {
         addToMetaList();
@@ -66,6 +71,7 @@ public class Shooter implements ISubsystem {
             case SPEED_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021:
+            case BACKSPINTEST:
             case STANDARD:
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
@@ -129,6 +135,7 @@ public class Shooter implements ISubsystem {
             case SPEED_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021:
+            case BACKSPINTEST:
             case STANDARD:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
@@ -174,9 +181,18 @@ public class Shooter implements ISubsystem {
                     System.out.println("Set shooter pid to " + lastPID);
                 }
             }
+            PID backReadPid = new PID(BACKSPIN_P.getDouble(robotSettings.BACKSPIN_PID.getP()), BACKSPIN_I.getDouble(robotSettings.BACKSPIN_PID.getI()), BACKSPIN_D.getDouble(robotSettings.BACKSPIN_PID.getD()), BACKSPIN_F.getDouble(robotSettings.BACKSPIN_PID.getF()));
+            if (!backspinLastPID.equals(backReadPid)) {
+                backspinLastPID = backReadPid;
+                leader.setPid(backspinLastPID);
+                if (robotSettings.DEBUG && DEBUG) {
+                    System.out.println("Set shooter pid to " + backspinLastPID);
+                }
+            }
         } else {
             if (!isConstSpeed && isConstSpeedLast) {
                 leader.setPid(robotSettings.SHOOTER_PID);
+                backSpin.setPid(robotSettings.BACKSPIN_PID);
                 isConstSpeedLast = false;
                 if (DEBUG && robotSettings.DEBUG) {
                     System.out.println("Normal shooter PID.");
@@ -480,10 +496,10 @@ public class Shooter implements ISubsystem {
 
                 break;
             }
-            case  BACKSPINTEST: {
-                if(panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN){
+            case BACKSPINTEST: {
+                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN2022.shoot(this);
-                }else{
+                } else {
                     tryFiringBalls = false;
                     leader.moveAtPercent(0);
                     backSpin.moveAtPosition(0);
@@ -539,7 +555,7 @@ public class Shooter implements ISubsystem {
             leader.setPid(new PID(0.0025, 0.0000007, 0.03, 0));
         } else {
             leader.setPid(robotSettings.SHOOTER_PID);
-            if(robotSettings.SHOOTER_BACKSPIN_USE){
+            if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
                 backSpin.setPid(robotSettings.BACKSPIN_PID);
             }
         }
@@ -571,9 +587,9 @@ public class Shooter implements ISubsystem {
                     follower = new TalonMotorController(robotSettings.SHOOTER_FOLLOWER_ID);
                     follower.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 }
-                if(robotSettings.SHOOTER_BACKSPIN_USE){
+                if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
                     backSpin = new TalonMotorController(robotSettings.BACKSPIN_ID);
-                    backSpin.setSensorToRealDistanceFactor(600/ robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    backSpin.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 }
                 leader.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 break;
@@ -584,7 +600,8 @@ public class Shooter implements ISubsystem {
         leader.setInverted(robotSettings.SHOOTER_INVERTED);
         if (robotSettings.SHOOTER_USE_TWO_MOTORS) {
             follower.follow(leader, !robotSettings.SHOOTER_INVERTED).setCurrentLimit(80).setBrake(false);
-        }if(robotSettings.SHOOTER_BACKSPIN_USE){
+        }
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
             backSpin.setInverted(robotSettings.BACKSPIN_INVERTED);
         }
         leader.setCurrentLimit(80).setBrake(false).setOpenLoopRampRate(1).resetEncoder();
@@ -639,7 +656,7 @@ public class Shooter implements ISubsystem {
         }
         speed = rpm;
         leader.moveAtVelocity(rpm);
-        backSpin.moveAtPercent(backSpinRPM);
+        backSpin.moveAtVelocity(rpm * 1.625);//backSpinRPM);
     }
 
     /**
@@ -714,7 +731,8 @@ public class Shooter implements ISubsystem {
      * @return if the balls have finished shooting
      * @author Smaltin
      */
-    public boolean fireAmount2022(int seconds) {
+    public boolean fireAmount2022(int seconds, int rpm) {
+        speed = rpm;
         goalTicks = seconds * 50; //tick = 20ms. 50 ticks in a second.
         if (!shooting) {
             ticksPassed = 0;

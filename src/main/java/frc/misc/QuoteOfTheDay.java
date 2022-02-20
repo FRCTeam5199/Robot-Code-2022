@@ -57,7 +57,9 @@ public class QuoteOfTheDay {
             "Africa, Default Pi.. \nWhere's Africa? \n... Amica..",
             "Fix your software!!",
             "Oh no, it rickrolled me. Oh no! Kill the server!",
-            "Me: I love my job! \nBrandon: That's a lie."
+            "Me: I love my job! \nBrandon: That's a lie.",
+            "Teddy, make your intake lighter.",
+            "If in doubt, comment it out"
     };
 
     /**

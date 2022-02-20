@@ -35,8 +35,8 @@ public class UserInterface {
     public static final ShuffleboardLayout SHOOTER_PID_LAYOUT = SHOOTER_TAB.getLayout("PID", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 3),
             DRIVE_PID_LAYOUT = DRIVE_TAB.getLayout("PID", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 3),
             PDP_SETTINGS_LAYOUT = ROBOT_TAB.getLayout("PDP", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 1),
-            HOOD_HEIGHT_LAYOUT = HOOD_TAB.getLayout("Height", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 1);
-
+            HOOD_HEIGHT_LAYOUT = HOOD_TAB.getLayout("Height", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 1),
+            SHOOTER_BACKSPIN_PID_LAYOUT = SHOOTER_TAB.getLayout("Backspin PID", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 3);
     //SHOOTER
     public static final SimpleWidget SHOOTER_P = SHOOTER_PID_LAYOUT.add("P", robotSettings.SHOOTER_PID.getP()),
             SHOOTER_I = SHOOTER_PID_LAYOUT.add("I", robotSettings.SHOOTER_PID.getI()),
@@ -46,8 +46,12 @@ public class UserInterface {
             SHOOTER_CALIBRATE_PID = SHOOTER_PID_LAYOUT.add("Tune PID", false).withWidget(BuiltInWidgets.kToggleSwitch),
             SHOOTER_OVERRIDE_LED = SHOOTER_TAB.add("Override LED", false).withWidget(BuiltInWidgets.kToggleSwitch),
             SHOOTER_RPM_GRAPH = SHOOTER_TAB.add("RPM Graph", 0).withWidget(BuiltInWidgets.kGraph).withSize(3, 3),
-            BACKSPIN_RPM = SHOOTER_TAB.add("Constant Speed Back Spin", 0.0),
-
+            BACKSPIN_RPM = SHOOTER_TAB.add("Backspin RPM", 0.0),
+            BACKSPIN_P = SHOOTER_BACKSPIN_PID_LAYOUT.add("P", robotSettings.BACKSPIN_PID.getP()),
+            BACKSPIN_I = SHOOTER_BACKSPIN_PID_LAYOUT.add("I", robotSettings.BACKSPIN_PID.getI()),
+            BACKSPIN_D = SHOOTER_BACKSPIN_PID_LAYOUT.add("D", robotSettings.BACKSPIN_PID.getD()),
+            BACKSPIN_F = SHOOTER_BACKSPIN_PID_LAYOUT.add("F", robotSettings.BACKSPIN_PID.getF()),
+            BACKSPIN_CALIBRATE_PID = SHOOTER_BACKSPIN_PID_LAYOUT.add("Tune PID", false).withWidget(BuiltInWidgets.kToggleSwitch),
     //HOOD
     HOOD_HEIGHT = HOOD_HEIGHT_LAYOUT.add("Height", 0),
             HOOD_OVERRIDE_HEIGHT = HOOD_HEIGHT_LAYOUT.add("Override", false).withWidget(BuiltInWidgets.kToggleSwitch),

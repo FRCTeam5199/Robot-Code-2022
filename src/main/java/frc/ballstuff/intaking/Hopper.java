@@ -28,7 +28,7 @@ import static frc.robot.Robot.robotSettings;
  * is) to the {@link frc.ballstuff.shooting.Shooter shooter}.
  */
 public class Hopper implements ISubsystem {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     public AbstractMotorController agitator, agitatorTop, indexer;
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
@@ -88,20 +88,23 @@ public class Hopper implements ISubsystem {
             default:
                 throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
         }
-        if (robotSettings.ENABLE_AGITATOR_TOP) switch (robotSettings.AGITATOR_MOTOR_TYPE) {
-            case CAN_SPARK_MAX:
-                agitatorTop = new SparkMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                agitatorTop.setSensorToRealDistanceFactor(1);
-            case TALON_FX:
-                agitatorTop = new TalonMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                break;
-            case VICTOR:
-                agitatorTop = new VictorMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                break;
-            default:
-                throw new IllegalStateException("No such supported hopper agitator topbar motor config for " + robotSettings.AGITATOR_TOP_MOTOR_TYPE.name());
+        if (robotSettings.ENABLE_AGITATOR_TOP) {
+            switch (robotSettings.AGITATOR_MOTOR_TYPE) {
+                case CAN_SPARK_MAX:
+                    agitatorTop = new SparkMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
+                    agitatorTop.setSensorToRealDistanceFactor(1);
+                case TALON_FX:
+                    agitatorTop = new TalonMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
+                    agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    break;
+                case VICTOR:
+                    agitatorTop = new VictorMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
+                    agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    break;
+                default:
+                    throw new IllegalStateException("No such supported hopper agitator topbar motor config for " + robotSettings.AGITATOR_TOP_MOTOR_TYPE.name());
+            }
+            agitatorTop.setInverted(true);
         }
         if (robotSettings.ENABLE_INDEXER) switch (robotSettings.INDEXER_MOTOR_TYPE) {
             case CAN_SPARK_MAX:
@@ -119,7 +122,6 @@ public class Hopper implements ISubsystem {
             default:
                 throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
         }
-        agitatorTop.setInverted(true);
     }
 
     @Override

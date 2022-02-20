@@ -1,5 +1,6 @@
 package frc.drive.auton.pointtopoint;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
 import frc.ballstuff.intaking.Intake;
@@ -52,6 +53,7 @@ public class AutonManager extends AbstractAutonManager {
 
     @Override
     public void updateGeneric() {
+        UserInterface.smartDashboardPutNumber("Auton Stage", autonPath.currentWaypoint);
     }
 
     @Override
@@ -89,7 +91,7 @@ public class AutonManager extends AbstractAutonManager {
         System.out.println("Home is: " + autonPath.WAYPOINTS.get(0).LOCATION + " and im going to " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION));
         Point point = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION);
         if (attackPoint(point, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED)) {
-            System.out.println("IN TOLERANCE");
+            DriverStation.reportWarning("IN TOLERANCE", false);
             System.out.println("Special Action: " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.toString());
             switch (autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION) {
                 case NONE:
@@ -151,8 +153,11 @@ public class AutonManager extends AbstractAutonManager {
                 case DRIVE_180:
                     specialActionComplete = ((DriveManagerStandard)Robot.driver).rotate180();
                     break;
-                case SHOOT_ALL_2022:
-                    specialActionComplete = Robot.shooter.fireAmount2022(5);
+                case SHOOT_ALL_2022_BEHIND_TARMAC:
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2600);
+                    break;
+                case SHOOT_ALL_INSIDE_TARMAC:
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2000);
                     break;
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
@@ -196,9 +201,11 @@ public class AutonManager extends AbstractAutonManager {
             double turned = (drivingChild.guidance.imu.relativeYaw() - yawBeforeTurn) * -1;
             UserInterface.smartDashboardPutNumber("Turned", turned);
 
-            rotationOffset = Math.toDegrees(Math.toRadians(rotationOffset) + Math.PI);
-            while (rotationOffset >= 360) rotationOffset -= 360;
-            while (rotationOffset <= -360) rotationOffset += 360;
+            if (speed < 0) {
+                rotationOffset = Math.toDegrees(Math.toRadians(rotationOffset) + Math.PI);
+                while (rotationOffset >= 360) rotationOffset -= 360;
+                while (rotationOffset <= -360) rotationOffset += 360;
+            }
 
             drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, -ROT_PID.calculate(turned + rotationOffset) * robotSettings.AUTO_ROTATION_SPEED);
             //-rotationOffset * robotSettings.AUTO_ROTATION_SPEED);

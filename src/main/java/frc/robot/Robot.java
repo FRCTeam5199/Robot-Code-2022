@@ -29,6 +29,7 @@ import frc.robot.robotconfigs.twentyone.CompetitionRobot2021;
 import frc.robot.robotconfigs.twentyone.PracticeRobot2021;
 import frc.robot.robotconfigs.twentyone.Swerve2021;
 import frc.robot.robotconfigs.twentytwenty.Robot2020;
+import frc.robot.robotconfigs.twentytwo.CompetitionRobot2022;
 import frc.robot.robotconfigs.twentytwo.PracticeRobot2022;
 import frc.robot.robotconfigs.twentytwo.Swerve2022;
 import frc.selfdiagnostics.ISimpleIssue;
@@ -211,6 +212,8 @@ public class Robot extends TimedRobot {
                 return new PracticeRobot2022();
             case "2022-Swivel":
                 return new Swerve2022();
+            case "2022-Comp":
+                return new CompetitionRobot2022();
             case "ERR_NOT_FOUND":
                 throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
             default:

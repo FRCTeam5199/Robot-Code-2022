@@ -71,7 +71,7 @@ public abstract class DefaultConfig {
     //SHOOTER
     public boolean SHOOTER_USE_TWO_MOTORS = true;
     public boolean SHOOTER_INVERTED = true;
-    public boolean SHOOTER_BACKSPIN_USE = false;
+    public boolean ENABLE_SHOOTER_BACKSPIN = false;
     public IVision.SupportedVision GOAL_CAMERA_TYPE = IVision.SupportedVision.PHOTON;
 
     //INTAKE

@@ -236,8 +236,8 @@ public enum ShootingEnums {
     }),
 
     FIRE_TIMED_2022(shooter -> {
-        shooter.setSpeed(1700);
-        if (shooter.getSpeed() >= 1675) {
+        shooter.setSpeed(shooter.speed);
+        if (shooter.getSpeed() >= (shooter.speed * 0.95)) {
             shooter.timerTicks++;
             hopper.setAll(true);
             if (shooter.timerTicks >= shooter.goalTicks) {

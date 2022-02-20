@@ -25,6 +25,14 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(0, 0)),
             new AutonWaypoint(new Point(1.25, 0))
     ),
+    DRIVE_BACKWARDS_AND_SHOOT_2022(
+            new AutonWaypoint(new Point(0, 0)),
+            new AutonWaypoint(new Point(-1, 0), -1, AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(new Point(-1, 0), -1, SHOOT_ALL_2022_BEHIND_TARMAC)
+    ),
+    SHOOT_WHILE_STILL_2022(
+      new AutonWaypoint(new Point(0, 0), SHOOT_ALL_2022_BEHIND_TARMAC)
+    ),
     /*
     DRIVE_OFF_TARMAC_BACKWARDS(
             new AutonWaypoint(new Point(0, 0)),
@@ -38,12 +46,17 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(-1, 0))
     ),
      */
-    _2022_PICKUP_ONE_SHOOT_TWO(
+    PICKUP_ONE_SHOOT_TWO_2022(
             new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
-            new AutonWaypoint(new Point(2.5, 0), 1, INTAKE_OFF),
-            new AutonWaypoint(new Point(2.5, 0), 1, DRIVE_180),
-            new AutonWaypoint(new Point(2.5, 0), 1, AIM_ROBOT_AT_TARGET_PITCH),
-            new AutonWaypoint(new Point(2.5, 0), 1, SHOOT_ALL_2022)
+            new AutonWaypoint(new Point(2, 0), 1, INTAKE_OFF), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(new Point(2, 0), 1, DRIVE_180),
+            new AutonWaypoint(new Point(2, 0), 1, AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(new Point(2, 0), 1, SHOOT_ALL_2022_BEHIND_TARMAC)
+    ),
+
+    SHOOT_ALL_THEN_BACKUP(
+            new AutonWaypoint(new Point(0, 0), -1, SHOOT_ALL_INSIDE_TARMAC),
+            new AutonWaypoint(new Point(-1, 0), -1, NONE)
     ),
     /*
     DRIVE_OFF_SHOOT_3(

@@ -133,7 +133,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 UserInterface.smartDashboardPutBoolean("Drive using PID?", a);
                 if (a) {
                     drive(controller.get(XboxAxes.LEFT_JOY_Y), controller.get(XboxAxes.RIGHT_JOY_X));
-                } else if (controller.get(XboxAxes.RIGHT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
+                } else if (robotSettings.ENABLE_VISION && controller.get(XboxAxes.RIGHT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
                     double neededRot;
                     visionCamera.setLedMode(IVision.VisionLEDMode.ON);
                     if (visionCamera.hasValidTarget()) {
@@ -143,6 +143,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     }
                     driveCringe(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), -neededRot * dynamic_gear_R);
                 } else {
+                    if (robotSettings.ENABLE_VISION)
                     visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
                     driveCringe(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
                 }
@@ -484,7 +485,9 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (visionCamera.hasValidTarget()) {
             double neededRot = adjustedRotation(HEADING_PID.calculate(visionCamera.getPitch()));
             driveCringe(0, -neededRot);
-            return Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 3.5;
+            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 15;
+            //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            return isAligned;
         } else {
             driveCringe(0, .75);
             return false;
