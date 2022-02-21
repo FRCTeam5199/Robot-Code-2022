@@ -9,6 +9,7 @@ import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonPanelButtons;
 import frc.controllers.ControllerEnums.ButtonStatus;
 import frc.controllers.ControllerEnums.JoystickButtons;
+import frc.controllers.JoystickController;
 import frc.misc.ISubsystem;
 import frc.misc.PID;
 import frc.misc.SubsystemStatus;
@@ -206,6 +207,7 @@ public class Shooter implements ISubsystem {
         //UserInterface.smartDashboardPutNumber("RPM", leader.getSpeed());
         rpmGraph.setNumber(leader.getSpeed());
         rpm.setNumber(leader.getSpeed());
+        UserInterface.smartDashboardPutNumber("Current BackSpin RPM", backSpin.getSpeed());
         UserInterface.smartDashboardPutNumber("Target RPM", speed);
         UserInterface.smartDashboardPutBoolean("atSpeed", isAtSpeed());
         UserInterface.smartDashboardPutBoolean("IS SHOOTING?", shooting);
@@ -497,7 +499,7 @@ public class Shooter implements ISubsystem {
                 break;
             }
             case BACKSPINTEST: {
-                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                if (joystickController.get(ControllerEnums.JoystickButtons.NINE) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN2022.shoot(this);
                 } else {
                     tryFiringBalls = false;
@@ -602,7 +604,7 @@ public class Shooter implements ISubsystem {
             follower.follow(leader, !robotSettings.SHOOTER_INVERTED).setCurrentLimit(80).setBrake(false);
         }
         if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
-            backSpin.setInverted(robotSettings.BACKSPIN_INVERTED);
+            backSpin.setInverted(robotSettings.BACKSPIN_INVERTED).setOpenLoopRampRate(0);
         }
         leader.setCurrentLimit(80).setBrake(false).setOpenLoopRampRate(1).resetEncoder();
         //leader.setOpenLoopRampRate(0);
@@ -656,7 +658,7 @@ public class Shooter implements ISubsystem {
         }
         speed = rpm;
         leader.moveAtVelocity(rpm);
-        backSpin.moveAtVelocity(rpm * 1.625);//backSpinRPM);
+        backSpin.moveAtVelocity(backSpinRPM);//backSpinRPM);
     }
 
     /**
