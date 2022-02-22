@@ -9,7 +9,6 @@ import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonPanelButtons;
 import frc.controllers.ControllerEnums.ButtonStatus;
 import frc.controllers.ControllerEnums.JoystickButtons;
-import frc.controllers.JoystickController;
 import frc.misc.ISubsystem;
 import frc.misc.PID;
 import frc.misc.SubsystemStatus;
@@ -42,7 +41,8 @@ public class Shooter implements ISubsystem {
             BACKSPIN_P = UserInterface.BACKSPIN_P.getEntry(),
             BACKSPIN_I = UserInterface.BACKSPIN_I.getEntry(),
             BACKSPIN_D = UserInterface.BACKSPIN_D.getEntry(),
-            BACKSPIN_F = UserInterface.BACKSPIN_F.getEntry();
+            BACKSPIN_F = UserInterface.BACKSPIN_F.getEntry(),
+            calibrateBackspinPID = UserInterface.BACKSPIN_CALIBRATE_PID.getEntry();
     public double speed = 4200;
     public int goalTicks = 20 * 15; //20 ticks = 1 second
     public int ballsShot = 0, ticksPassed = 0, emptyIndexerTicks = 0, hopperCooldownTicks = 0, ballsToShoot = 0;
@@ -173,21 +173,25 @@ public class Shooter implements ISubsystem {
      * @author Smaltin
      */
     private void updateShuffleboard() {
-        if (calibratePID.getBoolean(false)) {
-            PID readPid = new PID(P.getDouble(robotSettings.SHOOTER_PID.getP()), I.getDouble(robotSettings.SHOOTER_PID.getI()), D.getDouble(robotSettings.SHOOTER_PID.getD()), F.getDouble(robotSettings.SHOOTER_PID.getF()));
-            if (!lastPID.equals(readPid)) {
-                lastPID = readPid;
-                leader.setPid(lastPID);
-                if (robotSettings.DEBUG && DEBUG) {
-                    System.out.println("Set shooter pid to " + lastPID);
+        if (calibratePID.getBoolean(false) || calibrateBackspinPID.getBoolean(false)) {
+            if (calibratePID.getBoolean(false)) {
+                PID readPid = new PID(P.getDouble(robotSettings.SHOOTER_PID.getP()), I.getDouble(robotSettings.SHOOTER_PID.getI()), D.getDouble(robotSettings.SHOOTER_PID.getD()), F.getDouble(robotSettings.SHOOTER_PID.getF()));
+                if (!lastPID.equals(readPid)) {
+                    lastPID = readPid;
+                    leader.setPid(lastPID);
+                    if (robotSettings.DEBUG && DEBUG) {
+                        System.out.println("Set shooter pid to " + lastPID);
+                    }
                 }
             }
-            PID backReadPid = new PID(BACKSPIN_P.getDouble(robotSettings.BACKSPIN_PID.getP()), BACKSPIN_I.getDouble(robotSettings.BACKSPIN_PID.getI()), BACKSPIN_D.getDouble(robotSettings.BACKSPIN_PID.getD()), BACKSPIN_F.getDouble(robotSettings.BACKSPIN_PID.getF()));
-            if (!backspinLastPID.equals(backReadPid)) {
-                backspinLastPID = backReadPid;
-                leader.setPid(backspinLastPID);
-                if (robotSettings.DEBUG && DEBUG) {
-                    System.out.println("Set shooter pid to " + backspinLastPID);
+            if (calibrateBackspinPID.getBoolean(false)) {
+                PID backReadPid = new PID(BACKSPIN_P.getDouble(robotSettings.BACKSPIN_PID.getP()), BACKSPIN_I.getDouble(robotSettings.BACKSPIN_PID.getI()), BACKSPIN_D.getDouble(robotSettings.BACKSPIN_PID.getD()), BACKSPIN_F.getDouble(robotSettings.BACKSPIN_PID.getF()));
+                if (!backspinLastPID.equals(backReadPid)) {
+                    backspinLastPID = backReadPid;
+                    backSpin.setPid(backspinLastPID);
+                    if (robotSettings.DEBUG && DEBUG) {
+                        System.out.println("Set shooter backspin pid to " + backspinLastPID);
+                    }
                 }
             }
         } else {
@@ -500,7 +504,7 @@ public class Shooter implements ISubsystem {
             }
             case BACKSPINTEST: {
                 if (joystickController.get(ControllerEnums.JoystickButtons.NINE) == ButtonStatus.DOWN) {
-                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN2022.shoot(this);
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_2022.shoot(this);
                 } else {
                     tryFiringBalls = false;
                     leader.moveAtPercent(0);
@@ -569,7 +573,7 @@ public class Shooter implements ISubsystem {
     }
 
     /**
-     * Initialize the motors. Checks for SHOOTER_USE_SPARKS and SHOOTER_USE_TWO_MOTORS to allow modularity.
+     * Initialize the motors. Checks for {@link AbstractMotorController.SupportedMotors SHOOTER_MOTOR_TYPE} and {@link frc.robot.robotconfigs.DefaultConfig SHOOTER_USE_TWO_MOTORS} to allow modularity.
      *
      * @throws IllegalStateException If the motor configuration is not implemented
      */
@@ -604,7 +608,7 @@ public class Shooter implements ISubsystem {
             follower.follow(leader, !robotSettings.SHOOTER_INVERTED).setCurrentLimit(80).setBrake(false);
         }
         if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
-            backSpin.setInverted(robotSettings.BACKSPIN_INVERTED).setOpenLoopRampRate(0);
+            backSpin.setInverted(robotSettings.BACKSPIN_INVERTED).setOpenLoopRampRate(3);
         }
         leader.setCurrentLimit(80).setBrake(false).setOpenLoopRampRate(1).resetEncoder();
         //leader.setOpenLoopRampRate(0);
@@ -658,7 +662,7 @@ public class Shooter implements ISubsystem {
         }
         speed = rpm;
         leader.moveAtVelocity(rpm);
-        backSpin.moveAtVelocity(backSpinRPM);//backSpinRPM);
+        backSpin.moveAtVelocity(backSpinRPM);
     }
 
     /**

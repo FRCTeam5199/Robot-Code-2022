@@ -27,15 +27,16 @@ public enum ShootingEnums {
     FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
         //shooter.setPercentSpeed(shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));//.46);
         //shooter.setPercentSpeed(.3);
-        shooter.setSpeed(2000 + (shooter.leader.getMaxRPM() - 2000) * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));
+        shooter.setSpeed(1500 + (2500 - 1500) * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));
         if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }
         //shooter.setSpeed(1000);
     }),
 
-    FIRE_SOLID_SPEED_BACKSPIN2022(shooter1 -> {
-        shooter.setSpeed(shooter.leader.getMaxRPM() * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER), UserInterface.BACKSPIN_RPM.getEntry().getDouble(0));
+    FIRE_SOLID_SPEED_BACKSPIN_2022(shooter1 -> {
+        double rpm = shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER);
+        shooter.setSpeed(rpm, rpm * 1.625);
         if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }
@@ -43,7 +44,7 @@ public enum ShootingEnums {
 
     PID_TUNING(shooter -> {
         //shooter.setPercentSpeed(1);
-        shooter.setSpeed(1700); //error of 500
+        shooter.setSpeed(1700, UserInterface.BACKSPIN_RPM.getEntry().getDouble(0)); //error of 500
     }),
 
     FIRE_SOLID_SPEED_PRACTICE2022(shooter -> {

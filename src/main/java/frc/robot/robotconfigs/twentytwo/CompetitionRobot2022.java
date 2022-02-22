@@ -14,7 +14,7 @@ import frc.vision.camera.IVision;
 
 public class CompetitionRobot2022 extends DefaultConfig {
     public CompetitionRobot2022() {
-        ENABLE_DRIVE = true;
+        ENABLE_DRIVE = false;
         ENABLE_SHOOTER = true;
         ENABLE_SHOOTER_BACKSPIN = true;
         ENABLE_HOPPER = false;
@@ -106,9 +106,10 @@ public class CompetitionRobot2022 extends DefaultConfig {
         SHOOTER_CONST_SPEED_PID = SHOOTER_PID;//new PID(1.9, .0001, 70, 0.0851136);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
         SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
-        BACKSPIN_PID = new PID(0.08, 0, 0, 0.0461851);//PID(.132, 0.0, 10, 0.0461851);
+        BACKSPIN_PID = new PID(0, 0, 0, 0.0461851);//PID(.132, 0.0, 10, 0.0461851);
         BACKSPIN_ID = 6;
-        SHOOTER_INVERTED = true;
+        BACKSPIN_INVERTED = true;
+        SHOOTER_INVERTED = false;
 
                 //Hopper
         ENABLE_BREAK_BEAM = true;
