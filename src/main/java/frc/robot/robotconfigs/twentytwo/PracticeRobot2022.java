@@ -49,8 +49,8 @@ public class PracticeRobot2022 extends DefaultConfig {
         CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
-        AUTO_SPEED = 1;
-        AUTO_ROTATION_SPEED = 1;
+        AUTO_SPEED = 0.5;
+        AUTO_ROTATION_SPEED = 0.75;
         GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
 
         DRIVEBASE_VOLTAGE_MULTIPLIER = 3.5 * (1.050830889540567 / 2145); //3.4635 volts = 2825 RPM.

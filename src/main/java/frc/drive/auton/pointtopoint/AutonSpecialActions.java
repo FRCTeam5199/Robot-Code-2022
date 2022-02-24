@@ -91,5 +91,5 @@ public enum AutonSpecialActions {
      * Shoots the two balls in the hopper for 2022
      */
     SHOOT_ALL_2022_BEHIND_TARMAC,
-    SHOOT_ALL_INSIDE_TARMAC
+    SHOOT_ALL_2022_INSIDE_TARMAC
 }

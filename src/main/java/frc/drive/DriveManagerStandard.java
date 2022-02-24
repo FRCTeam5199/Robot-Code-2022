@@ -418,7 +418,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
      */
     private void initPID() {
         setPID(robotSettings.DRIVEBASE_PID);
-        HEADING_PID = new PIDController(0.005, 0.00001, 0.0005);
+        HEADING_PID = new PIDController(0.02, 0.000005, 0.0005);
     }
 
     /**
@@ -485,7 +485,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (visionCamera.hasValidTarget()) {
             double neededRot = adjustedRotation(HEADING_PID.calculate(visionCamera.getPitch()));
             driveCringe(0, -neededRot);
-            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 15;
+            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 10;
             //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
             return isAligned;
         } else {
@@ -497,7 +497,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
     public boolean rotate180() {
         double gotoo = guidance.imu.relativeYaw()+180;
         while (guidance.imu.relativeYaw() <= gotoo) {
-            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED);
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 2);
         }
         /*
         double needToTurnTo = yawBeforeTurn + 180;

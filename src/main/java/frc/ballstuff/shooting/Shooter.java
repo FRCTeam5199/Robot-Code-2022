@@ -184,19 +184,22 @@ public class Shooter implements ISubsystem {
                     }
                 }
             }
-            if (calibrateBackspinPID.getBoolean(false)) {
-                PID backReadPid = new PID(BACKSPIN_P.getDouble(robotSettings.BACKSPIN_PID.getP()), BACKSPIN_I.getDouble(robotSettings.BACKSPIN_PID.getI()), BACKSPIN_D.getDouble(robotSettings.BACKSPIN_PID.getD()), BACKSPIN_F.getDouble(robotSettings.BACKSPIN_PID.getF()));
-                if (!backspinLastPID.equals(backReadPid)) {
-                    backspinLastPID = backReadPid;
-                    backSpin.setPid(backspinLastPID);
-                    if (robotSettings.DEBUG && DEBUG) {
-                        System.out.println("Set shooter backspin pid to " + backspinLastPID);
+            if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
+                if (calibrateBackspinPID.getBoolean(false)) {
+                    PID backReadPid = new PID(BACKSPIN_P.getDouble(robotSettings.BACKSPIN_PID.getP()), BACKSPIN_I.getDouble(robotSettings.BACKSPIN_PID.getI()), BACKSPIN_D.getDouble(robotSettings.BACKSPIN_PID.getD()), BACKSPIN_F.getDouble(robotSettings.BACKSPIN_PID.getF()));
+                    if (!backspinLastPID.equals(backReadPid)) {
+                        backspinLastPID = backReadPid;
+                        backSpin.setPid(backspinLastPID);
+                        if (robotSettings.DEBUG && DEBUG) {
+                            System.out.println("Set shooter backspin pid to " + backspinLastPID);
+                        }
                     }
                 }
             }
         } else {
             if (!isConstSpeed && isConstSpeedLast) {
                 leader.setPid(robotSettings.SHOOTER_PID);
+                if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
                 backSpin.setPid(robotSettings.BACKSPIN_PID);
                 isConstSpeedLast = false;
                 if (DEBUG && robotSettings.DEBUG) {
@@ -211,6 +214,7 @@ public class Shooter implements ISubsystem {
         //UserInterface.smartDashboardPutNumber("RPM", leader.getSpeed());
         rpmGraph.setNumber(leader.getSpeed());
         rpm.setNumber(leader.getSpeed());
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
         UserInterface.smartDashboardPutNumber("Current BackSpin RPM", backSpin.getSpeed());
         UserInterface.smartDashboardPutNumber("Target RPM", speed);
         UserInterface.smartDashboardPutBoolean("atSpeed", isAtSpeed());
@@ -662,6 +666,7 @@ public class Shooter implements ISubsystem {
         }
         speed = rpm;
         leader.moveAtVelocity(rpm);
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
         backSpin.moveAtVelocity(backSpinRPM);
     }
 

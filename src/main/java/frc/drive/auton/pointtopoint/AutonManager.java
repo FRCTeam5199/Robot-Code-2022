@@ -10,7 +10,6 @@ import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.Point;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
-import frc.misc.UtilFunctions;
 import frc.motors.SparkMotorController;
 import frc.robot.Robot;
 import frc.telemetry.RobotTelemetryStandard;
@@ -148,15 +147,15 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = Robot.turret.resetShooter();
                     break;
                 case AIM_ROBOT_AT_TARGET_PITCH:
-                    specialActionComplete = ((DriveManagerStandard)Robot.driver).aimAtTarget();
+                    specialActionComplete = ((DriveManagerStandard) Robot.driver).aimAtTarget();
                     break;
                 case DRIVE_180:
-                    specialActionComplete = ((DriveManagerStandard)Robot.driver).rotate180();
+                    specialActionComplete = ((DriveManagerStandard) Robot.driver).rotate180();
                     break;
                 case SHOOT_ALL_2022_BEHIND_TARMAC:
                     specialActionComplete = Robot.shooter.fireAmount2022(3, 2600);
                     break;
-                case SHOOT_ALL_INSIDE_TARMAC:
+                case SHOOT_ALL_2022_INSIDE_TARMAC:
                     specialActionComplete = Robot.shooter.fireAmount2022(3, 2000);
                     break;
                 default:
@@ -195,6 +194,8 @@ public class AutonManager extends AbstractAutonManager {
         }
         UserInterface.smartDashboardPutNumber("WheelRotations", drivingChild.leaderL.getRotations());
         boolean inTolerance = here.isWithin(robotSettings.AUTON_TOLERANCE * 3, point);
+        if (point.X == -9999 && point.Y == -9999)
+            inTolerance = true;
         UserInterface.smartDashboardPutNumber("rotOffset", -rotationOffset);
         UserInterface.smartDashboardPutString("Current Position", here.toString());
         if (!inTolerance) {

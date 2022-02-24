@@ -2,6 +2,7 @@ package frc.drive.auton.pointtopoint;
 
 
 import frc.drive.auton.Point;
+import frc.robot.Robot;
 
 import static frc.drive.auton.pointtopoint.AutonSpecialActions.NONE;
 
@@ -37,5 +38,13 @@ public class AutonWaypoint {
 
     public AutonWaypoint(Point pos) {
         this(pos, 1);
+    }
+
+    public AutonWaypoint(AutonSpecialActions action) {
+        this(
+                new Point(-9999, -9999),
+                1,
+                action
+        );
     }
 }
