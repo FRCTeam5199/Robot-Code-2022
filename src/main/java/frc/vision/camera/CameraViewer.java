@@ -3,20 +3,18 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.TimedRobot;
 import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
+import frc.misc.UserInterface;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-public class cameraViewer implements ISubsystem {
+public class CameraViewer implements ISubsystem {
     UsbCamera camera;
     Thread thread;
 
 
-    public cameraViewer(){
+    public CameraViewer(){
         addToMetaList();
         init();
     }
@@ -25,10 +23,10 @@ public class cameraViewer implements ISubsystem {
     public void init() {
         camera = CameraServer.startAutomaticCapture(0);
         camera.setResolution(640, 480);
-
-        thread = new Thread("Camera thread");
+        UserInterface.SMART_DASHBOARD.add("CameraViewer", camera);
+        /*thread = new Thread("Camera thread");
         thread.start();
-
+         */
     }
 
     @Override
@@ -43,6 +41,7 @@ public class cameraViewer implements ISubsystem {
 
     @Override
     public void updateTeleop() {
+        /*
         Mat source = new Mat();
         Mat output = new Mat();
 
@@ -54,6 +53,7 @@ public class cameraViewer implements ISubsystem {
             Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
             outputStream.putFrame(output);
         }
+         */
     }
 
     @Override
@@ -93,6 +93,6 @@ public class cameraViewer implements ISubsystem {
 
     @Override
     public String getSubsystemName() {
-        return null;
+        return "Viewable Camera";
     }
 }

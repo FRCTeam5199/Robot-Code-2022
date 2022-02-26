@@ -29,22 +29,22 @@ public class Pneumatics implements ISubsystem {
 
     @Override
     public void init() {
-        compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+        compressor = new Compressor(robotSettings.PNEUMATICS_MODULE_TYPE);
         compressor.enableDigital();
         if (robotSettings.ENABLE_INTAKE && robotSettings.ENABLE_PNOOMATICS) {
-            solenoidIntake = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.INTAKE_OUT_ID, robotSettings.INTAKE_IN_ID);
+            solenoidIntake = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.INTAKE_OUT_ID, robotSettings.INTAKE_IN_ID);
         }
         if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS) {
-            climberLock = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.CLIMBER_IN_ID, robotSettings.CLIMBER_OUT_ID);
+            climberLock = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_IN_ID, robotSettings.CLIMBER_OUT_ID);
         }
         if (robotSettings.ENABLE_SHOOTER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_SHOOTER_COOLING) {
-            shooterCooling = new Solenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.SHOOTER_COOLING_ID);
+            shooterCooling = new Solenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.SHOOTER_COOLING_ID);
         }
         if (robotSettings.ENABLE_DRIVE && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_BALL_SHIFTERS) {
-            ballShifter = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.BALL_SHIFTERS_IN_ID, robotSettings.BALL_SHIFTERS_OUT_ID);
+            ballShifter = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.BALL_SHIFTERS_IN_ID, robotSettings.BALL_SHIFTERS_OUT_ID);
         }
         if (robotSettings.ENABLE_BUDDY_CLIMBER && robotSettings.ENABLE_PNOOMATICS) {
-            buddyClimberLock = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.BUDDY_CLIMBER_LOCK_IN_ID, robotSettings.BUDDY_CLIMBER_LOCK_OUT_ID);
+            buddyClimberLock = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.BUDDY_CLIMBER_LOCK_IN_ID, robotSettings.BUDDY_CLIMBER_LOCK_OUT_ID);
         }
     }
 

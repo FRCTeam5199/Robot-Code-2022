@@ -35,6 +35,7 @@ import frc.robot.robotconfigs.twentytwo.Swerve2022;
 import frc.selfdiagnostics.ISimpleIssue;
 import frc.selfdiagnostics.IssueHandler;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
+import frc.vision.camera.CameraViewer;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -65,6 +66,7 @@ public class Robot extends TimedRobot {
     public static LEDs leds;
     public static Pneumatics pneumatics;
     public static Climber climber;
+    public static CameraViewer cameraViewer;
     public static BuddyClimber buddyClimber;
     public static Flashlight flashlight;
     public static BreakBeamSensor breakBeam;
@@ -126,6 +128,10 @@ public class Robot extends TimedRobot {
         }
         if (robotSettings.ENABLE_CLIMBER) {
             climber = new Climber();
+        }
+
+        if (robotSettings.ENABLE_CAMERA) {
+            //cameraViewer = new CameraViewer();
         }
 
         if (robotSettings.ENABLE_BUDDY_CLIMBER) {

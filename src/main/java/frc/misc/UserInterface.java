@@ -1,5 +1,7 @@
 package frc.misc;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -29,7 +31,8 @@ public class UserInterface {
             ROBOT_TAB = Shuffleboard.getTab("DANGER!"),
             WARNINGS_TAB = Shuffleboard.getTab("Warnings"),
             HOOD_TAB = Shuffleboard.getTab("Hood"),
-            AUTON_TAB = Shuffleboard.getTab("Auton");
+            AUTON_TAB = Shuffleboard.getTab("Auton"),
+            SMART_DASHBOARD = Shuffleboard.getTab("SmartDashboard");
 
     //LAYOUTS
     public static final ShuffleboardLayout SHOOTER_PID_LAYOUT = SHOOTER_TAB.getLayout("PID", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 3),
@@ -127,6 +130,12 @@ public class UserInterface {
         }
         if (robotSettings.ENABLE_SHOOTER) {
             SHOOTER_RPM = SHOOTER_TAB.add("RPM", 0);
+        }
+
+        if (robotSettings.ENABLE_CAMERA) {
+            UsbCamera camera = CameraServer.startAutomaticCapture(0);
+            camera.setResolution(640, 480);
+            //UserInterface.SMART_DASHBOARD.add("CameraViewer", camera);
         }
     }
 }

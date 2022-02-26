@@ -25,6 +25,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_PNOOMATICS = false;
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
+        ENABLE_CAMERA = true;
 
         ENABLE_VISION = true;
         ENABLE_CLIMBER = true;

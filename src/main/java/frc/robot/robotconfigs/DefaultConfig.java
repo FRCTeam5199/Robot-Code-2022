@@ -4,6 +4,7 @@ package frc.robot.robotconfigs;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;*/
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.ballstuff.intaking.Hopper;
@@ -62,11 +63,13 @@ public abstract class DefaultConfig {
     public boolean ENABLE_CLIMBER = false;
     public boolean ENABLE_FLASHLIGHT = false;
     public boolean ENABLE_BUDDY_CLIMBER = false;
+    public boolean ENABLE_CAMERA = false;
 
     //Misc
     public boolean ENABLE_VISION = false;
     public boolean USE_PHOTONVISION = true;
     public boolean ENABLE_IMU = false;
+    public PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
 
     //SHOOTER
     public boolean SHOOTER_USE_TWO_MOTORS = true;

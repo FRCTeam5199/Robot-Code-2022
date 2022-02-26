@@ -1,5 +1,6 @@
 package frc.robot.robotconfigs.twentytwo;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.ballstuff.intaking.Hopper;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
@@ -17,19 +18,21 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_DRIVE = false;
         ENABLE_SHOOTER = true;
         ENABLE_SHOOTER_BACKSPIN = true;
-        ENABLE_HOPPER = false;
-        ENABLE_INDEXER = false;
-        ENABLE_AGITATOR = false;
-        ENABLE_AGITATOR_TOP = false;
-        ENABLE_INTAKE = false;
+        ENABLE_HOPPER = true;
+        ENABLE_INDEXER = true;
+        ENABLE_AGITATOR = true;
+        ENABLE_AGITATOR_TOP = true;
+        ENABLE_INTAKE = true;
         ENABLE_PNOOMATICS = false;
         ENABLE_INDEXER_AUTO_INDEX = false;
-        ENABLE_IMU = false;
+        ENABLE_IMU = true;
+        ENABLE_CAMERA = false;
 
         ENABLE_VISION = false;
-        ENABLE_CLIMBER = false;
+        ENABLE_CLIMBER = true;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
+        PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
 
         DRIVE_INVERT_LEFT = true;
         DRIVE_INVERT_RIGHT = false;
@@ -45,8 +48,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD_2022;
 
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-        CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+        CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+        CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
         AUTO_SPEED = 1;
@@ -86,9 +89,6 @@ public class CompetitionRobot2022 extends DefaultConfig {
         GOAL_CAM_NAME = "GoalCamera";
         BALL_CAM_NAME = "BallCamera";
 
-        //PDP
-        PDP_ID = 0;
-
         //Drive Motors
         DRIVE_LEADER_L_ID = 2; //talon
         DRIVE_FOLLOWERS_L_IDS = new int[]{3, 8}; //talon
@@ -115,26 +115,27 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_BREAK_BEAM = true;
         BREAK_BEAM_ID = 9;
         INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
-        //INDEXER_MOTOR_ID = 7;
-        //AGITATOR_MOTOR_ID = 10;
-        //AGITATOR_TOPBAR_MOTOR_ID = 9;
-        AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-        INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+        INDEXER_MOTOR_ID = 59;
+        AGITATOR_MOTOR_ID = 58; //spark
+        AGITATOR_TOPBAR_MOTOR_ID = 61;
+        AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
 
         //Intake
-        //INTAKE_MOTOR_ID = 32;
+        INTAKE_MOTOR_ID = 60;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022;
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         INTAKE_IN_ID = 0;
         INTAKE_OUT_ID = 1;
 
         //Climber
-        //CLIMBER_STG1_MOTOR_ID = 11;
-        //CLIMBER_STG2_MOTOR_ID = 12;
+        CLIMBER_STG1_MOTOR_ID = 12;
+        CLIMBER_STG2_MOTOR_ID = 62; //spark
         CLIMBER_IN_ID = 2;
         CLIMBER_OUT_ID = 3;
 
         PCM_ID = 33;
+        PDP_ID = 50;
     }
 }
