@@ -87,7 +87,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         GOAL_CAM_NAME = "GoalCamera";
         BALL_CAM_NAME = "BallCamera";
 
-        //PDP
+        //PowerDistribution
         PDP_ID = 0;
 
         //Drive Motors
@@ -117,7 +117,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         AGITATOR_TOPBAR_MOTOR_ID = 9;
         AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
 
         //Intake
         INTAKE_MOTOR_ID = 32;

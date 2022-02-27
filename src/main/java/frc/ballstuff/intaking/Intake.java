@@ -140,13 +140,14 @@ public class Intake implements ISubsystem {
             case ROBOT_2022: {
                 if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
                     setIntake(IntakeDirection.IN);
-                    hopper.setAgitatorTopbar(true);
+                    //hopper.setAgitatorTopbar(true);
                 } else if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.UP)) {
                     setIntake(IntakeDirection.OUT);
                 } else {
                     setIntake(IntakeDirection.OFF);
-                    hopper.setAgitatorTopbar(false);
+                    //hopper.setAgitatorTopbar(false);
                 }
+                doIntakeArticulation();
                 break;
             }
             case DRUM_TIME:
@@ -185,9 +186,9 @@ public class Intake implements ISubsystem {
     }
 
     public void doIntakeArticulation() {
-        if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN) {
+        if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
             deployIntake(false);
-        } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN) {
+        } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
             deployIntake(true);
         }
     }

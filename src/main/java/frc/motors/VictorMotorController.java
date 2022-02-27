@@ -153,7 +153,7 @@ public class VictorMotorController extends AbstractMotorController {
         motor.getFaults(foundFaults);
         failureFlag = foundFaults.hasAnyFault();
         if (foundFaults.UnderVoltage) ;
-            //report to PDP
+            //report to PowerDistribution
         else if (foundFaults.RemoteLossOfSignal)
             potentialFix = "Ensure that motor %d is plugged into can AND power";
         else if (foundFaults.APIError)

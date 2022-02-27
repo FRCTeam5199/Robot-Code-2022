@@ -60,6 +60,40 @@ public class Hopper implements ISubsystem {
         if (robotSettings.DEBUG && DEBUG && controller != null) System.out.println("Created a " + controller);
     }
 
+    private void createControllers() {
+        switch (robotSettings.INTAKE_CONTROL_STYLE) {
+            case FLIGHT_STICK:
+            case ROBOT_PRACTICE_2022:
+                controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
+            case ROBOT_2021:
+                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                break;
+            case ROBOT_2022:
+            case STANDARD:
+                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                break;
+            case XBOX_CONTROLLER:
+                controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
+            case BOP_IT:
+                controller = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
+                break;
+            case DRUM_TIME:
+                controller = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
+                break;
+            case WII:
+                controller = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
+                break;
+            case GUITAR:
+                controller = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
+                break;
+            default:
+                throw new IllegalStateException("There is no UI configuration for " + robotSettings.INTAKE_CONTROL_STYLE.name() + " to control the shooter. Please implement me");
+        }
+    }
+
     @Override
     public void init() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX && !robotSettings.ENABLE_BREAK_BEAM) {
@@ -68,31 +102,36 @@ public class Hopper implements ISubsystem {
         }
         createAndInitMotors();
         initMisc();
+        createControllers();
     }
 
 
     private void createAndInitMotors() throws IllegalStateException {
-        if (robotSettings.ENABLE_AGITATOR) switch (robotSettings.AGITATOR_MOTOR_TYPE) {
-            case CAN_SPARK_MAX:
-                agitator = new SparkMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                agitator.setSensorToRealDistanceFactor(1);
-                break;
-            case TALON_FX:
-                agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                break;
-            case VICTOR:
-                agitator = new VictorMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                break;
-            default:
-                throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
+        if (robotSettings.ENABLE_AGITATOR) {
+            switch (robotSettings.AGITATOR_MOTOR_TYPE) {
+                case CAN_SPARK_MAX:
+                    agitator = new SparkMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                    agitator.setSensorToRealDistanceFactor(1);
+                    break;
+                case TALON_FX:
+                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    break;
+                case VICTOR:
+                    agitator = new VictorMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    break;
+                default:
+                    throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
+            }
+            agitator.setInverted(true);
         }
         if (robotSettings.ENABLE_AGITATOR_TOP) {
-            switch (robotSettings.AGITATOR_MOTOR_TYPE) {
+            switch (robotSettings.AGITATOR_TOP_MOTOR_TYPE) {
                 case CAN_SPARK_MAX:
                     agitatorTop = new SparkMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
                     agitatorTop.setSensorToRealDistanceFactor(1);
+                    break;
                 case TALON_FX:
                     agitatorTop = new TalonMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
                     agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
@@ -106,21 +145,23 @@ public class Hopper implements ISubsystem {
             }
             agitatorTop.setInverted(true);
         }
-        if (robotSettings.ENABLE_INDEXER) switch (robotSettings.INDEXER_MOTOR_TYPE) {
-            case CAN_SPARK_MAX:
-                indexer = new SparkMotorController(robotSettings.INDEXER_MOTOR_ID);
-                indexer.setSensorToRealDistanceFactor(1);
-                break;
-            case TALON_FX:
-                indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
-                indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                break;
-            case VICTOR:
-                indexer = new VictorMotorController(robotSettings.INDEXER_MOTOR_ID);
-                indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                break;
-            default:
-                throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
+        if (robotSettings.ENABLE_INDEXER) {
+            switch (robotSettings.INDEXER_MOTOR_TYPE) {
+                case CAN_SPARK_MAX:
+                    indexer = new SparkMotorController(robotSettings.INDEXER_MOTOR_ID);
+                    indexer.setSensorToRealDistanceFactor(1);
+                    break;
+                case TALON_FX:
+                    indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
+                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    break;
+                case VICTOR:
+                    indexer = new VictorMotorController(robotSettings.INDEXER_MOTOR_ID);
+                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                    break;
+                default:
+                    throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
+            }
         }
     }
 
@@ -223,7 +264,7 @@ public class Hopper implements ISubsystem {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            indexer.moveAtPercent(!isIndexed() ? 0.15 : 0);
+                            indexer.moveAtPercent(!isIndexed() ? 0.1 : 0);
                         } else {
                             indexer.moveAtPercent(0);
                         }
@@ -244,8 +285,11 @@ public class Hopper implements ISubsystem {
                             agitatorTop.moveAtPercent(0.5);
                         } else if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_OUT) == ControllerEnums.ButtonStatus.DOWN) {
                             agitatorTop.moveAtPercent(-0.5);
+                        } else if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
+                            System.out.println("Moving hopper top");
+                            agitatorTop.moveAtPercent(0.5);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(!isIndexed() ? 0.4 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.8 : 0);
                         } else {
                             agitatorTop.moveAtPercent(0);
                         }
@@ -282,17 +326,17 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void initTest() {
-
+        initGeneric();
     }
 
     @Override
     public void initTeleop() {
-
+        initGeneric();
     }
 
     @Override
     public void initAuton() {
-
+        initGeneric();
     }
 
     @Override
@@ -302,7 +346,9 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void initGeneric() {
-
+        if (robotSettings.HOPPER_CONTROL_STYLE == HopperControlStyles.STANDARD_2022) {
+            indexer.setInverted(true);
+        }
     }
 
     @Override

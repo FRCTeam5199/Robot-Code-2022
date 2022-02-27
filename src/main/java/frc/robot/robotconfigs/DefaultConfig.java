@@ -3,10 +3,7 @@ package frc.robot.robotconfigs;
 /*import com.swervedrivespecialties.swervelib.ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;*/
 
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.*;
 import frc.ballstuff.intaking.Hopper;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
@@ -64,12 +61,14 @@ public abstract class DefaultConfig {
     public boolean ENABLE_FLASHLIGHT = false;
     public boolean ENABLE_BUDDY_CLIMBER = false;
     public boolean ENABLE_CAMERA = false;
+    public boolean ENABLE_HOOD_PISTON = false;
 
     //Misc
     public boolean ENABLE_VISION = false;
     public boolean USE_PHOTONVISION = true;
     public boolean ENABLE_IMU = false;
     public PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
+    public PowerDistribution.ModuleType POWER_DISTRIBUTION_MODULE_TYPE = PowerDistribution.ModuleType.kCTRE;
 
     //SHOOTER
     public boolean SHOOTER_USE_TWO_MOTORS = true;
@@ -216,6 +215,10 @@ public abstract class DefaultConfig {
     public int[] CLIMBER_MOTOR_IDS;
     public int CLIMBER_STG1_MOTOR_ID;
     public int CLIMBER_STG2_MOTOR_ID;
+
+    //hood
+    public int HOOD_ARTICULATOR_IN_ID;
+    public int HOOD_ARTICULATOR_OUT_ID;
 
     /**
      * Must be one of the following: {@link I2C.Port} {@link SerialPort.Port} {@link SPI.Port}

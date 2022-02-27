@@ -3,6 +3,7 @@ package frc.selfdiagnostics;
 import frc.gpws.Alarms;
 import frc.misc.ClientSide;
 import frc.misc.ISubsystem;
+import frc.pdp.PowerDistribution;
 import frc.robot.Main;
 
 import static frc.robot.Robot.robotSettings;
@@ -15,7 +16,7 @@ public class BrownoutIssue implements ISimpleIssue {
     /**
      * Unresolved issues from your childhood? no matter! just use a brownout issue!
      *
-     * @param owner  should be {@link frc.pdp.PDP}
+     * @param owner  should be {@link PowerDistribution}
      * @param report true to report
      */
     public static void handleIssue(ISubsystem owner, boolean report) {

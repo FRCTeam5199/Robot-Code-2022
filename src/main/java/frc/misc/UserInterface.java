@@ -2,7 +2,6 @@ package frc.misc;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
@@ -32,14 +31,16 @@ public class UserInterface {
             WARNINGS_TAB = Shuffleboard.getTab("Warnings"),
             HOOD_TAB = Shuffleboard.getTab("Hood"),
             AUTON_TAB = Shuffleboard.getTab("Auton"),
-            SMART_DASHBOARD = Shuffleboard.getTab("SmartDashboard");
+            CAMERA_TAB = Shuffleboard.getTab("Camera"),
+            PNEUMATICS_TAB = Shuffleboard.getTab("Pneumatics");
 
     //LAYOUTS
     public static final ShuffleboardLayout SHOOTER_PID_LAYOUT = SHOOTER_TAB.getLayout("PID", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 3),
             DRIVE_PID_LAYOUT = DRIVE_TAB.getLayout("PID", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 3),
-            PDP_SETTINGS_LAYOUT = ROBOT_TAB.getLayout("PDP", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 1),
+            PDP_SETTINGS_LAYOUT = ROBOT_TAB.getLayout("PowerDistribution", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 1),
             HOOD_HEIGHT_LAYOUT = HOOD_TAB.getLayout("Height", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 1),
-            SHOOTER_BACKSPIN_PID_LAYOUT = SHOOTER_TAB.getLayout("Backspin PID", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 3);
+            SHOOTER_BACKSPIN_PID_LAYOUT = SHOOTER_TAB.getLayout("Backspin PID", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 3),
+            OVERRIDE_COMPRESSOR_LAYOUT = PNEUMATICS_TAB.getLayout("Compressor Override", BuiltInLayouts.kList).withProperties(Map.of("Label position", "LEFT")).withSize(2, 2);
     //SHOOTER
     public static final SimpleWidget SHOOTER_P = SHOOTER_PID_LAYOUT.add("P", robotSettings.SHOOTER_PID.getP()),
             SHOOTER_I = SHOOTER_PID_LAYOUT.add("I", robotSettings.SHOOTER_PID.getI()),
@@ -76,7 +77,7 @@ public class UserInterface {
             ROBOT_LOCATION = DRIVE_TAB.add("Robot Location", "(0, 0)").withWidget(BuiltInWidgets.kTextView),
 
     /*
-    //PDP TODO make pdp widget (kPowerDistributionPanel)
+    //PowerDistribution TODO make pdp widget (kPowerDistributionPanel)
     PDP_TOTAL_ENERGY_ON_THIS_BOOT = PDP_TAB.add("Total energy on this boot", 0),
             PDP_PEAK_CURRENT = PDP_TAB.add("Peak current", 0),
             PDP_PEAK_POWER = PDP_TAB.add("Peak power", 0),
@@ -91,12 +92,15 @@ public class UserInterface {
             PRINT_ROBOT_NUMBERS = ROBOT_TAB.add("Reprint robot numbers", false).withWidget(BuiltInWidgets.kToggleButton),
             DRIVE_SPEED = DRIVE_TAB.add("Drivebase Speed", 0).withWidget(BuiltInWidgets.kDial).withProperties(Map.of("Min", 0, "Max", 20)),
             CLEAR_WARNINGS = WARNINGS_TAB.add("Stop Alarms", false).withWidget(BuiltInWidgets.kToggleButton),
-    //PDP
+    //PowerDistribution
     PDP_BROWNOUT_MIN_OVERRIDE = PDP_SETTINGS_LAYOUT.add("Settings Override", false).withWidget(BuiltInWidgets.kToggleSwitch),
             PDP_BROWNOUT_MIN_VAL = PDP_SETTINGS_LAYOUT.add("Minimum Brownout Voltage", 9),
     //DANGER PANEL
     GET_RANDOM_FIX = ROBOT_TAB.add("Get random fix", false).withWidget(BuiltInWidgets.kToggleButton),
-            MORGANNE_MODE = ROBOT_TAB.add("isMorganne", true).withWidget(BuiltInWidgets.kToggleSwitch);
+            MORGANNE_MODE = ROBOT_TAB.add("isMorganne", true).withWidget(BuiltInWidgets.kToggleSwitch),
+    //PNEUMATICS
+    COMPRESSOR_TOGGLE = OVERRIDE_COMPRESSOR_LAYOUT.add("Override", false).withWidget(BuiltInWidgets.kToggleSwitch),
+            COMPRESSOR_STATE = OVERRIDE_COMPRESSOR_LAYOUT.add("Toggle", true).withWidget(BuiltInWidgets.kToggleSwitch);
     public static final HashMap<AbstractMotorController, SimpleWidget> motorTemperatureMonitors = new HashMap<>();
 
     //STATIC STUFF

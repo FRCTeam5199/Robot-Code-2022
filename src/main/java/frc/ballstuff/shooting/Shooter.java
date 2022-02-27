@@ -508,6 +508,7 @@ public class Shooter implements ISubsystem {
             }
             case BACKSPINTEST: {
                 if (joystickController.get(ControllerEnums.JoystickButtons.NINE) == ButtonStatus.DOWN) {
+                    System.out.println("I'm working nerd");
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_2022.shoot(this);
                 } else {
                     tryFiringBalls = false;

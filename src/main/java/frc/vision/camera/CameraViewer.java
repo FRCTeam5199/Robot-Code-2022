@@ -1,13 +1,9 @@
 package frc.vision.camera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
 import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 
 public class CameraViewer implements ISubsystem {
     UsbCamera camera;
@@ -23,7 +19,7 @@ public class CameraViewer implements ISubsystem {
     public void init() {
         camera = CameraServer.startAutomaticCapture(0);
         camera.setResolution(640, 480);
-        UserInterface.SMART_DASHBOARD.add("CameraViewer", camera);
+        UserInterface.CAMERA_TAB.add("CameraViewer", camera);
         /*thread = new Thread("Camera thread");
         thread.start();
          */

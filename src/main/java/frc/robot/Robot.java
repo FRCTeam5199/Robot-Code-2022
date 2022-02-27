@@ -23,7 +23,7 @@ import frc.drive.auton.pointtopoint.AutonManager;
 import frc.drive.auton.pointtopoint.AutonRoutines;
 import frc.misc.*;
 import frc.motors.AbstractMotorController;
-import frc.pdp.PDP;
+import frc.pdp.PowerDistribution;
 import frc.robot.robotconfigs.DefaultConfig;
 import frc.robot.robotconfigs.twentyone.CompetitionRobot2021;
 import frc.robot.robotconfigs.twentyone.PracticeRobot2021;
@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
     public static ArticulatedHood articulatedHood;
     public static Turret turret;
     public static Chirp chirp;
-    public static PDP pdp;
+    public static PowerDistribution pdp;
     public static LEDs leds;
     public static Pneumatics pneumatics;
     public static Climber climber;
@@ -160,7 +160,7 @@ public class Robot extends TimedRobot {
             }
         }
         if (robotSettings.ENABLE_PDP) {
-            pdp = new PDP(robotSettings.PDP_ID);
+            pdp = new PowerDistribution();
         }
         if (robotSettings.ENABLE_OVERHEAT_DETECTION) {
             for (AbstractMotorController motor : AbstractMotorController.motorList) {
@@ -335,7 +335,7 @@ public class Robot extends TimedRobot {
         if (System.currentTimeMillis() > lastDisable + 5000) {
             if (robotSettings.ENABLE_DRIVE)
                 driver.setBrake(false);
-            if (robotSettings.ENABLE_HOOD_ARTICULATION)
+            if (robotSettings.ENABLE_HOOD_ARTICULATION && !robotSettings.ENABLE_HOOD_PISTON)
                 articulatedHood.hoodMotor.setBrake(false);
         }
     }

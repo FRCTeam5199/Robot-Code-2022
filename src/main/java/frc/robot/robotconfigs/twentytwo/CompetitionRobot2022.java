@@ -1,6 +1,7 @@
 package frc.robot.robotconfigs.twentytwo;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.ballstuff.intaking.Hopper;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
@@ -15,7 +16,7 @@ import frc.vision.camera.IVision;
 
 public class CompetitionRobot2022 extends DefaultConfig {
     public CompetitionRobot2022() {
-        ENABLE_DRIVE = false;
+        ENABLE_DRIVE = true;
         ENABLE_SHOOTER = true;
         ENABLE_SHOOTER_BACKSPIN = true;
         ENABLE_HOPPER = true;
@@ -23,10 +24,14 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
-        ENABLE_PNOOMATICS = false;
-        ENABLE_INDEXER_AUTO_INDEX = false;
+        ENABLE_PNOOMATICS = true;
+        ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
         ENABLE_CAMERA = false;
+        ENABLE_HOOD_PISTON = true;
+        ENABLE_HOOD_ARTICULATION = true;
+        ENABLE_PDP = true;
+        ENABLE_MUSIC = false;
 
         ENABLE_VISION = false;
         ENABLE_CLIMBER = true;
@@ -114,10 +119,10 @@ public class CompetitionRobot2022 extends DefaultConfig {
                 //Hopper
         ENABLE_BREAK_BEAM = true;
         BREAK_BEAM_ID = 9;
-        INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
+        //INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 59;
         AGITATOR_MOTOR_ID = 58; //spark
-        AGITATOR_TOPBAR_MOTOR_ID = 61;
+        AGITATOR_TOPBAR_MOTOR_ID = 40;
         AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
@@ -126,16 +131,21 @@ public class CompetitionRobot2022 extends DefaultConfig {
         INTAKE_MOTOR_ID = 60;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022;
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
-        INTAKE_IN_ID = 0;
-        INTAKE_OUT_ID = 1;
+        INTAKE_IN_ID = 3;
+        INTAKE_OUT_ID = 2;
 
         //Climber
         CLIMBER_STG1_MOTOR_ID = 12;
         CLIMBER_STG2_MOTOR_ID = 62; //spark
-        CLIMBER_IN_ID = 2;
-        CLIMBER_OUT_ID = 3;
+        CLIMBER_IN_ID = 4;
+        CLIMBER_OUT_ID = 5;
+
+        //hood
+        HOOD_ARTICULATOR_IN_ID = 0;
+        HOOD_ARTICULATOR_OUT_ID = 1;
 
         PCM_ID = 33;
         PDP_ID = 50;
+        POWER_DISTRIBUTION_MODULE_TYPE = PowerDistribution.ModuleType.kRev;
     }
 }
