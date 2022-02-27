@@ -171,6 +171,7 @@ public abstract class DefaultConfig {
     public boolean HOPPER_INDEXER_INVERT_MOTOR;
     public boolean HOPPER_AGITATOR_INVERT_MOTOR;
     public boolean INTAKE_INVERT_MOTOR;
+    public boolean INVERT_DRIVE_DIRECTION;
     public double SHOOTER_HOOD_CONTROL_SPEED = 0.5;
     public double SHOOTER_HOOD_OUT_OF_BOUNDS_SPEED = 0.3;
     public double TRENCH_FRONT_HOOD_POSITION;

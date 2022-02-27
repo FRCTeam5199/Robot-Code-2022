@@ -132,7 +132,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 boolean a = false;
                 UserInterface.smartDashboardPutBoolean("Drive using PID?", a);
                 if (a) {
-                    drive(controller.get(XboxAxes.LEFT_JOY_Y), controller.get(XboxAxes.RIGHT_JOY_X));
+                    drive((controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), controller.get(XboxAxes.RIGHT_JOY_X));
                 } else if (robotSettings.ENABLE_VISION && controller.get(XboxAxes.RIGHT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
                     double neededRot;
                     visionCamera.setLedMode(IVision.VisionLEDMode.ON);
@@ -141,11 +141,11 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     } else {
                         neededRot = controller.get(XboxAxes.RIGHT_JOY_X);
                     }
-                    driveCringe(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), -neededRot * dynamic_gear_R);
+                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), -neededRot * dynamic_gear_R);
                 } else {
                     if (robotSettings.ENABLE_VISION)
                     visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
-                    driveCringe(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
+                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
                 }
             }
             break;

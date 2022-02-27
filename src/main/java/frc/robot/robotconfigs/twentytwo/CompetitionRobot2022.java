@@ -41,10 +41,11 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
         DRIVE_INVERT_LEFT = false;
         DRIVE_INVERT_RIGHT = true;
-        HOPPER_TOP_INVERT_MOTOR = true;
+        HOPPER_TOP_INVERT_MOTOR = false;
         HOPPER_AGITATOR_INVERT_MOTOR = true;
         HOPPER_INDEXER_INVERT_MOTOR = true;
         INTAKE_INVERT_MOTOR = true;
+        INVERT_DRIVE_DIRECTION = true;
 
         //Misc
         USE_PHOTONVISION = false;
