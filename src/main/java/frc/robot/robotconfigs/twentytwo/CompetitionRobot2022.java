@@ -39,8 +39,12 @@ public class CompetitionRobot2022 extends DefaultConfig {
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
 
-        DRIVE_INVERT_LEFT = true;
-        DRIVE_INVERT_RIGHT = false;
+        DRIVE_INVERT_LEFT = false;
+        DRIVE_INVERT_RIGHT = true;
+        HOPPER_TOP_INVERT_MOTOR = true;
+        HOPPER_AGITATOR_INVERT_MOTOR = true;
+        HOPPER_INDEXER_INVERT_MOTOR = true;
+        INTAKE_INVERT_MOTOR = true;
 
         //Misc
         USE_PHOTONVISION = false;

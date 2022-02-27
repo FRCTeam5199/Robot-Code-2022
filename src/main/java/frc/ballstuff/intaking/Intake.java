@@ -299,6 +299,7 @@ public class Intake implements ISubsystem {
                 throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
         }
         intakeMotor.setSensorToRealDistanceFactor(s2rf);
+        intakeMotor.setInverted(robotSettings.INTAKE_INVERT_MOTOR);
     }
 
 

@@ -167,6 +167,10 @@ public abstract class DefaultConfig {
     public double SHOOTER_HOOD_MAX_POS;
     public double SHOOTER_HOOD_MIN_POS;
     public boolean SHOOTER_HOOD_INVERT_MOTOR;
+    public boolean HOPPER_TOP_INVERT_MOTOR;
+    public boolean HOPPER_INDEXER_INVERT_MOTOR;
+    public boolean HOPPER_AGITATOR_INVERT_MOTOR;
+    public boolean INTAKE_INVERT_MOTOR;
     public double SHOOTER_HOOD_CONTROL_SPEED = 0.5;
     public double SHOOTER_HOOD_OUT_OF_BOUNDS_SPEED = 0.3;
     public double TRENCH_FRONT_HOOD_POSITION;

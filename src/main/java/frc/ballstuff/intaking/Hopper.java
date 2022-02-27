@@ -124,7 +124,7 @@ public class Hopper implements ISubsystem {
                 default:
                     throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
             }
-            agitator.setInverted(true);
+            agitator.setInverted(robotSettings.HOPPER_AGITATOR_INVERT_MOTOR);
         }
         if (robotSettings.ENABLE_AGITATOR_TOP) {
             switch (robotSettings.AGITATOR_TOP_MOTOR_TYPE) {
@@ -143,7 +143,7 @@ public class Hopper implements ISubsystem {
                 default:
                     throw new IllegalStateException("No such supported hopper agitator topbar motor config for " + robotSettings.AGITATOR_TOP_MOTOR_TYPE.name());
             }
-            agitatorTop.setInverted(true);
+            agitatorTop.setInverted(robotSettings.HOPPER_TOP_INVERT_MOTOR);
         }
         if (robotSettings.ENABLE_INDEXER) {
             switch (robotSettings.INDEXER_MOTOR_TYPE) {
@@ -162,6 +162,7 @@ public class Hopper implements ISubsystem {
                 default:
                     throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
             }
+            indexer.setInverted(robotSettings.HOPPER_INDEXER_INVERT_MOTOR);
         }
     }
 
@@ -346,9 +347,6 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void initGeneric() {
-        if (robotSettings.HOPPER_CONTROL_STYLE == HopperControlStyles.STANDARD_2022) {
-            indexer.setInverted(true);
-        }
     }
 
     @Override
