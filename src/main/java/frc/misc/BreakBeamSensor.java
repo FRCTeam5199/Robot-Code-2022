@@ -19,6 +19,7 @@ public class BreakBeamSensor implements ISubsystem {
 
     @Override
     public void init() {
+        
         breakBeam = new DigitalInput(robotSettings.BREAK_BEAM_ID);
     }
 

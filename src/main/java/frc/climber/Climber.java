@@ -93,13 +93,22 @@ public class Climber implements ISubsystem {
                     climberStg1.moveAtPercent(0.8);
                 } else if (buttonpanel.get(AUX_BOTTOM) == ButtonStatus.DOWN) {
                     climberStg1.moveAtPercent(-0.8);
-                } else if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
+                } else {
+                    climberStg1.moveAtPercent(0);
+                }
+
+                if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(0.8);
                 } else if (buttonpanel.get(LOWER_CLIMBER) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(-0.8);
                 } else {
-                    climberStg1.moveAtPercent(0);
                     climberStg2.moveAtPercent(0);
+                }
+
+                if (buttonpanel.get(CLIMBER_LOCK) == ButtonStatus.DOWN) {
+                    climberLocks(true);
+                } else if (buttonpanel.get(CLIMBER_UNLOCK) == ButtonStatus.DOWN) {
+                    climberLocks(false);
                 }
             }
             break;
@@ -188,6 +197,9 @@ public class Climber implements ISubsystem {
                 throw new IllegalStateException("No such supported stage 2 climber motor config for " + robotSettings.CLIMBER_MOTOR_TYPE.name());
         }
         climberStg2.setSensorToRealDistanceFactor(s2rfstg2);
+
+        climberStg1.setBrake(true);
+        climberStg2.setBrake(true);
     }
 
     private void createMotors() {

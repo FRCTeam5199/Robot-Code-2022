@@ -57,9 +57,15 @@ public class QuoteOfTheDay {
             "Africa, Default Pi.. \nWhere's Africa? \n... Amica..",
             "Fix your software!!",
             "Oh no, it rickrolled me. Oh no! Kill the server!",
-            "Me: I love my job! \nBrandon: That's a lie.",
+            "Sterling: I love my job! \nBrandon: That's a lie.",
             "Teddy, make your intake lighter.",
-            "If in doubt, comment it out"
+            "If in doubt, comment it out",
+            "Laugh less. Bu hao more.",
+            "I can't connect to the robot if you don't turn it on...",
+            "Sterling: Can the name on my hoodie be \"Pro 'grammer\"\nTeddy: I don’t think they can do thinking like ‘",
+            "Where's discipline? I need to teach the freshman a lesson.",
+            "Teddy: Idk they obviously can’t read\nStryker: Bro you're so mean\nTeddy: Nvm he can read",
+            "Sterling: Someone fried my RIO ports\nBrandon: Just like someone fried my teensy?"
     };
 
     /**

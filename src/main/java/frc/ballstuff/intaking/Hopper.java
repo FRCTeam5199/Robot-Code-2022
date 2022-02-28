@@ -28,7 +28,7 @@ import static frc.robot.Robot.robotSettings;
  * is) to the {@link frc.ballstuff.shooting.Shooter shooter}.
  */
 public class Hopper implements ISubsystem {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     public AbstractMotorController agitator, agitatorTop, indexer;
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
@@ -265,7 +265,7 @@ public class Hopper implements ISubsystem {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            indexer.moveAtPercent(!isIndexed() ? 0.1 : 0);
+                            indexer.moveAtPercent(!isIndexed() ? 0.05 : 0);
                         } else {
                             indexer.moveAtPercent(0);
                         }
@@ -276,7 +276,7 @@ public class Hopper implements ISubsystem {
                         } else if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_OUT) == ControllerEnums.ButtonStatus.DOWN) {
                             agitator.moveAtPercent(-0.5);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitator.moveAtPercent(!isIndexed() ? 0.3 : 0);
+                            agitator.moveAtPercent(!isIndexed() ? 0.2 : 0);
                         } else {
                             agitator.moveAtPercent(0);
                         }
@@ -287,23 +287,25 @@ public class Hopper implements ISubsystem {
                         } else if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_OUT) == ControllerEnums.ButtonStatus.DOWN) {
                             agitatorTop.moveAtPercent(-0.5);
                         } else if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            System.out.println("Moving hopper top");
                             agitatorTop.moveAtPercent(0.5);
+                        } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
+                            //lol imagine mechanical being bad
+                            agitatorTop.moveAtPercent(0);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(!isIndexed() ? 0.8 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.2 : 0);
                         } else {
                             agitatorTop.moveAtPercent(0);
                         }
                     }
                 } else {
                     if (robotSettings.ENABLE_INDEXER) {
-                        indexer.moveAtPercent(indexerActive ? 0.6 : 0);
+                        indexer.moveAtPercent(indexerActive ? 0.3 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
-                        agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
+                        agitator.moveAtPercent(agitatorActive ? 0.3 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.2 : 0);
                     }
                 }
                 if (robotSettings.DEBUG && DEBUG) {

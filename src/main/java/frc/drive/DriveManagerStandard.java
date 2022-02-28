@@ -54,6 +54,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
     private boolean ballShifterEnabled = false;
     private IVision visionCamera;
     private PIDController HEADING_PID;
+    private boolean isFirstStageEnergySaverOn = false, isSecondStageEnergySaverOn = false;
+    private int energySaverLevel = 0;
 
     public DriveManagerStandard() throws UnsupportedOperationException, InitializationFailureException {
         super();
@@ -144,9 +146,10 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), -neededRot * dynamic_gear_R);
                 } else {
                     if (robotSettings.ENABLE_VISION)
-                    visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
+                        visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
                     driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
                 }
+                energySaver();
             }
             break;
             case BALL_SHIFTING_STANDARD: {
@@ -312,6 +315,62 @@ public class DriveManagerStandard extends AbstractDriveManager {
     protected void onControlChange() {
         //recreate controllers
         initMisc();
+    }
+
+    /**
+     * Only to be used on a 3-motor setup. Puts motors on coast mode and stops turning them to save energy
+     */
+    private void energySaver() {
+        switch (robotSettings.DRIVE_STYLE) {
+            case STANDARD_2022:
+                if (controller.get(ControllerEnums.XBoxPOVButtons.DOWN) == ButtonStatus.DOWN) {
+                    if (energySaverLevel < 2) {
+                        energySaverLevel++;
+                    } else {
+                        energySaverLevel = 1;
+                    }
+                } else if (controller.get(ControllerEnums.XBoxPOVButtons.UP) == ButtonStatus.DOWN) {
+                    energySaverLevel = 0;
+                }
+                break;
+        }
+        if (energySaverLevel == 0) {
+            if (isFirstStageEnergySaverOn) {
+                followerL.getMotor(0).setBrake(true);
+                followerR.getMotor(0).setBrake(true);
+                followerL.getMotor(0).follow(leaderL);
+                followerR.getMotor(0).follow(leaderR);
+                isFirstStageEnergySaverOn = false;
+
+            }
+            if (isSecondStageEnergySaverOn) {
+                followerL.getMotor(1).setBrake(true);
+                followerR.getMotor(1).setBrake(true);
+                isSecondStageEnergySaverOn = false;
+            }
+        } else if (energySaverLevel == 1) {
+            if (!isFirstStageEnergySaverOn) {
+                followerL.getMotor(0).setBrake(false);
+                followerR.getMotor(0).setBrake(false);
+                isFirstStageEnergySaverOn = true;
+            }
+            if (isSecondStageEnergySaverOn) {
+                followerL.getMotor(1).setBrake(true);
+                followerR.getMotor(1).setBrake(true);
+                isSecondStageEnergySaverOn = false;
+            }
+        } else if (energySaverLevel == 2) {
+            if (!isFirstStageEnergySaverOn) {
+                followerL.getMotor(0).setBrake(false);
+                followerR.getMotor(0).setBrake(false);
+                isFirstStageEnergySaverOn = true;
+            }
+            if (!isSecondStageEnergySaverOn) {
+                followerL.getMotor(1).setBrake(false);
+                followerR.getMotor(1).setBrake(false);
+                isSecondStageEnergySaverOn = false;
+            }
+        }
     }
 
     /**
@@ -495,7 +554,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
     }
 
     public boolean rotate180() {
-        double gotoo = guidance.imu.relativeYaw()+180;
+        double gotoo = guidance.imu.relativeYaw() + 180;
         while (guidance.imu.relativeYaw() <= gotoo) {
             driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 2);
         }

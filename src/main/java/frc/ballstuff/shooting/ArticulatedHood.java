@@ -48,7 +48,7 @@ public class ArticulatedHood implements ISubsystem {
             case SPEED_2021:
             case STANDARD_OFFSEASON_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
-            case BACKSPINTEST:
+            case BACKSPIN_SHOOT_2022:
             case PRACTICE_2022:
             case STANDARD_2022:
             case STANDARD:
@@ -65,7 +65,7 @@ public class ArticulatedHood implements ISubsystem {
                 throw new IllegalStateException("There is no UI configuration for " + robotSettings.SHOOTER_CONTROL_STYLE.name() + " to control the articulated hood. Please implement me");
         }
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
-            case BACKSPINTEST:
+            case BACKSPIN_SHOOT_2022:
             case PRACTICE_2022:
             case STANDARD_2022:
                 break;
@@ -98,7 +98,7 @@ public class ArticulatedHood implements ISubsystem {
     public void updateGeneric() { //FIVE UP THREE DOWN
         double currentPos;
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
-            case BACKSPINTEST:
+            case BACKSPIN_SHOOT_2022:
             case STANDARD_2022:
             case PRACTICE_2022:
                 if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
@@ -255,7 +255,7 @@ public class ArticulatedHood implements ISubsystem {
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_2022:
             case PRACTICE_2022:
-            case BACKSPINTEST:
+            case BACKSPIN_SHOOT_2022:
                 break;
             default:
                 moveToPos(moveTo, hoodMotor.getRotations());

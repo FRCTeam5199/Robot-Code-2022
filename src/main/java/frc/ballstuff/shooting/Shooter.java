@@ -72,7 +72,7 @@ public class Shooter implements ISubsystem {
             case SPEED_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021:
-            case BACKSPINTEST:
+            case BACKSPIN_SHOOT_2022:
             case STANDARD:
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
@@ -136,7 +136,7 @@ public class Shooter implements ISubsystem {
             case SPEED_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021:
-            case BACKSPINTEST:
+            case BACKSPIN_SHOOT_2022:
             case STANDARD:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
@@ -506,9 +506,8 @@ public class Shooter implements ISubsystem {
 
                 break;
             }
-            case BACKSPINTEST: {
-                if (joystickController.get(ControllerEnums.JoystickButtons.NINE) == ButtonStatus.DOWN) {
-                    System.out.println("I'm working nerd");
+            case BACKSPIN_SHOOT_2022: {
+                if (joystickController.get(ControllerEnums.JoystickButtons.NINE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_2022.shoot(this);
                 } else {
                     tryFiringBalls = false;
@@ -782,7 +781,7 @@ public class Shooter implements ISubsystem {
      * Used to change how the input is handled by the {@link Shooter} and what kind of controller to use
      */
     public enum ShootingControlStyles {
-        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022, BACKSPINTEST;
+        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022, BACKSPIN_SHOOT_2022;
 
         private static SendableChooser<ShootingControlStyles> myChooser;
 

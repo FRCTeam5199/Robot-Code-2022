@@ -50,10 +50,9 @@ public class CompetitionRobot2022 extends DefaultConfig {
         //Misc
         USE_PHOTONVISION = false;
 
-
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD_2022;
-        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.BACKSPINTEST;
+        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.BACKSPIN_SHOOT_2022;
         HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD_2022;
         CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD_2022;
 
@@ -123,7 +122,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
                 //Hopper
         ENABLE_BREAK_BEAM = true;
-        BREAK_BEAM_ID = 9;
+        BREAK_BEAM_ID = 7;
         //INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 59;
         AGITATOR_MOTOR_ID = 58; //spark
