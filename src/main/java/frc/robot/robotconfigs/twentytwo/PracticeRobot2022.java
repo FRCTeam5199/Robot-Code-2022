@@ -28,7 +28,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_CAMERA = true;
 
         ENABLE_VISION = true;
-        ENABLE_CLIMBER = true;
+        ENABLE_CLIMBER = false;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
 
@@ -121,7 +121,7 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         //Intake
         INTAKE_MOTOR_ID = 32;
-        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022;
+        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_OLD;
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         INTAKE_IN_ID = 0;
         INTAKE_OUT_ID = 1;
@@ -132,6 +132,6 @@ public class PracticeRobot2022 extends DefaultConfig {
         CLIMBER_IN_ID = 2;
         CLIMBER_OUT_ID = 3;
 
-        PCM_ID = 33;
+        PCM_ID = 32;
     }
 }

@@ -52,8 +52,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD_2022;
-        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.BACKSPIN_SHOOT_2022;
-        HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD_2022;
+        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.COMP_2022;
+        HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.COMP_2022;
         CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD_2022;
 
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
@@ -133,7 +133,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
         //Intake
         INTAKE_MOTOR_ID = 60;
-        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022;
+        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_COMP;
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         INTAKE_IN_ID = 3;
         INTAKE_OUT_ID = 2;

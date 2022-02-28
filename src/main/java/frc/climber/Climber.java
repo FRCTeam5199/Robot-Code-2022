@@ -229,7 +229,7 @@ public class Climber implements ISubsystem {
             case FLIGHT_STICK:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
-            case ROBOT_2022:
+            case ROBOT_2022_OLD:
             case STANDARD:
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 break;

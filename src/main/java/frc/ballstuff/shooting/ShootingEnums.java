@@ -41,6 +41,29 @@ public enum ShootingEnums {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }
     }),
+    FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter1 -> {
+        double rpm = 2100;
+        shooter.setSpeed(rpm, rpm * 1.625);
+        if (robotSettings.ENABLE_HOPPER) {
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        }
+    }),
+
+    FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022(shooter1 -> {
+        double rpm = 2400;
+        shooter.setSpeed(rpm, rpm * 1.625);
+        if (robotSettings.ENABLE_HOPPER) {
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        }
+    }),
+
+    FIRE_SOLID_SPEED_BACKSPIN_FAR_2022(shooter1 -> {
+        double rpm = 2700;
+        shooter.setSpeed(rpm, rpm * 1.625);
+        if (robotSettings.ENABLE_HOPPER) {
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        }
+    }),
 
     PID_TUNING(shooter -> {
         //shooter.setPercentSpeed(1);

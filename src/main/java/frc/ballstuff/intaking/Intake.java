@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.INTAKE_DOWN;
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.INTAKE_UP;
-import static frc.robot.Robot.hopper;
 import static frc.robot.Robot.robotSettings;
 
 /**
@@ -137,7 +136,8 @@ public class Intake implements ISubsystem {
                 doIntakeArticulation();
                 break;
             }
-            case ROBOT_2022: {
+            case ROBOT_2022_COMP:
+            case ROBOT_2022_OLD: {
                 if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
                     setIntake(IntakeDirection.IN);
                     //hopper.setAgitatorTopbar(true);
@@ -255,7 +255,11 @@ public class Intake implements ISubsystem {
             case ROBOT_2021:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
-            case ROBOT_2022:
+            case ROBOT_2022_COMP:
+                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                break;
+            case ROBOT_2022_OLD:
             case STANDARD:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
@@ -326,13 +330,14 @@ public class Intake implements ISubsystem {
         STANDARD,
         ROBOT_2021,
         ROBOT_PRACTICE_2022,
-        ROBOT_2022,
+        ROBOT_2022_OLD,
         WII,
         DRUM_TIME,
         GUITAR,
         BOP_IT,
         FLIGHT_STICK,
-        XBOX_CONTROLLER;
+        XBOX_CONTROLLER,
+        ROBOT_2022_COMP;
 
         private static SendableChooser<IntakeControlStyles> myChooser;
 

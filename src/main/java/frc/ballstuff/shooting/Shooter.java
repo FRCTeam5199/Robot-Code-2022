@@ -141,6 +141,10 @@ public class Shooter implements ISubsystem {
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+            case COMP_2022:
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
             case FLIGHT_STICK:
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
@@ -502,14 +506,28 @@ public class Shooter implements ISubsystem {
                     ballsShot = 0;
                     shooterDefault();
                 }
-
-
                 break;
             }
             case BACKSPIN_SHOOT_2022: {
                 if (joystickController.get(ControllerEnums.JoystickButtons.NINE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_2022.shoot(this);
                 } else {
+                    tryFiringBalls = false;
+                    leader.moveAtPercent(0);
+                    backSpin.moveAtPosition(0);
+                    ballsShot = 0;
+                    shooterDefault();
+                }
+                break;
+            }
+            case COMP_2022:{
+                if(panel.get(ControllerEnums.ButtonPanelButtons2022.CLOSE_SHOT) == ButtonStatus.DOWN){
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022.shoot(this);
+                }else if(panel.get(ControllerEnums.ButtonPanelButtons2022.MEDIUM_SHOT) == ButtonStatus.DOWN){
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022.shoot(this);
+                }else if(panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN){
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_FAR_2022.shoot(this);
+                }else{
                     tryFiringBalls = false;
                     leader.moveAtPercent(0);
                     backSpin.moveAtPosition(0);
@@ -781,7 +799,7 @@ public class Shooter implements ISubsystem {
      * Used to change how the input is handled by the {@link Shooter} and what kind of controller to use
      */
     public enum ShootingControlStyles {
-        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022, BACKSPIN_SHOOT_2022;
+        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022, BACKSPIN_SHOOT_2022, COMP_2022;
 
         private static SendableChooser<ShootingControlStyles> myChooser;
 

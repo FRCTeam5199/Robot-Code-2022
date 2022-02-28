@@ -325,4 +325,19 @@ public class ControllerEnums {
             return AXIS_VALUE;
         }
     }
+
+    public enum ButtonPanelButtons2022 implements ControllerInterfaces.IDiscreteInput {
+        LOW_SHOT(1), INTAKE_DOWN(3), FAR_SHOT(4), MEDIUM_SHOT(6), CLOSE_SHOT(7), SECOND_STAGE_CLIMB(8), AUX_3(10), AUX_2(11), FIRST_STAGE_DOWN(12), FIRST_STAGE_UP(13), AUX_1(15), INTAKE_UP(16) ;
+
+        public final int AXIS_VALUE;
+
+        ButtonPanelButtons2022(int value) {
+            this.AXIS_VALUE = value;
+        }
+
+        @Override
+        public int getChannel() {
+            return AXIS_VALUE;
+        }
+    }
 }
