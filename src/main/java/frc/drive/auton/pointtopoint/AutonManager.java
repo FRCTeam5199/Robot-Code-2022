@@ -153,7 +153,7 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = ((DriveManagerStandard) Robot.driver).rotate180();
                     break;
                 case SHOOT_ALL_2022_BEHIND_TARMAC:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2600);
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2300);
                     break;
                 case SHOOT_ALL_2022_INSIDE_TARMAC:
                     specialActionComplete = Robot.shooter.fireAmount2022(3, 2000);

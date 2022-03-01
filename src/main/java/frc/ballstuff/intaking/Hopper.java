@@ -15,7 +15,6 @@ import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.vision.distancesensor.IDistanceSensor;
 import frc.vision.distancesensor.RevDistanceSensor;
 
-import javax.sql.rowset.BaseRowSet;
 import java.util.Objects;
 
 import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
@@ -47,8 +46,11 @@ public class Hopper implements ISubsystem {
      */
     private void initMisc() throws UnsupportedOperationException {
         switch (robotSettings.HOPPER_CONTROL_STYLE) {
-            case STANDARD:
+            case COMP_2022:
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
+            case STANDARD:
             case STANDARD_2022:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 break;
@@ -56,46 +58,25 @@ public class Hopper implements ISubsystem {
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
             default:
-                throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.DRIVE_STYLE.name() + " to control the drivetrain. Please implement me");
+                throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.HOPPER_CONTROL_STYLE.name() + " to control the hopper. Please implement me");
         }
         if (robotSettings.DEBUG && DEBUG && controller != null) System.out.println("Created a " + controller);
     }
 
     private void createControllers() {
-        switch (robotSettings.INTAKE_CONTROL_STYLE) {
-            case FLIGHT_STICK:
-            case ROBOT_PRACTICE_2022:
-                controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
-                break;
-            case ROBOT_2021:
-                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                break;
-            case ROBOT_2022_COMP:
-                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+        switch (robotSettings.HOPPER_CONTROL_STYLE) {
+            case COMP_2022:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
                 break;
-            case ROBOT_2022_OLD:
             case STANDARD:
-                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+            case STANDARD_2022:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 break;
-            case XBOX_CONTROLLER:
+            case PRACTICE_2022:
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
-            case BOP_IT:
-                controller = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
-                break;
-            case DRUM_TIME:
-                controller = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
-                break;
-            case WII:
-                controller = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
-                break;
-            case GUITAR:
-                controller = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
-                break;
             default:
-                throw new IllegalStateException("There is no UI configuration for " + robotSettings.INTAKE_CONTROL_STYLE.name() + " to control the shooter. Please implement me");
+                throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.HOPPER_CONTROL_STYLE.name() + " to control the hopper. Please implement me");
         }
     }
 
@@ -322,41 +303,43 @@ public class Hopper implements ISubsystem {
                 }
                 break;
             }
-            case COMP_2022:
+            case COMP_2022: {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            indexer.moveAtPercent(!isIndexed() ? 0.1 : 0);
+                            indexer.moveAtPercent(!isIndexed() ? 0.05 : 0);
                         } else {
                             indexer.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitator.moveAtPercent(!isIndexed() ? 0.3 : 0);
+                            agitator.moveAtPercent(!isIndexed() ? 0.2 : 0);
                         } else {
                             agitator.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            System.out.println("Moving hopper top");
                             agitatorTop.moveAtPercent(0.5);
+                        } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
+                            //lol imagine mechanical being bad
+                            agitatorTop.moveAtPercent(0);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(!isIndexed() ? 0.8 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.2 : 0);
                         } else {
                             agitatorTop.moveAtPercent(0);
                         }
                     }
                 } else {
                     if (robotSettings.ENABLE_INDEXER) {
-                        indexer.moveAtPercent(indexerActive ? 0.6 : 0);
+                        indexer.moveAtPercent(indexerActive ? 0.3 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
-                        agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
+                        agitator.moveAtPercent(agitatorActive ? 0.3 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.2 : 0);
                     }
                 }
                 if (robotSettings.DEBUG && DEBUG) {
@@ -367,6 +350,7 @@ public class Hopper implements ISubsystem {
                     UserInterface.smartDashboardPutBoolean("hopper indexed", isIndexed());
                 }
                 break;
+            }
             case PRACTICE_2022: {
                 setAll(controller.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ControllerEnums.ButtonStatus.DOWN);
                 if (robotSettings.ENABLE_AGITATOR_TOP) agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);

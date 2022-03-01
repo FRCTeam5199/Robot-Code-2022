@@ -71,6 +71,12 @@ public class PowerDistribution implements ISubsystem {
         }
     }
 
+    public void setToggleable(boolean on) {
+        if (robotSettings.POWER_DISTRIBUTION_MODULE_TYPE == ModuleType.kRev) {
+            powerDistributionPanel.setSwitchableChannel(on);
+        }
+    }
+
     @Override
     public void initTest() {
 

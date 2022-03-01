@@ -6,6 +6,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
+import frc.robot.Robot;
+
+import static frc.robot.Robot.robotSettings;
 
 /**
  * This is for the limelight looking at the goal that the shooter is shooting at
@@ -145,6 +148,10 @@ public class GoalLimelight implements IVision {
             setTo = 3;
         }
         limelight.getEntry("ledMode").setNumber(setTo);
+
+        if (robotSettings.ENABLE_TOGGLEABLE_RING && robotSettings.ENABLE_PDP) {
+           Robot.pdp.setToggleable(setTo == 3 || setTo == 2);
+        }
     }
 
     @Override

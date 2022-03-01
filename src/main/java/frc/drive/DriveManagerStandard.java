@@ -149,7 +149,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                         visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
                     driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
                 }
-                energySaver();
+                //energySaver();
             }
             break;
             case BALL_SHIFTING_STANDARD: {
@@ -477,7 +477,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
      */
     private void initPID() {
         setPID(robotSettings.DRIVEBASE_PID);
-        HEADING_PID = new PIDController(0.02, 0.000005, 0.0005);
+        //HEADING_PID = new PIDController(0.02, 0.000005, 0.0005); //For auton
+        HEADING_PID = new PIDController(0.005, 0.00001, 0.0005);
     }
 
     /**

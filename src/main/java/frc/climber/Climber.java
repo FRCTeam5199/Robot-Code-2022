@@ -3,6 +3,7 @@ package frc.climber;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.controllers.BaseController;
+import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonStatus;
 import frc.misc.ISubsystem;
 import frc.misc.InitializationFailureException;
@@ -37,7 +38,7 @@ public class Climber implements ISubsystem {
 
     @Override
     public void init() {
-        if (robotSettings.CLIMBER_CONTROL_STYLE != ClimberControlStyles.STANDARD_2022)
+        if (robotSettings.CLIMBER_CONTROL_STYLE != ClimberControlStyles.OLD_STANDARD_2022 && robotSettings.CLIMBER_CONTROL_STYLE != ClimberControlStyles.STANDARD_2022)
             createMotors();
         else
             createCoolerMotors();
@@ -88,7 +89,31 @@ public class Climber implements ISubsystem {
                 }
             }
             break;
-            case STANDARD_2022: {
+            case STANDARD_2022:{
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN) {
+                    climberStg1.moveAtPercent(-0.8);
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
+                    climberStg1.moveAtPercent(0.8);
+                } else {
+                    climberStg1.moveAtPercent(0);
+                }
+
+                /*if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
+                    climberStg2.moveAtPercent(0.8);
+                } else */if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.SECOND_STAGE_CLIMB) == ButtonStatus.DOWN) {
+                    climberStg2.moveAtPercent(-0.8);
+                } else {
+                    climberStg2.moveAtPercent(0);
+                }
+
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_2) == ButtonStatus.DOWN) {
+                    climberLocks(true);
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_1) == ButtonStatus.DOWN) {
+                    climberLocks(false);
+                }
+            }
+            break;
+            case OLD_STANDARD_2022: {
                 if (buttonpanel.get(AUX_TOP) == ButtonStatus.DOWN) {
                     climberStg1.moveAtPercent(0.8);
                 } else if (buttonpanel.get(AUX_BOTTOM) == ButtonStatus.DOWN) {
@@ -98,7 +123,7 @@ public class Climber implements ISubsystem {
                 }
 
                 if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
-                    climberStg2.moveAtPercent(0.8);
+                    //climberStg2.moveAtPercent(0.8);
                 } else if (buttonpanel.get(LOWER_CLIMBER) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(-0.8);
                 } else {
@@ -225,11 +250,14 @@ public class Climber implements ISubsystem {
     }
 
     private void createControllers() {
-        switch (robotSettings.INTAKE_CONTROL_STYLE) {
+        switch (robotSettings.CLIMBER_CONTROL_STYLE) {
             case FLIGHT_STICK:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
-            case ROBOT_2022_OLD:
+            case STANDARD_2022:
+                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                break;
+            case OLD_STANDARD_2022:
             case STANDARD:
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 break;
@@ -255,6 +283,7 @@ public class Climber implements ISubsystem {
 
     public enum ClimberControlStyles {
         STANDARD,
+        OLD_STANDARD_2022,
         STANDARD_2022,
         WII,
         DRUM_TIME,

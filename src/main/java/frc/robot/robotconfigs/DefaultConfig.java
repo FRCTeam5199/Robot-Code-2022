@@ -62,6 +62,7 @@ public abstract class DefaultConfig {
     public boolean ENABLE_BUDDY_CLIMBER = false;
     public boolean ENABLE_CAMERA = false;
     public boolean ENABLE_HOOD_PISTON = false;
+    public boolean ENABLE_TOGGLEABLE_RING = false;
 
     //Misc
     public boolean ENABLE_VISION = false;

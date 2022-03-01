@@ -55,6 +55,10 @@ public class ArticulatedHood implements ISubsystem {
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 break;
+            case COMP_2022:
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                break;
             case BOP_IT:
                 joystickController = BaseController.createOrGet(1, BaseController.Controllers.BOP_IT_CONTROLLER);
                 break;
@@ -100,6 +104,7 @@ public class ArticulatedHood implements ISubsystem {
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
             case BACKSPIN_SHOOT_2022:
             case STANDARD_2022:
+            case COMP_2022:
             case PRACTICE_2022:
                 if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
                     if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN) {
@@ -256,6 +261,7 @@ public class ArticulatedHood implements ISubsystem {
             case STANDARD_2022:
             case PRACTICE_2022:
             case BACKSPIN_SHOOT_2022:
+            case COMP_2022:
                 break;
             default:
                 moveToPos(moveTo, hoodMotor.getRotations());

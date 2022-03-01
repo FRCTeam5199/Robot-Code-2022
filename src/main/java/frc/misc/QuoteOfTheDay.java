@@ -65,7 +65,8 @@ public class QuoteOfTheDay {
             "Sterling: Can the name on my hoodie be \"Pro 'grammer\"\nTeddy: I don’t think they can do thinking like ‘",
             "Where's discipline? I need to teach the freshman a lesson.",
             "Teddy: Idk they obviously can’t read\nStryker: Bro you're so mean\nTeddy: Nvm he can read",
-            "Sterling: Someone fried my RIO ports\nBrandon: Just like someone fried my teensy?"
+            "Sterling: Someone fried my RIO ports\nBrandon: Just like someone fried my teensy?",
+            "Alex: I don't talk to the press"
     };
 
     /**

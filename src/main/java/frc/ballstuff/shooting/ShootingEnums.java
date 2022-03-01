@@ -260,7 +260,11 @@ public enum ShootingEnums {
     }),
 
     FIRE_TIMED_2022(shooter -> {
-        shooter.setSpeed(shooter.speed);
+        if (robotSettings.SHOOTER_CONTROL_STYLE == Shooter.ShootingControlStyles.BACKSPIN_SHOOT_2022 || robotSettings.SHOOTER_CONTROL_STYLE == Shooter.ShootingControlStyles.COMP_2022) {
+            shooter.setSpeed(shooter.speed, shooter.speed * 1.625);
+        } else {
+            shooter.setSpeed(shooter.speed);
+        }
         if (shooter.getSpeed() >= (shooter.speed * 0.95)) {
             shooter.timerTicks++;
             hopper.setAll(true);

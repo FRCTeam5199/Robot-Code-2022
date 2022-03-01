@@ -186,10 +186,18 @@ public class Intake implements ISubsystem {
     }
 
     public void doIntakeArticulation() {
-        if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
-            deployIntake(false);
-        } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
-            deployIntake(true);
+        if (robotSettings.INTAKE_CONTROL_STYLE == IntakeControlStyles.ROBOT_2022_OLD) {
+            if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
+                deployIntake(false);
+            } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
+                deployIntake(true);
+            }
+        } else if (robotSettings.INTAKE_CONTROL_STYLE == IntakeControlStyles.ROBOT_2022_COMP) {
+            if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
+                deployIntake(false);
+            } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
+                deployIntake(true);
+            }
         }
     }
 

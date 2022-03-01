@@ -32,20 +32,21 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_HOOD_ARTICULATION = true;
         ENABLE_PDP = true;
         ENABLE_MUSIC = false;
+        ENABLE_TOGGLEABLE_RING = true;
 
-        ENABLE_VISION = false;
+        ENABLE_VISION = true;
         ENABLE_CLIMBER = true;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
 
-        DRIVE_INVERT_LEFT = false;
-        DRIVE_INVERT_RIGHT = true;
+        DRIVE_INVERT_LEFT = true;
+        DRIVE_INVERT_RIGHT = false;
         HOPPER_TOP_INVERT_MOTOR = false;
         HOPPER_AGITATOR_INVERT_MOTOR = true;
         HOPPER_INDEXER_INVERT_MOTOR = true;
         INTAKE_INVERT_MOTOR = true;
-        INVERT_DRIVE_DIRECTION = true;
+        INVERT_DRIVE_DIRECTION = false;
 
         //Misc
         USE_PHOTONVISION = false;
@@ -99,10 +100,10 @@ public class CompetitionRobot2022 extends DefaultConfig {
         BALL_CAM_NAME = "BallCamera";
 
         //Drive Motors
-        DRIVE_LEADER_L_ID = 2; //talon
-        DRIVE_FOLLOWERS_L_IDS = new int[]{3, 8}; //talon
-        DRIVE_LEADER_R_ID = 7; //talon
-        DRIVE_FOLLOWERS_R_IDS = new int[]{5, 4}; //talon
+        DRIVE_LEADER_R_ID = 2; //talon
+        DRIVE_FOLLOWERS_R_IDS = new int[]{3, 8}; //talon
+        DRIVE_LEADER_L_ID = 7; //talon
+        DRIVE_FOLLOWERS_L_IDS = new int[]{5, 4}; //talon
 
         IMU_ID = 22; //pigeon
 
