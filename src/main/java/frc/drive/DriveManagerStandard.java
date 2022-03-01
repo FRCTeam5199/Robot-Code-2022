@@ -566,13 +566,18 @@ public class DriveManagerStandard extends AbstractDriveManager {
             rotating180 = true;
             rotate180Goal = guidance.imu.relativeYaw() + 180;
         }
-        driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 2);
+        //if not (continue rotating while not yet at our goal) or
+        //if (stop rotating when we stop rotating because we reached our goal)
+        if (!(rotating180 = guidance.imu.relativeYaw() < rotate180Goal))
+            driveCringe(0, 0);
+        else
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 2);
         /*
         double needToTurnTo = yawBeforeTurn + 180;
         driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED);
         return guidance.imu.relativeYaw() >= needToTurnTo;
          */
-        return !(rotating180 = guidance.imu.relativeYaw() >= rotate180Goal);
+        return !(rotating180);
     }
 
     public void driveCringe(double forward, double rotation) {
