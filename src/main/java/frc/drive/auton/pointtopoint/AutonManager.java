@@ -10,6 +10,7 @@ import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.Point;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
+import frc.misc.UtilFunctions;
 import frc.motors.SparkMotorController;
 import frc.robot.Robot;
 import frc.telemetry.RobotTelemetryStandard;
@@ -147,10 +148,10 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = Robot.turret.resetShooter();
                     break;
                 case AIM_ROBOT_AT_TARGET_PITCH:
-                    specialActionComplete = ((DriveManagerStandard) Robot.driver).aimAtTarget();
+                    specialActionComplete = drivingChild.aimAtTarget();
                     break;
                 case DRIVE_180:
-                    specialActionComplete = ((DriveManagerStandard) Robot.driver).rotate180();
+                    specialActionComplete = drivingChild.rotate180();
                     break;
                 case SHOOT_ALL_2022_BEHIND_TARMAC:
                     specialActionComplete = Robot.shooter.fireAmount2022(3, 2300);
@@ -199,19 +200,11 @@ public class AutonManager extends AbstractAutonManager {
         UserInterface.smartDashboardPutNumber("rotOffset", -rotationOffset);
         UserInterface.smartDashboardPutString("Current Position", here.toString());
         if (!inTolerance) {
-            double turned = (drivingChild.guidance.imu.relativeYaw() - yawBeforeTurn) * -1;
-            UserInterface.smartDashboardPutNumber("Turned", turned);
+            double x = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION).X;
+            double y = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION).Y;
+            double targetHeading = speed < 0 ? drivingChild.guidance.realRetrogradeHeadingError(x,y) : drivingChild.guidance.realHeadingError(x,y);
 
-            if (speed < 0) {
-                rotationOffset = Math.toDegrees(Math.toRadians(rotationOffset) + Math.PI);
-                while (rotationOffset >= 360) rotationOffset -= 360;
-                while (rotationOffset <= -360) rotationOffset += 360;
-            }
-
-            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, -ROT_PID.calculate(turned + rotationOffset) * robotSettings.AUTO_ROTATION_SPEED);
-            //-rotationOffset * robotSettings.AUTO_ROTATION_SPEED);
-            //System.out.println("DrivePure @ " + robotSettings.AUTO_SPEED * speed);
-            //System.out.println("Driving FPS " + robotSettings.AUTO_SPEED * speed);
+            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, ROT_PID.calculate(targetHeading) * robotSettings.AUTO_ROTATION_SPEED);
         } else {
             drivingChild.drivePure(0, 0);
             System.out.println("In tolerance.");
@@ -227,7 +220,7 @@ public class AutonManager extends AbstractAutonManager {
      */
     public void setupNextPosition(Point point) {
         yawBeforeTurn = drivingChild.guidance.imu.relativeYaw();
-        rotationOffset = ((RobotTelemetryStandard) drivingChild.guidance).angleFromHere(point.X, point.Y);
+        rotationOffset = drivingChild.guidance.angleFromHere(point.X, point.Y);
     }
 
     /**

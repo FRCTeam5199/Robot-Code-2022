@@ -98,7 +98,7 @@ public class ControllerEnums {
          * @return returns true is this is {@link #UP}, else false
          */
         public boolean isUp() {
-            return this == UP;
+            return !isPressed();
         }
 
         /**
