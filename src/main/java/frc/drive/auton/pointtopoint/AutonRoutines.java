@@ -75,6 +75,11 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(0, 0), -1, SHOOT_ALL_2022_INSIDE_TARMAC),
             new AutonWaypoint(new Point(-1, 0), -1, NONE)
     ),
+    DRIVE_FORWARD_ROTATE_DRIVE_BACK(
+            new AutonWaypoint(new Point(0, 0)),
+            new AutonWaypoint(new Point(3, 0), DRIVE_180),
+            new AutonWaypoint(new Point(0, 0))
+    ),
     /*
     DRIVE_OFF_SHOOT_3(
             new AutonWaypoint(new Point(0, 0)),

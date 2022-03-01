@@ -40,13 +40,13 @@ public class CompetitionRobot2022 extends DefaultConfig {
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
 
-        DRIVE_INVERT_LEFT = true;
-        DRIVE_INVERT_RIGHT = false;
+        DRIVE_INVERT_LEFT = false;
+        DRIVE_INVERT_RIGHT = true;
         HOPPER_TOP_INVERT_MOTOR = false;
         HOPPER_AGITATOR_INVERT_MOTOR = true;
         HOPPER_INDEXER_INVERT_MOTOR = true;
         INTAKE_INVERT_MOTOR = true;
-        INVERT_DRIVE_DIRECTION = false;
+        INVERT_DRIVE_DIRECTION = true;
 
         //Misc
         USE_PHOTONVISION = false;
@@ -62,12 +62,13 @@ public class CompetitionRobot2022 extends DefaultConfig {
         CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
-        AUTO_SPEED = 1;
-        AUTO_ROTATION_SPEED = 1;
+        AUTO_SPEED = .1;
+        AUTO_ROTATION_SPEED = .1;
+        AUTON_TOLERANCE = 0.03;
         GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
 
         DRIVEBASE_VOLTAGE_MULTIPLIER = 3.5 * (1.050830889540567 / 2145); //3.4635 volts = 2825 RPM.
-        DRIVEBASE_PID = new PID(0.1, 0, 0);
+        DRIVEBASE_PID = new PID(0.01, 0.000000001, 0.01, 0.00025);
         HEADING_PID = new PID(0.08, 0.000005, 0.0003);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
         CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
@@ -88,9 +89,6 @@ public class CompetitionRobot2022 extends DefaultConfig {
         TURRET_GEAR_RATIO = 7;
         TURRET_MAX_POS = 270;
         TURRET_MIN_POS = 0;
-        AUTON_TOLERANCE = 0.1;
-        AUTO_SPEED = 3;
-        AUTO_ROTATION_SPEED = 1;
         XBOX_CONTROLLER_USB_SLOT = 0;
         FLIGHT_STICK_USB_SLOT = 1;
         BUTTON_PANEL_USB_SLOT = 2;
@@ -100,10 +98,10 @@ public class CompetitionRobot2022 extends DefaultConfig {
         BALL_CAM_NAME = "BallCamera";
 
         //Drive Motors
-        DRIVE_LEADER_R_ID = 2; //talon
-        DRIVE_FOLLOWERS_R_IDS = new int[]{3, 8}; //talon
-        DRIVE_LEADER_L_ID = 7; //talon
-        DRIVE_FOLLOWERS_L_IDS = new int[]{5, 4}; //talon
+        DRIVE_LEADER_L_ID = 2; //talon
+        DRIVE_FOLLOWERS_L_IDS = new int[]{3, 8}; //talon
+        DRIVE_LEADER_R_ID = 7; //talon
+        DRIVE_FOLLOWERS_R_IDS = new int[]{5, 4}; //talon
 
         IMU_ID = 22; //pigeon
 

@@ -204,7 +204,7 @@ public class AutonManager extends AbstractAutonManager {
             double y = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION).Y;
             double targetHeading = speed < 0 ? drivingChild.guidance.realRetrogradeHeadingError(x,y) : drivingChild.guidance.realHeadingError(x,y);
 
-            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, ROT_PID.calculate(targetHeading) * robotSettings.AUTO_ROTATION_SPEED);
+            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed /** (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0)*/, ROT_PID.calculate(targetHeading) * robotSettings.AUTO_ROTATION_SPEED);
         } else {
             drivingChild.drivePure(0, 0);
             System.out.println("In tolerance.");

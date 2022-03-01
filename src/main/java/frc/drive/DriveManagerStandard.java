@@ -134,7 +134,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 boolean a = false;
                 UserInterface.smartDashboardPutBoolean("Drive using PID?", a);
                 if (a) {
-                    drive((controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), controller.get(XboxAxes.RIGHT_JOY_X));
+                    drive((controller.get(XboxAxes.LEFT_JOY_Y)), controller.get(XboxAxes.RIGHT_JOY_X));
                 } else if (robotSettings.ENABLE_VISION && controller.get(XboxAxes.RIGHT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
                     double neededRot;
                     visionCamera.setLedMode(IVision.VisionLEDMode.ON);
@@ -143,11 +143,11 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     } else {
                         neededRot = controller.get(XboxAxes.RIGHT_JOY_X);
                     }
-                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), -neededRot * dynamic_gear_R);
+                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y)), -neededRot * dynamic_gear_R);
                 } else {
                     if (robotSettings.ENABLE_VISION)
                         visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
-                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y) * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
+                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
                 }
                 //energySaver();
             }
@@ -398,7 +398,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
      * @param rotation the percentage of max turn speed to do
      */
     public void drive(double forward, double rotation) {
-        drivePure(adjustedDrive(forward), adjustedRotation(rotation));
+        drivePure(adjustedDrive(forward * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0)), adjustedRotation(rotation));
     }
 
     public void drivePercent(double leftPercent, double rightPercent) {
@@ -571,27 +571,12 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (!(rotating180 = guidance.imu.relativeYaw() < rotate180Goal))
             driveCringe(0, 0);
         else
-            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 2);
-        /*
-        double needToTurnTo = yawBeforeTurn + 180;
-        driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED);
-        return guidance.imu.relativeYaw() >= needToTurnTo;
-         */
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED);
         return !(rotating180);
     }
 
     public void driveCringe(double forward, double rotation) {
-        /*
-        drivePure(adjustedDrive(forward), adjustedRotation(rotation)); //double FPS, double omega
-
-        driveWithChassisSpeeds(new ChassisSpeeds(Units.feetToMeters(FPS), 0, omega));
-
-        DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(speeds);
-        driveMPS(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
-
-        driveFPS(Units.metersToFeet(leftMPS), Units.metersToFeet(rightMPS));
-         */
-        double FPS = adjustedDrive(forward);
+        double FPS = adjustedDrive(forward * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0));
         double omega = adjustedRotation(rotation);
         ChassisSpeeds cringChassis = new ChassisSpeeds(Units.feetToMeters(FPS), 0, omega);
         DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(cringChassis);
@@ -602,7 +587,6 @@ public class DriveManagerStandard extends AbstractDriveManager {
         double rightRPMWheel = (rightFPS / (Math.PI * (robotSettings.WHEEL_DIAMETER / 12))) * 60;
         double leftRPM = leftRPMWheel / robotSettings.DRIVE_GEARING;
         double rightRPM = rightRPMWheel / robotSettings.DRIVE_GEARING;
-        //double FPSToRPM = (leftFPS / (Math.PI * robotSettings.WHEEL_DIAMETER / robotSettings.DRIVE_GEARING)) * 60; //28.6472 * 12; //FPS TO RPM. ((FPS * 60) / pi * diameter)
 
         if (DEBUG && robotSettings.DEBUG)
             System.out.println("WANTED FPS: " + leftFPS + "  " + rightFPS);//+ " (" + FPSToRPM + ")");
