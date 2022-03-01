@@ -102,6 +102,7 @@ public class Climber implements ISubsystem {
                     climberStg2.moveAtPercent(0.8);
                 } else */if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.SECOND_STAGE_CLIMB) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(-0.8);
+                    climberLocks(true);
                 } else {
                     climberStg2.moveAtPercent(0);
                 }

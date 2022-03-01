@@ -193,9 +193,9 @@ public class Intake implements ISubsystem {
                 deployIntake(true);
             }
         } else if (robotSettings.INTAKE_CONTROL_STYLE == IntakeControlStyles.ROBOT_2022_COMP) {
-            if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
+            if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN) {
                 deployIntake(false);
-            } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
+            } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
                 deployIntake(true);
             }
         }
