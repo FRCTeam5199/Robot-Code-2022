@@ -737,6 +737,17 @@ public class Shooter implements ISubsystem {
     }
 
     /**
+     * Moves the shooter at a -1 to 1 percent speed
+     *
+     * @param percentSpeed percent from -1 to 1 to move the shooter at
+     */
+    public void setPercentSpeed(double percentSpeed, double backspinSpeed) {
+        speed = percentSpeed * leader.getMaxRPM() * robotSettings.SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER;
+        leader.moveAtPercent(percentSpeed);
+        backSpin.moveAtPercent(backspinSpeed);
+    }
+
+    /**
      * Fires multiple balls without caring if it sees the target. Good for autonomous and the discord/slaque bot
      *
      * @param shots how many balls to shoot
@@ -777,7 +788,7 @@ public class Shooter implements ISubsystem {
         updateShuffleboard();
         if (!multiShot) {
             shooting = false;
-            setPercentSpeed(0);
+            setPercentSpeed(0, 0);
             hopper.setAll(false);
         }
         return !multiShot;

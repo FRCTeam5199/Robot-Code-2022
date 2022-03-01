@@ -92,7 +92,7 @@ public abstract class AbstractIMU implements ISubsystem {
      * @return wrapped yaw val
      */
     public double yawWraparoundAhead() {
-        return UtilFunctions.mathematicalMod(relativeYaw() + 180, 360) - 180;
+        return UtilFunctions.wrapAround360(relativeYaw());
     }
 
     /**

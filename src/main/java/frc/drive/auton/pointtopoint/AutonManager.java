@@ -177,7 +177,7 @@ public class AutonManager extends AbstractAutonManager {
     }
 
     /**
-     * "Attack" (drive towards) a point on the field. Units are in meters and its scary.
+     * "Attack" (drive towards) a point on the field.
      *
      * @param point the {@link Point point on the field} to attack
      * @param speed the speed at which to do it

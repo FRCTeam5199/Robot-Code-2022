@@ -90,14 +90,13 @@ public class Climber implements ISubsystem {
             }
             break;
             case STANDARD_2022:{
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN) {
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN && !isLocked) {
                     climberStg1.moveAtPercent(-0.8);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN && !isLocked) {
                     climberStg1.moveAtPercent(0.8);
                 } else {
                     climberStg1.moveAtPercent(0);
                 }
-
                 /*if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(0.8);
                 } else */if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.SECOND_STAGE_CLIMB) == ButtonStatus.DOWN) {
@@ -147,27 +146,28 @@ public class Climber implements ISubsystem {
 
     @Override
     public void initTest() {
-
+        climberStg1.setBrake(false);
+        climberStg2.setBrake(false);
     }
 
     @Override
     public void initTeleop() {
-
+        initGeneric();
     }
 
     @Override
     public void initAuton() {
-
+        initGeneric();
     }
 
     @Override
     public void initDisabled() {
-
     }
 
     @Override
     public void initGeneric() {
-
+        climberStg1.setBrake(true);
+        climberStg2.setBrake(true);
     }
 
     @Override
@@ -223,9 +223,6 @@ public class Climber implements ISubsystem {
                 throw new IllegalStateException("No such supported stage 2 climber motor config for " + robotSettings.CLIMBER_MOTOR_TYPE.name());
         }
         climberStg2.setSensorToRealDistanceFactor(s2rfstg2);
-
-        climberStg1.setBrake(true);
-        climberStg2.setBrake(true);
     }
 
     private void createMotors() {

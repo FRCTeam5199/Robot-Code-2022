@@ -36,6 +36,15 @@ public class UtilFunctions {
     }
 
     /**
+     * Returns the given degree in the bounds of -359 to 359
+     * @param degrees I don't know how else to describe this
+     * @return the degrees wrapped properly
+     */
+    public static double wrapAround360(double degrees) {
+        return mathematicalMod(degrees + 180, 360) - 180;
+    }
+
+    /**
      * Takes in some number of bytes and then returns a string representation either in bytes or kilobytes.
      *
      * @param bytes The number of bytes to stringify
