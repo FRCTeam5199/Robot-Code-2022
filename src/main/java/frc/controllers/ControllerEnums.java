@@ -88,6 +88,20 @@ public class ControllerEnums {
         DOWN;
 
         /**
+         * @return returns true is this is {@link #DOWN}, else false
+         */
+        public boolean isPressed() {
+            return this == DOWN;
+        }
+
+        /**
+         * @return returns true is this is {@link #UP}, else false
+         */
+        public boolean isUp() {
+            return this == UP;
+        }
+
+        /**
          * Gets the enumeration matching the boolean
          *
          * @param pressed whether the button is pressed or not
