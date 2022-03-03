@@ -89,7 +89,7 @@ public class Climber implements ISubsystem {
                 }
             }
             break;
-            case STANDARD_2022:{
+            case STANDARD_2022: {
                 if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN && !isLocked) {
                     climberStg1.moveAtPercent(-0.8);
                 } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN && !isLocked) {
@@ -99,9 +99,12 @@ public class Climber implements ISubsystem {
                 }
                 /*if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(0.8);
-                } else */if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.SECOND_STAGE_CLIMB) == ButtonStatus.DOWN) {
+                } else */
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.SECOND_STAGE_CLIMB) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(-0.8);
                     climberLocks(true);
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_3) == ButtonStatus.DOWN) {
+                    climberStg2.moveAtPercent(0.8);
                 } else {
                     climberStg2.moveAtPercent(0);
                 }
