@@ -24,6 +24,7 @@ public class AutonManager extends AbstractAutonManager {
     public AutonRoutines autonPath;
     public boolean specialActionComplete = false;
     public double yawBeforeTurn = 0, rotationOffset = 0.01;
+    private boolean isInTolerance = false;
 
     public AutonManager(AutonRoutines routine, AbstractDriveManager driveManager) {
         super(driveManager);
@@ -90,7 +91,8 @@ public class AutonManager extends AbstractAutonManager {
         updateGeneric();
         System.out.println("Home is: " + autonPath.WAYPOINTS.get(0).LOCATION + " and im going to " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION));
         Point point = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION);
-        if (attackPoint(point, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED)) {
+        if (attackPoint(point, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED) || isInTolerance) {
+            isInTolerance = true;
             DriverStation.reportWarning("IN TOLERANCE", false);
             System.out.println("Special Action: " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.toString());
             switch (autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION) {
@@ -164,6 +166,7 @@ public class AutonManager extends AbstractAutonManager {
             }
             if (specialActionComplete) {
                 if (++autonPath.currentWaypoint < autonPath.WAYPOINTS.size()) {
+                    isInTolerance = false;
                     //throw new IllegalStateException("Holy crap theres no way it worked. This is illegal");
                     Point b = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION);
                     setupNextPosition(b);

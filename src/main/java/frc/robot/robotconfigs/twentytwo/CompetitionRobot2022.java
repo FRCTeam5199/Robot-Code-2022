@@ -62,14 +62,14 @@ public class CompetitionRobot2022 extends DefaultConfig {
         CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
-        AUTO_SPEED = .1;
+        AUTO_SPEED = .25;
         AUTO_ROTATION_SPEED = .1;
-        AUTON_TOLERANCE = 0.03;
+        AUTON_TOLERANCE = 0.05;
         GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
 
         DRIVEBASE_VOLTAGE_MULTIPLIER = 3.5 * (1.050830889540567 / 2145); //3.4635 volts = 2825 RPM.
-        DRIVEBASE_PID = new PID(0.01, 0.000000001, 0.01, 0.00025);
-        HEADING_PID = new PID(0.08, 0.000005, 0.0003);
+        DRIVEBASE_PID = new PID(0.001, 0, 0, 0.00025);
+        HEADING_PID = new PID(0.01, 0, 0);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
         CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         DRIVEBASE_DISTANCE_BETWEEN_WHEELS = 0.524891;

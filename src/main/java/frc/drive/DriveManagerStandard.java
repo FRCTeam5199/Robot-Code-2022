@@ -571,7 +571,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (!(rotating180 = guidance.imu.relativeYaw() < rotate180Goal))
             driveCringe(0, 0);
         else
-            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED);
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 10);
         return !(rotating180);
     }
 
