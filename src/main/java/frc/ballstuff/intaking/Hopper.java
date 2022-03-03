@@ -8,9 +8,6 @@ import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
-import frc.motors.VictorMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.vision.distancesensor.IDistanceSensor;
 import frc.vision.distancesensor.RevDistanceSensor;
@@ -94,7 +91,11 @@ public class Hopper implements ISubsystem {
 
     private void createAndInitMotors() throws IllegalStateException {
         if (robotSettings.ENABLE_AGITATOR) {
-            switch (robotSettings.AGITATOR_MOTOR_TYPE) {
+            agitatorTop = robotSettings.AGITATOR_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_MOTOR_ID);
+            agitatorTop.setRealFactorFromMotorRPS(1);
+            //old architecture, just rollback changes in case of emergency
+            //TODO remove this
+            /*switch (robotSettings.AGITATOR_MOTOR_TYPE) {
                 case CAN_SPARK_MAX:
                     agitator = new SparkMotorController(robotSettings.AGITATOR_MOTOR_ID);
                     agitator.setSensorToRealDistanceFactor(1);
@@ -109,45 +110,17 @@ public class Hopper implements ISubsystem {
                     break;
                 default:
                     throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
-            }
+            }*/
             agitator.setInverted(robotSettings.HOPPER_AGITATOR_INVERT_MOTOR);
         }
         if (robotSettings.ENABLE_AGITATOR_TOP) {
-            switch (robotSettings.AGITATOR_TOP_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    agitatorTop = new SparkMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(1);
-                    break;
-                case TALON_FX:
-                    agitatorTop = new TalonMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    agitatorTop = new VictorMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper agitator topbar motor config for " + robotSettings.AGITATOR_TOP_MOTOR_TYPE.name());
-            }
+            agitatorTop = robotSettings.AGITATOR_TOP_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
+            agitatorTop.setRealFactorFromMotorRPS(1);
             agitatorTop.setInverted(robotSettings.HOPPER_TOP_INVERT_MOTOR);
         }
         if (robotSettings.ENABLE_INDEXER) {
-            switch (robotSettings.INDEXER_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    indexer = new SparkMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(1);
-                    break;
-                case TALON_FX:
-                    indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    indexer = new VictorMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
-            }
+            indexer = robotSettings.INDEXER_MOTOR_TYPE.createMotorOfType(robotSettings.INDEXER_MOTOR_ID);
+            indexer.setRealFactorFromMotorRPS(1);
             indexer.setInverted(robotSettings.HOPPER_INDEXER_INVERT_MOTOR);
         }
     }

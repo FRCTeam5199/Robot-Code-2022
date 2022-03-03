@@ -22,6 +22,11 @@ public class VictorMotorController extends AbstractMotorController {
     }
 
     @Override
+    public void setRealFactorFromMotorRPS(double r2rf) {
+        sensorToRealDistanceFactor = r2rf * 10 / Robot.robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
+    }
+
+    @Override
     public AbstractMotorController setInverted(boolean invert) {
         motor.setInverted(invert);
         return this;

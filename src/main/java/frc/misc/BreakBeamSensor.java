@@ -25,7 +25,7 @@ public class BreakBeamSensor implements ISubsystem {
 
     @Override
     public SubsystemStatus getSubsystemStatus() {
-        return null;
+        return SubsystemStatus.NOMINAL;
     }
 
     @Override

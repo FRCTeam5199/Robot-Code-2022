@@ -1,24 +1,28 @@
 package frc.robot.robotconfigs;
 
-/*import com.swervedrivespecialties.swervelib.ModuleConfiguration;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;*/
-
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import frc.ballstuff.intaking.Hopper;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
 import frc.climber.Climber;
-import frc.drive.AbstractDriveManager;
 import frc.drive.auton.AutonType;
 import frc.drive.auton.pointtopoint.AutonRoutines;
 import frc.misc.PID;
-import frc.motors.AbstractMotorController;
-import frc.telemetry.imu.AbstractIMU;
+import frc.motors.AbstractMotorController.SupportedMotors;
 import frc.vision.camera.IVision;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+
+import static frc.drive.AbstractDriveManager.DriveBases;
+import static frc.drive.AbstractDriveManager.DriveControlStyles;
+import static frc.misc.PID.EMPTY_PID;
+import static frc.telemetry.imu.AbstractIMU.SupportedIMU;
 
 /**
  * Literally dont mind me I am simply vibing I am here because it means you only have to change one value to completely
@@ -82,27 +86,27 @@ public abstract class DefaultConfig {
     public double INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
 
     //UI Styles
-    public AbstractDriveManager.DriveControlStyles DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
+    public DriveControlStyles DRIVE_STYLE = DriveControlStyles.STANDARD;
     public Shooter.ShootingControlStyles SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD;
     public Intake.IntakeControlStyles INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.STANDARD;
     public Climber.ClimberControlStyles CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD;
     public Hopper.HopperControlStyles HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD;
 
     //Motor Types
-    public AbstractMotorController.SupportedMotors SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-    public AbstractMotorController.SupportedMotors INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-    public AbstractMotorController.SupportedMotors AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-    public AbstractMotorController.SupportedMotors AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-    public AbstractMotorController.SupportedMotors HOOD_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
-    public AbstractMotorController.SupportedMotors DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-    public AbstractMotorController.SupportedMotors TURRET_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
-    public AbstractMotorController.SupportedMotors CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-    public AbstractMotorController.SupportedMotors CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-    public AbstractMotorController.SupportedMotors INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-    public AbstractIMU.SupportedIMU IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
+    public SupportedMotors SHOOTER_MOTOR_TYPE = SupportedMotors.TALON_FX;
+    public SupportedMotors INDEXER_MOTOR_TYPE = SupportedMotors.VICTOR;
+    public SupportedMotors AGITATOR_MOTOR_TYPE = SupportedMotors.VICTOR;
+    public SupportedMotors AGITATOR_TOP_MOTOR_TYPE = SupportedMotors.VICTOR;
+    public SupportedMotors HOOD_MOTOR_TYPE = SupportedMotors.CAN_SPARK_MAX;
+    public SupportedMotors DRIVE_MOTOR_TYPE = SupportedMotors.TALON_FX;
+    public SupportedMotors TURRET_MOTOR_TYPE = SupportedMotors.CAN_SPARK_MAX;
+    public SupportedMotors CLIMBER_MOTOR_TYPE = SupportedMotors.VICTOR;
+    public SupportedMotors CLIMBER_STG2_MOTOR_TYPE = SupportedMotors.TALON_FX;
+    public SupportedMotors INTAKE_MOTOR_TYPE = SupportedMotors.VICTOR;
+    public SupportedIMU IMU_TYPE = SupportedIMU.PIGEON;
     public AutonType AUTON_TYPE = AutonType.FOLLOW_PATH;
     public AutonRoutines DEFAULT_ROUTINE = AutonRoutines.DRIVE_OFF_INIT_LINE;
-    public AbstractDriveManager.DriveBases DRIVE_BASE = AbstractDriveManager.DriveBases.STANDARD;
+    public DriveBases DRIVE_BASE = DriveBases.STANDARD;
     //public ModuleConfiguration SWERVE_SDS_DRIVE_BASE;
 
     public int DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
@@ -117,14 +121,14 @@ public abstract class DefaultConfig {
     public double DRIVE_GEARING = 10 / 70.0;
     public int OVERHEAT_THRESHOLD = 80;
 
-    public PID DRIVEBASE_PID = PID.EMPTY_PID;
-    public PID SHOOTER_PID = PID.EMPTY_PID;
-    public PID SHOOTER_CONST_SPEED_PID = PID.EMPTY_PID;
+    public PID DRIVEBASE_PID = EMPTY_PID;
+    public PID SHOOTER_PID = EMPTY_PID;
+    public PID SHOOTER_CONST_SPEED_PID = EMPTY_PID;
     public PID SHOOTER_RECOVERY_PID = SHOOTER_PID;
-    public PID TURRET_PID = PID.EMPTY_PID;
-    public PID HEADING_PID = PID.EMPTY_PID;
-    public PID TURRET_HEADING_PID = PID.EMPTY_PID;
-    public PID BACKSPIN_PID = PID.EMPTY_PID;
+    public PID TURRET_PID = EMPTY_PID;
+    public PID HEADING_PID = EMPTY_PID;
+    public PID TURRET_HEADING_PID = EMPTY_PID;
+    public PID BACKSPIN_PID = EMPTY_PID;
     public double CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
     public double motorPulleySize = 0;//?;
     public double driverPulleySize = 0;//?;
