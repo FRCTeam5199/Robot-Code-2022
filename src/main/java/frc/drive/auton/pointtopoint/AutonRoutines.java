@@ -28,10 +28,10 @@ public enum AutonRoutines {
     DRIVE_BACKWARDS_AND_SHOOT_2022(
             new AutonWaypoint(new Point(0, 0)),
             new AutonWaypoint(new Point(-1, 0), -1, AIM_ROBOT_AT_TARGET_PITCH),
-            new AutonWaypoint(new Point(-1, 0), -1, SHOOT_ALL_2022_BEHIND_TARMAC)
+            new AutonWaypoint(new Point(-1, 0), -1, SHOOT_ALL_2022_INSIDE_TARMAC)
     ),
     SHOOT_WHILE_STILL_2022(
-            new AutonWaypoint(new Point(0, 0), SHOOT_ALL_2022_BEHIND_TARMAC)
+            new AutonWaypoint(new Point(0, 0), SHOOT_ALL_2022_INSIDE_TARMAC)
     ),
     /*
     DRIVE_OFF_TARMAC_BACKWARDS(

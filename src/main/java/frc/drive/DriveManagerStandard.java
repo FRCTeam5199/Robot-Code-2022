@@ -52,8 +52,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
     private BaseController controller;
     private PID lastPID = PID.EMPTY_PID;
     private boolean ballShifterEnabled = false;
-    private IVision visionCamera;
-    private PIDController HEADING_PID;
+    public IVision visionCamera;
+    private PIDController TELEOP_AIMING_PID, AUTON_AIMING_PID;
     private boolean isFirstStageEnergySaverOn = false, isSecondStageEnergySaverOn = false;
     private int energySaverLevel = 0;
 
@@ -139,7 +139,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     double neededRot;
                     visionCamera.setLedMode(IVision.VisionLEDMode.ON);
                     if (visionCamera.hasValidTarget()) {
-                        neededRot = adjustedRotation(HEADING_PID.calculate(visionCamera.getPitch()));
+                        neededRot = adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch()));
                     } else {
                         neededRot = controller.get(XboxAxes.RIGHT_JOY_X);
                     }
@@ -479,8 +479,9 @@ public class DriveManagerStandard extends AbstractDriveManager {
      */
     private void initPID() {
         setPID(robotSettings.DRIVEBASE_PID);
-        //HEADING_PID = new PIDController(0.02, 0.000005, 0.0005); //For auton
-        HEADING_PID = new PIDController(0.005, 0.00001, 0.0005);
+        TELEOP_AIMING_PID = new PIDController(robotSettings.TELEOP_AIMING_PID.getP(), robotSettings.TELEOP_AIMING_PID.getI(), robotSettings.TELEOP_AIMING_PID.getD());//new PIDController(0.005, 0.00001, 0.0005);
+        AUTON_AIMING_PID = new PIDController(robotSettings.AUTON_AIMING_PID.getP(), robotSettings.AUTON_AIMING_PID.getI(), robotSettings.AUTON_AIMING_PID.getD());
+
     }
 
     /**
@@ -545,11 +546,11 @@ public class DriveManagerStandard extends AbstractDriveManager {
     public boolean aimAtTarget() {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
-            double neededRot = adjustedRotation(HEADING_PID.calculate(visionCamera.getPitch()));
+            double neededRot = adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch()));
             driveCringe(0, -neededRot);
             boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 25;
             //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
-            if (isAligned) HEADING_PID.reset();
+            if (isAligned) TELEOP_AIMING_PID.reset();
             return isAligned;
         } else {
             driveCringe(0, .75);
@@ -572,7 +573,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         //if (stop rotating when we stop rotating because we reached our goal)
         if (!(rotating180 = guidance.imu.relativeYaw() < rotate180Goal)) {
             driveCringe(0, 0);
-            HEADING_PID.reset();
+            TELEOP_AIMING_PID.reset();
         } else {
             driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 10);
         }

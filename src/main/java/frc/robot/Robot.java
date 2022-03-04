@@ -36,6 +36,7 @@ import frc.selfdiagnostics.ISimpleIssue;
 import frc.selfdiagnostics.IssueHandler;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.vision.camera.CameraViewer;
+import frc.vision.camera.IVision;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -93,10 +94,14 @@ public class Robot extends TimedRobot {
         //flashlight = new Flashlight();
 
         if (robotSettings.ENABLE_DRIVE) {
-            if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD)
+            if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD) {
                 driver = new DriveManagerStandard();
-            else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL)
+                //if (robotSettings.ENABLE_VISION)
+                    //((DriveManagerStandard) driver).visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
+            } else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL) {
                 driver = new DriveManagerSwerve();
+            }
+
         }
         if (robotSettings.ENABLE_LEDS) {
             leds = new LEDs();
@@ -222,7 +227,7 @@ public class Robot extends TimedRobot {
                 return new CompetitionRobot2022();
             case "ERR_NOT_FOUND":
                 return new CompetitionRobot2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
-                //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
+            //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
             default:
                 throw new InitializationFailureException(String.format("Invalid ID %s for robot.", hostName), "In the SmartDashboard, set the key \"hostname\" to a correct value (ex: \"202#-(Comp/Prac)\")");
         }

@@ -112,12 +112,12 @@ public class Pneumatics implements ISubsystem {
 
     @Override
     public void initTeleop() {
-
+        initGeneric();
     }
 
     @Override
     public void initAuton() {
-
+        initGeneric();
     }
 
     @Override
@@ -127,7 +127,10 @@ public class Pneumatics implements ISubsystem {
 
     @Override
     public void initGeneric() {
-
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS)
+            climberLock.set(DoubleSolenoid.Value.kReverse);
+        if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS)
+            hoodArticulator.set(DoubleSolenoid.Value.kReverse);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
         CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
         AUTO_SPEED = .25;
@@ -70,6 +70,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         DRIVEBASE_VOLTAGE_MULTIPLIER = 3.5 * (1.050830889540567 / 2145); //3.4635 volts = 2825 RPM.
         DRIVEBASE_PID = new PID(0.001, 0, 0, 0.00025);
         HEADING_PID = new PID(0.01, 0, 0);
+        TELEOP_AIMING_PID = new PID(0.005, 0.00001, 0.0005);
+        AUTON_AIMING_PID = new PID(0.02, 0.000005, 0.0005);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
         CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         DRIVEBASE_DISTANCE_BETWEEN_WHEELS = 0.524891;
@@ -139,13 +141,13 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
         //Climber
         CLIMBER_STG1_MOTOR_ID = 12;
-        CLIMBER_STG2_MOTOR_ID = 62; //spark
+        CLIMBER_STG2_MOTOR_ID = 62; //talon
         CLIMBER_IN_ID = 4;
         CLIMBER_OUT_ID = 5;
 
         //hood
-        HOOD_ARTICULATOR_IN_ID = 0;
-        HOOD_ARTICULATOR_OUT_ID = 1;
+        HOOD_ARTICULATOR_IN_ID = 1;
+        HOOD_ARTICULATOR_OUT_ID = 0;
 
         PCM_ID = 33;
         PDP_ID = 50;
