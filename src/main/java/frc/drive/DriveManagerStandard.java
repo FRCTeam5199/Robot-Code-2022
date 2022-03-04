@@ -149,7 +149,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                         visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
                     driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
                 }
-                //energySaver();
+                energySaver();
             }
             break;
             case BALL_SHIFTING_STANDARD: {
@@ -319,57 +319,59 @@ public class DriveManagerStandard extends AbstractDriveManager {
 
     /**
      * Only to be used on a 3-motor setup. Puts motors on coast mode and stops turning them to save energy
+     * Only works with {@link frc.drive.AbstractDriveManager.DriveControlStyles STANDARD_2022} as it's known to have a 3 motor setup
+     * TODO remove hardcoding the {@link frc.drive.AbstractDriveManager.DriveControlStyles} and use the length of the follower motor array
      */
     private void energySaver() {
-        switch (robotSettings.DRIVE_STYLE) {
-            case STANDARD_2022:
-                if (controller.get(ControllerEnums.XBoxPOVButtons.DOWN) == ButtonStatus.DOWN) {
-                    if (energySaverLevel < 2) {
-                        energySaverLevel++;
-                    } else {
-                        energySaverLevel = 1;
-                    }
-                } else if (controller.get(ControllerEnums.XBoxPOVButtons.UP) == ButtonStatus.DOWN) {
-                    energySaverLevel = 0;
+        if (robotSettings.DRIVE_STYLE == DriveControlStyles.STANDARD_2022) {
+            if (controller.get(ControllerEnums.XBoxPOVButtons.DOWN) == ButtonStatus.DOWN) {
+                if (energySaverLevel < 2) {
+                    energySaverLevel++;
+                } else {
+                    energySaverLevel = 1;
+                }
+            } else if (controller.get(ControllerEnums.XBoxPOVButtons.UP) == ButtonStatus.DOWN) {
+                energySaverLevel = 0;
+            }
+        }
+        switch (energySaverLevel) {
+            case 0:
+
+                if (isFirstStageEnergySaverOn) {
+                    followerL.getMotor(0).setBrake(true).follow(leaderL);
+                    followerR.getMotor(0).setBrake(true).follow(leaderR);
+                    isFirstStageEnergySaverOn = false;
+                }
+                if (isSecondStageEnergySaverOn) {
+                    followerL.getMotor(1).setBrake(true).follow(leaderL);
+                    followerR.getMotor(1).setBrake(true).follow(leaderR);
+                    isSecondStageEnergySaverOn = false;
                 }
                 break;
-        }
-        if (energySaverLevel == 0) {
-            if (isFirstStageEnergySaverOn) {
-                followerL.getMotor(0).setBrake(true);
-                followerR.getMotor(0).setBrake(true);
-                followerL.getMotor(0).follow(leaderL);
-                followerR.getMotor(0).follow(leaderR);
-                isFirstStageEnergySaverOn = false;
-
-            }
-            if (isSecondStageEnergySaverOn) {
-                followerL.getMotor(1).setBrake(true);
-                followerR.getMotor(1).setBrake(true);
-                isSecondStageEnergySaverOn = false;
-            }
-        } else if (energySaverLevel == 1) {
-            if (!isFirstStageEnergySaverOn) {
-                followerL.getMotor(0).setBrake(false);
-                followerR.getMotor(0).setBrake(false);
-                isFirstStageEnergySaverOn = true;
-            }
-            if (isSecondStageEnergySaverOn) {
-                followerL.getMotor(1).setBrake(true);
-                followerR.getMotor(1).setBrake(true);
-                isSecondStageEnergySaverOn = false;
-            }
-        } else if (energySaverLevel == 2) {
-            if (!isFirstStageEnergySaverOn) {
-                followerL.getMotor(0).setBrake(false);
-                followerR.getMotor(0).setBrake(false);
-                isFirstStageEnergySaverOn = true;
-            }
-            if (!isSecondStageEnergySaverOn) {
-                followerL.getMotor(1).setBrake(false);
-                followerR.getMotor(1).setBrake(false);
-                isSecondStageEnergySaverOn = false;
-            }
+            case 1:
+                if (!isFirstStageEnergySaverOn) {
+                    followerL.getMotor(0).setBrake(false).unfollow();
+                    followerR.getMotor(0).setBrake(false).unfollow();
+                    isFirstStageEnergySaverOn = true;
+                }
+                if (isSecondStageEnergySaverOn) {
+                    followerL.getMotor(1).setBrake(true);
+                    followerR.getMotor(1).setBrake(true);
+                    isSecondStageEnergySaverOn = false;
+                }
+                break;
+            case 2:
+                if (!isFirstStageEnergySaverOn) {
+                    followerL.getMotor(0).setBrake(false).unfollow();
+                    followerR.getMotor(0).setBrake(false).unfollow();
+                    isFirstStageEnergySaverOn = true;
+                }
+                if (!isSecondStageEnergySaverOn) {
+                    followerL.getMotor(1).setBrake(false).unfollow();
+                    followerR.getMotor(1).setBrake(false).unfollow();
+                    isSecondStageEnergySaverOn = false;
+                }
+                break;
         }
     }
 
@@ -545,8 +547,9 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (visionCamera.hasValidTarget()) {
             double neededRot = adjustedRotation(HEADING_PID.calculate(visionCamera.getPitch()));
             driveCringe(0, -neededRot);
-            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 10;
+            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 25;
             //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) HEADING_PID.reset();
             return isAligned;
         } else {
             driveCringe(0, .75);
@@ -558,20 +561,21 @@ public class DriveManagerStandard extends AbstractDriveManager {
     private double rotate180Goal;
 
     /**
-     *
      * @return true when done rotating
      */
     public boolean rotate180() {
-        if (!rotating180){
+        if (!rotating180) {
             rotating180 = true;
             rotate180Goal = guidance.imu.relativeYaw() + 180;
         }
         //if not (continue rotating while not yet at our goal) or
         //if (stop rotating when we stop rotating because we reached our goal)
-        if (!(rotating180 = guidance.imu.relativeYaw() < rotate180Goal))
+        if (!(rotating180 = guidance.imu.relativeYaw() < rotate180Goal)) {
             driveCringe(0, 0);
-        else
+            HEADING_PID.reset();
+        } else {
             driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 10);
+        }
         return !(rotating180);
     }
 

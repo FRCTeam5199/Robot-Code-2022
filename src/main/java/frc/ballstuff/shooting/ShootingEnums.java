@@ -265,7 +265,7 @@ public enum ShootingEnums {
         } else {
             shooter.setSpeed(shooter.speed);
         }
-        if (shooter.getSpeed() >= (shooter.speed * 0.9)) {
+        if (shooter.getSpeed() >= (shooter.speed * 0.95)) {
             shooter.timerTicks++;
             hopper.setAll(true);
             if (shooter.timerTicks >= shooter.goalTicks) {

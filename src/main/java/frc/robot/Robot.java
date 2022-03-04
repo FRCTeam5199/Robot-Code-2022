@@ -333,7 +333,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        if (System.currentTimeMillis() > lastDisable + 5000) {
+        if (System.currentTimeMillis() > lastDisable + 2000) {
             if (robotSettings.ENABLE_DRIVE)
                 driver.setBrake(false);
             if (robotSettings.ENABLE_HOOD_ARTICULATION && !robotSettings.ENABLE_HOOD_PISTON)

@@ -10,10 +10,8 @@ import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.Point;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
-import frc.misc.UtilFunctions;
 import frc.motors.SparkMotorController;
 import frc.robot.Robot;
-import frc.telemetry.RobotTelemetryStandard;
 
 import static frc.robot.Robot.robotSettings;
 
@@ -158,9 +156,11 @@ public class AutonManager extends AbstractAutonManager {
                 case SHOOT_ALL_2022_BEHIND_TARMAC:
                     specialActionComplete = Robot.shooter.fireAmount2022(3, 2300);
                     break;
-                case SHOOT_ALL_2022_INSIDE_TARMAC:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2000);
+                case SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE:
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2675);
                     break;
+                case SHOOT_ALL_2022_FAR:
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 4000);
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
             }
