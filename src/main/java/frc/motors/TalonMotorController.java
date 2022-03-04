@@ -207,6 +207,13 @@ public class TalonMotorController extends AbstractMotorController {
     }
 
     @Override
+    public AbstractMotorController unfollow() {
+        motor.follow(motor);
+        motorFollowerList.remove(this);
+        return this;
+    }
+
+    @Override
     public AbstractMotorController setOpenLoopRampRate(double timeToMax) {
         if (motor.configOpenloopRamp(timeToMax) != ErrorCode.OK)
             if (!Robot.SECOND_TRY)
