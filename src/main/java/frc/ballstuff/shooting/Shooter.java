@@ -532,6 +532,8 @@ public class Shooter implements ISubsystem {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022.shoot(this);
                 }else if(panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN){
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_FAR_2022.shoot(this);
+                }else if(panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN){
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_LOW_2022.shoot(this);
                 }else{
                     tryFiringBalls = false;
                     leader.moveAtPercent(0);

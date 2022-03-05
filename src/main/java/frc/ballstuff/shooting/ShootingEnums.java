@@ -65,6 +65,14 @@ public enum ShootingEnums {
         }
     }),
 
+    FIRE_SOLID_SPEED_BACKSPIN_LOW_2022(shooter1 -> {
+        double rpm = 1900;
+        shooter.setSpeed(rpm, rpm * 1.625);
+        if (robotSettings.ENABLE_HOPPER) {
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+        }
+    }),
+
     PID_TUNING(shooter -> {
         //shooter.setPercentSpeed(1);
         shooter.setSpeed(1700, UserInterface.BACKSPIN_RPM.getEntry().getDouble(0)); //error of 500
