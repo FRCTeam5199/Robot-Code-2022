@@ -81,11 +81,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() throws IllegalStateException {
-        getRestartProximity();
         robotSettings = getSettings();
         robotSettings.printMappings();
         robotSettings.printToggles();
         robotSettings.printNumbers();
+        getRestartProximity();
         UserInterface.initRobot();
         if (robotSettings.ENABLE_MEMES) {
             Main.pipeline = ClientServerPipeline.getClient();
@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
             if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD) {
                 driver = new DriveManagerStandard();
                 //if (robotSettings.ENABLE_VISION)
-                    //((DriveManagerStandard) driver).visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
+                //((DriveManagerStandard) driver).visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
             } else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL) {
                 driver = new DriveManagerSwerve();
             }
@@ -186,18 +186,21 @@ public class Robot extends TimedRobot {
      * half a century then it might not work right so please refrain from that
      */
     private static void getRestartProximity() {
-        long lastBoot = Long.parseLong(Preferences.getString("lastboot", "0"));
-        long currentBoot = System.currentTimeMillis();
-        Preferences.setString("lastboot", "0" + currentBoot);
-        if (lastBoot > currentBoot) {
-            SECOND_TRY = false;
-        } else if (lastBoot > 1614461266977L) {
-            SECOND_TRY = currentBoot - lastBoot < 30000;
-        } else if (lastBoot < 1614461266977L && currentBoot < 1614461266977L) {
-            SECOND_TRY = currentBoot - lastBoot < 30000;
-        } else {
-            SECOND_TRY = false;
-        }
+        if (robotSettings.ENABLE_ERROR_HANDLING) {
+            long lastBoot = Long.parseLong(Preferences.getString("lastboot", "0"));
+            long currentBoot = System.currentTimeMillis();
+            Preferences.setString("lastboot", "0" + currentBoot);
+            if (lastBoot > currentBoot) {
+                SECOND_TRY = false;
+            } else if (lastBoot > 1614461266977L) {
+                SECOND_TRY = currentBoot - lastBoot < 30000;
+            } else if (lastBoot < 1614461266977L && currentBoot < 1614461266977L) {
+                SECOND_TRY = currentBoot - lastBoot < 30000;
+            } else {
+                SECOND_TRY = false;
+            }
+        } else
+            SECOND_TRY = true;
     }
 
     /**

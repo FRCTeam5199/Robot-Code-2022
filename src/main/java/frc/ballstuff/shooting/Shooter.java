@@ -55,6 +55,7 @@ public class Shooter implements ISubsystem {
     BaseController panel, joystickController, xbox;
     private PID lastPID = PID.EMPTY_PID;
     private PID backspinLastPID = PID.EMPTY_PID;
+    public double backspinMult = 1.625;
 
     public Shooter() {
         addToMetaList();
@@ -100,6 +101,7 @@ public class Shooter implements ISubsystem {
         if (robotSettings.ENABLE_VISION) {
             goalCamera = IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE);
         }
+        backspinMult = robotSettings.BACKSPIN_MULTIPLIER;
     }
 
     @Override
@@ -209,7 +211,7 @@ public class Shooter implements ISubsystem {
             if (!isConstSpeed && isConstSpeedLast) {
                 leader.setPid(robotSettings.SHOOTER_PID);
                 if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
-                backSpin.setPid(robotSettings.BACKSPIN_PID);
+                    backSpin.setPid(robotSettings.BACKSPIN_PID);
                 isConstSpeedLast = false;
                 if (DEBUG && robotSettings.DEBUG) {
                     System.out.println("Normal shooter PID.");
@@ -224,7 +226,7 @@ public class Shooter implements ISubsystem {
         rpmGraph.setNumber(leader.getSpeed());
         rpm.setNumber(leader.getSpeed());
         if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
-        UserInterface.smartDashboardPutNumber("Current BackSpin RPM", backSpin.getSpeed());
+            UserInterface.smartDashboardPutNumber("Current BackSpin RPM", backSpin.getSpeed());
         UserInterface.smartDashboardPutNumber("Target RPM", speed);
         UserInterface.smartDashboardPutBoolean("atSpeed", isAtSpeed());
         UserInterface.smartDashboardPutBoolean("IS SHOOTING?", shooting);
@@ -259,7 +261,7 @@ public class Shooter implements ISubsystem {
      * @return if the shooter is actually at the requested speed
      */
     public boolean isAtSpeed() {
-        return Math.abs(leader.getSpeed() - speed) < 200;
+        return robotSettings.ENABLE_SHOOTER_BACKSPIN ? Math.abs(leader.getSpeed() - speed) < 200 && Math.abs(backSpin.getSpeed() * backspinMult - speed) < 200 : Math.abs(leader.getSpeed() - speed) < 200;
     }
 
     @Override
@@ -525,16 +527,16 @@ public class Shooter implements ISubsystem {
                 }
                 break;
             }
-            case COMP_2022:{
-                if(panel.get(ControllerEnums.ButtonPanelButtons2022.CLOSE_SHOT) == ButtonStatus.DOWN){
+            case COMP_2022: {
+                if (panel.get(ControllerEnums.ButtonPanelButtons2022.CLOSE_SHOT) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022.shoot(this);
-                }else if(panel.get(ControllerEnums.ButtonPanelButtons2022.MEDIUM_SHOT) == ButtonStatus.DOWN){
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.MEDIUM_SHOT) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022.shoot(this);
-                }else if(panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN){
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_FAR_2022.shoot(this);
-                }else if(panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN){
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_LOW_2022.shoot(this);
-                }else{
+                } else {
                     tryFiringBalls = false;
                     leader.moveAtPercent(0);
                     backSpin.moveAtPosition(0);
@@ -683,6 +685,24 @@ public class Shooter implements ISubsystem {
         }
         speed = rpm;
         leader.moveAtVelocity(rpm);
+
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
+            backSpin.moveAtVelocity(rpm * backspinMult);
+    }
+
+    /**
+     * Set drive wheel RPM
+     *
+     * @param rpm speed to set
+     */
+    public void setSpeed(double rpm, boolean useBackspin) {
+        if (robotSettings.DEBUG && DEBUG) {
+            System.out.println("set shooter speed to " + rpm);
+        }
+        speed = rpm;
+        leader.moveAtVelocity(rpm);
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN && useBackspin)
+            backSpin.moveAtVelocity(rpm * backspinMult);
     }
 
     public void setSpeed(double rpm, double backSpinRPM) {
@@ -692,7 +712,7 @@ public class Shooter implements ISubsystem {
         speed = rpm;
         leader.moveAtVelocity(rpm);
         if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
-        backSpin.moveAtVelocity(backSpinRPM);
+            backSpin.moveAtVelocity(backSpinRPM);
     }
 
     /**

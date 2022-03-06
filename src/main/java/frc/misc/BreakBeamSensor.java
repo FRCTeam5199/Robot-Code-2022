@@ -1,31 +1,38 @@
 package frc.misc;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Robot.robotSettings;
 
 public class BreakBeamSensor implements ISubsystem {
-    DigitalInput breakBeam;
-    boolean isBroken = false;
+    DigitalInput indexerBreakBeam;
+    DigitalInput intakeBreakBeam;
+    boolean indexerIsBroken = false, intakeIsBroken = false;
+    boolean isIndexerOperational = false, isIntakeOperational = false;
 
     public BreakBeamSensor() {
         addToMetaList();
         init();
     }
 
-    public boolean getBroken() {
-        return isBroken;
+    public boolean getIndexerIsBroken() {
+        return indexerIsBroken;
+    }
+
+    public boolean getIntakeIsBroken() {
+        return intakeIsBroken;
     }
 
     @Override
     public void init() {
-        
-        breakBeam = new DigitalInput(robotSettings.BREAK_BEAM_ID);
+        indexerBreakBeam = new DigitalInput(robotSettings.INDEXER_BREAK_BEAM_ID);
+        intakeBreakBeam = new DigitalInput(robotSettings.INTAKE_BREAK_BEAM_ID);
     }
 
     @Override
     public SubsystemStatus getSubsystemStatus() {
-        return null;
+        return (isIndexerOperational && isIntakeOperational) ? SubsystemStatus.NOMINAL : SubsystemStatus.FAILED;
     }
 
     @Override
@@ -45,7 +52,16 @@ public class BreakBeamSensor implements ISubsystem {
 
     @Override
     public void updateGeneric() {
-        isBroken = !breakBeam.get();
+        if (indexerIsBroken == indexerBreakBeam.get())
+            isIndexerOperational = true;
+        if (intakeIsBroken == intakeBreakBeam.get())
+            isIntakeOperational = true;
+        indexerIsBroken = !indexerBreakBeam.get();
+        intakeIsBroken = !intakeBreakBeam.get();
+        if (robotSettings.DEBUG) {
+            SmartDashboard.putBoolean("Intake Sensor Operational?", isIntakeOperational);
+            SmartDashboard.putBoolean("Intake Broken", intakeIsBroken);
+        }
     }
 
     @Override
@@ -75,6 +91,6 @@ public class BreakBeamSensor implements ISubsystem {
 
     @Override
     public String getSubsystemName() {
-        return "Break Beam Sensor";
+        return "Break Beam Sensors";
     }
 }

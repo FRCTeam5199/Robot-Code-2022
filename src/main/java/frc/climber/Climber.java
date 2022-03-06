@@ -92,7 +92,7 @@ public class Climber implements ISubsystem {
             case STANDARD_2022: {
                 if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN && !isLocked) {
                     climberStg1.moveAtPercent(-0.8);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN && !isLocked) {
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
                     climberStg1.moveAtPercent(0.8);
                 } else {
                     climberStg1.moveAtPercent(0);
@@ -102,7 +102,7 @@ public class Climber implements ISubsystem {
                 } else */
                 if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.SECOND_STAGE_CLIMB) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(-0.8);
-                    climberLocks(true);
+                    //climberLocks(true);
                 } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_3) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(0.8);
                 } else {

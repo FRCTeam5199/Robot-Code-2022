@@ -24,6 +24,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
+        ENABLE_INTAKE_RUMBLE = true;
         ENABLE_PNOOMATICS = true;
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
@@ -33,6 +34,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_PDP = true;
         ENABLE_MUSIC = false;
         ENABLE_TOGGLEABLE_RING = true;
+        ENABLE_ERROR_HANDLING = false;
 
         ENABLE_VISION = true;
         ENABLE_CLIMBER = true;
@@ -118,12 +120,13 @@ public class CompetitionRobot2022 extends DefaultConfig {
         SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
         BACKSPIN_PID = new PID(0, 0, 0, 0.0461851);//PID(.132, 0.0, 10, 0.0461851);
         BACKSPIN_ID = 6;
+        BACKSPIN_MULTIPLIER = 1.625;
         BACKSPIN_INVERTED = true;
         SHOOTER_INVERTED = false;
 
                 //Hopper
         ENABLE_BREAK_BEAM = true;
-        BREAK_BEAM_ID = 7;
+        INDEXER_BREAK_BEAM_ID = 7;
         //INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 59;
         AGITATOR_MOTOR_ID = 58; //spark
@@ -138,6 +141,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         INTAKE_IN_ID = 3;
         INTAKE_OUT_ID = 2;
+        INTAKE_BREAK_BEAM_ID = 5;
 
         //Climber
         CLIMBER_STG1_MOTOR_ID = 12;

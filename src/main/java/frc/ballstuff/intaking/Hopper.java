@@ -202,7 +202,7 @@ public class Hopper implements ISubsystem {
 
     public boolean isIndexed() {
         if (robotSettings.ENABLE_BREAK_BEAM) {
-            return breakBeam.getBroken();
+            return breakBeam.getIndexerIsBroken();
         } else {
             return robotSettings.ENABLE_INDEXER_AUTO_INDEX && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE && indexerSensorRange() > 0;
         }
@@ -314,19 +314,19 @@ public class Hopper implements ISubsystem {
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitator.moveAtPercent(!isIndexed() ? 0.2 : 0);
+                            agitator.moveAtPercent(!isIndexed() ? 0.6 : 0);
                         } else {
                             agitator.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            agitatorTop.moveAtPercent(0.5);
+                            agitatorTop.moveAtPercent(0.2);
                         } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
                             //lol imagine mechanical being bad
                             agitatorTop.moveAtPercent(0);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(!isIndexed() ? 0.2 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.1 : 0);
                         } else {
                             agitatorTop.moveAtPercent(0);
                         }
@@ -336,10 +336,10 @@ public class Hopper implements ISubsystem {
                         indexer.moveAtPercent(indexerActive ? 0.3 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
-                        agitator.moveAtPercent(agitatorActive ? 0.3 : 0);
+                        agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.2 : 0);
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.1 : 0);
                     }
                 }
                 if (robotSettings.DEBUG && DEBUG) {

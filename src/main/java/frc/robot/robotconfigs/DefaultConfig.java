@@ -30,7 +30,7 @@ public abstract class DefaultConfig {
     public static final String BOTKEY = loadEnvVariable("bottoken");
     public static final String SLACKBOTKEY = loadEnvVariable("slackbottoken");
     public static final String SLACKSOCKETKEY = loadEnvVariable("slacksockettoken");
-    public final boolean DEBUG = true;
+    public final boolean DEBUG = false;
     public String AUTON_COMPLETE_NOISE = "";
     public boolean autonComplete = false;
     //Subsystems
@@ -63,6 +63,8 @@ public abstract class DefaultConfig {
     public boolean ENABLE_CAMERA = false;
     public boolean ENABLE_HOOD_PISTON = false;
     public boolean ENABLE_TOGGLEABLE_RING = false;
+    public boolean ENABLE_INTAKE_RUMBLE = false;
+    public boolean ENABLE_ERROR_HANDLING = true;
 
     //Misc
     public boolean ENABLE_VISION = false;
@@ -165,6 +167,7 @@ public abstract class DefaultConfig {
     public int BACKSPIN_ID;
     public int SHOOTER_LEADER_ID = 7; //talon
     public int SHOOTER_FOLLOWER_ID = 8; //talon
+    public double BACKSPIN_MULTIPLIER = 1;
     //hood
     public int SHOOTER_HOOD_ID; //HD HEX motor via spark max
     public double SHOOTER_HOOD_MAX_POS;
@@ -190,7 +193,8 @@ public abstract class DefaultConfig {
     public int AGITATOR_MOTOR_ID = 10; //victor
     public int AGITATOR_TOPBAR_MOTOR_ID;
     public int INDEXER_MOTOR_ID = 11; //victor
-    public int BREAK_BEAM_ID;
+    public int INDEXER_BREAK_BEAM_ID;
+    public int INTAKE_BREAK_BEAM_ID;
     public Boolean ENABLE_BREAK_BEAM = false;
     //intake
     public int INTAKE_MOTOR_ID = 12; //victor

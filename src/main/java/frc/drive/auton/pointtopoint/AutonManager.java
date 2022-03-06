@@ -154,13 +154,13 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = drivingChild.rotate180();
                     break;
                 case SHOOT_ALL_2022_INSIDE_TARMAC:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2100);
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 3000);
                     break;
                 case SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2300);
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 3200);
                     break;
                 case SHOOT_ALL_2022_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 4000);
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 3800);
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
             }
