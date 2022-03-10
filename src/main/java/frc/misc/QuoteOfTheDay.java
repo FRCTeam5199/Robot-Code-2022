@@ -69,7 +69,9 @@ public class QuoteOfTheDay {
             "Alex: I don't talk to the press",
             "Sterling: Well I didn't have the budget of 5.99 so I couldn't afford the MathematicalMod.",
             "s2: If there's chinese writing on it, it's bad",
-            "Kyle: How can I live laugh love in these conditions?"
+            "Kyle: How can I live laugh love in these conditions?",
+            "Rick: Teddy's just tall, that's it",
+            "Ali: Try blowing on [the ethernet cable] (to fix it)"
     };
 
     /**

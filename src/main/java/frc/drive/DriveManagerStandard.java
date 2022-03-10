@@ -149,7 +149,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                         visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
                     driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
                 }
-                energySaver();
+                //energySaver();
             }
             break;
             case BALL_SHIFTING_STANDARD: {
@@ -336,7 +336,6 @@ public class DriveManagerStandard extends AbstractDriveManager {
         }
         switch (energySaverLevel) {
             case 0:
-
                 if (isFirstStageEnergySaverOn) {
                     followerL.getMotor(0).setBrake(true).follow(leaderL);
                     followerR.getMotor(0).setBrake(true).follow(leaderR);
@@ -548,7 +547,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (visionCamera.hasValidTarget()) {
             double neededRot = adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch()));
             driveCringe(0, -neededRot);
-            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 25;
+            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 30;
             //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
             if (isAligned) TELEOP_AIMING_PID.reset();
             return isAligned;
@@ -575,7 +574,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
             driveCringe(0, 0);
             TELEOP_AIMING_PID.reset();
         } else {
-            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 10);
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 20);
         }
         return !(rotating180);
     }

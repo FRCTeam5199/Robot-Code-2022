@@ -42,7 +42,7 @@ public enum ShootingEnums {
         }
     }),
     FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter1 -> {
-        double rpm = 2300;
+        double rpm = 2200;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);

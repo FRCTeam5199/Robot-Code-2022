@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -87,6 +88,9 @@ public class Robot extends TimedRobot {
         robotSettings.printNumbers();
         getRestartProximity();
         UserInterface.initRobot();
+        if (DriverStation.isFMSAttached())
+            robotSettings.DEBUG = false;
+
         if (robotSettings.ENABLE_MEMES) {
             Main.pipeline = ClientServerPipeline.getClient();
         }

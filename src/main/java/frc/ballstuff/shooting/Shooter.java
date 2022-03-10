@@ -29,7 +29,7 @@ import static frc.robot.Robot.*;
  * fast things)
  */
 public class Shooter implements ISubsystem {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     private final NetworkTableEntry P = UserInterface.SHOOTER_P.getEntry(),
             I = UserInterface.SHOOTER_I.getEntry(),
             D = UserInterface.SHOOTER_D.getEntry(),
@@ -37,12 +37,14 @@ public class Shooter implements ISubsystem {
             constSpeed = UserInterface.SHOOTER_CONST_SPEED.getEntry(),
             calibratePID = UserInterface.SHOOTER_CALIBRATE_PID.getEntry(),
             rpmGraph = UserInterface.SHOOTER_RPM_GRAPH.getEntry(),
+            backspinGraph = UserInterface.BACKSPIN_RPM_GRAPH.getEntry(),
             rpm = UserInterface.SHOOTER_RPM.getEntry(),
             BACKSPIN_P = UserInterface.BACKSPIN_P.getEntry(),
             BACKSPIN_I = UserInterface.BACKSPIN_I.getEntry(),
             BACKSPIN_D = UserInterface.BACKSPIN_D.getEntry(),
             BACKSPIN_F = UserInterface.BACKSPIN_F.getEntry(),
-            calibrateBackspinPID = UserInterface.BACKSPIN_CALIBRATE_PID.getEntry();
+            calibrateBackspinPID = UserInterface.BACKSPIN_CALIBRATE_PID.getEntry(),
+            constSpeedBackspinMult = UserInterface.BACKSPIN_CONST_SPEED_MULT.getEntry();
     public double speed = 4200;
     public int goalTicks = 20 * 15; //20 ticks = 1 second
     public int ballsShot = 0, ticksPassed = 0, emptyIndexerTicks = 0, hopperCooldownTicks = 0, ballsToShoot = 0;
@@ -225,8 +227,10 @@ public class Shooter implements ISubsystem {
         //UserInterface.smartDashboardPutNumber("RPM", leader.getSpeed());
         rpmGraph.setNumber(leader.getSpeed());
         rpm.setNumber(leader.getSpeed());
-        if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
+            backspinGraph.setNumber(backSpin.getSpeed());
             UserInterface.smartDashboardPutNumber("Current BackSpin RPM", backSpin.getSpeed());
+        }
         UserInterface.smartDashboardPutNumber("Target RPM", speed);
         UserInterface.smartDashboardPutBoolean("atSpeed", isAtSpeed());
         UserInterface.smartDashboardPutBoolean("IS SHOOTING?", shooting);
@@ -248,6 +252,8 @@ public class Shooter implements ISubsystem {
                 leader.setPid(robotSettings.SHOOTER_CONST_SPEED_PID);
             }
             leader.moveAtVelocity(speedYouWant);
+            if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
+                backSpin.moveAtVelocity(speedYouWant * constSpeedBackspinMult.getDouble(robotSettings.BACKSPIN_MULTIPLIER));
         } else {
             leader.moveAtPercent(0);
         }
@@ -261,7 +267,9 @@ public class Shooter implements ISubsystem {
      * @return if the shooter is actually at the requested speed
      */
     public boolean isAtSpeed() {
-        return robotSettings.ENABLE_SHOOTER_BACKSPIN ? Math.abs(leader.getSpeed() - speed) < 200 && Math.abs(backSpin.getSpeed() * backspinMult - speed) < 200 : Math.abs(leader.getSpeed() - speed) < 200;
+        return robotSettings.ENABLE_SHOOTER_BACKSPIN ?
+                Math.abs(leader.getSpeed() - speed) < 50 && Math.abs(backSpin.getSpeed() - (speed * backspinMult)) < 50
+                : Math.abs(leader.getSpeed() - speed) < 50;
     }
 
     @Override
@@ -521,7 +529,7 @@ public class Shooter implements ISubsystem {
                 } else {
                     tryFiringBalls = false;
                     leader.moveAtPercent(0);
-                    backSpin.moveAtPosition(0);
+                    backSpin.moveAtPercent(0);
                     ballsShot = 0;
                     shooterDefault();
                 }
@@ -539,7 +547,7 @@ public class Shooter implements ISubsystem {
                 } else {
                     tryFiringBalls = false;
                     leader.moveAtPercent(0);
-                    backSpin.moveAtPosition(0);
+                    backSpin.moveAtPercent(0);
                     ballsShot = 0;
                     shooterDefault();
                 }

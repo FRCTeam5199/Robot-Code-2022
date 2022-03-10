@@ -24,7 +24,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
-        ENABLE_INTAKE_RUMBLE = true;
+        ENABLE_INTAKE_RUMBLE = false;
         ENABLE_PNOOMATICS = true;
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
@@ -66,7 +66,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         AUTON_TYPE = AutonType.POINT_TO_POINT;
         AUTO_SPEED = .25;
         AUTO_ROTATION_SPEED = .1;
-        AUTON_TOLERANCE = 0.05;
+        AUTON_TOLERANCE = 0.15;
         GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
 
         DRIVEBASE_VOLTAGE_MULTIPLIER = 3.5 * (1.050830889540567 / 2145); //3.4635 volts = 2825 RPM.
@@ -114,11 +114,11 @@ public class CompetitionRobot2022 extends DefaultConfig {
         SHOOTER_FOLLOWER_ID = 10; //talon
         SHOOTER_USE_TWO_MOTORS = true;
         SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        SHOOTER_PID = new PID(0.185, 0.000055, 10, 0.048825);
+        SHOOTER_PID = new PID(0.1, 0.0002, 12, 0.05);
         SHOOTER_CONST_SPEED_PID = SHOOTER_PID;//new PID(1.9, .0001, 70, 0.0851136);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
         SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
-        BACKSPIN_PID = new PID(0, 0, 0, 0.0461851);//PID(.132, 0.0, 10, 0.0461851);
+        BACKSPIN_PID = new PID(0.1, 0, 0, 0.05);//PID(.132, 0.0, 10, 0.0461851);
         BACKSPIN_ID = 6;
         BACKSPIN_MULTIPLIER = 1.625;
         BACKSPIN_INVERTED = true;
