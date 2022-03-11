@@ -83,6 +83,11 @@ public abstract class DefaultConfig {
     public boolean ENABLE_INDEXER_AUTO_INDEX = true;
     public double INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
 
+    /**
+     * The delay ticks that should be waited before breaking the beam
+     */
+    public double BREAK_BEAM_DELAY_20ms = 0;
+
     //UI Styles
     public AbstractDriveManager.DriveControlStyles DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD;
     public Shooter.ShootingControlStyles SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD;

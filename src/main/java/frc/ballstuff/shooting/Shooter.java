@@ -230,6 +230,7 @@ public class Shooter implements ISubsystem {
         if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
             backspinGraph.setNumber(backSpin.getSpeed());
             UserInterface.smartDashboardPutNumber("Current BackSpin RPM", backSpin.getSpeed());
+            UserInterface.smartDashboardPutNumber("Backspin Target RPM", speed * backspinMult);
         }
         UserInterface.smartDashboardPutNumber("Target RPM", speed);
         UserInterface.smartDashboardPutBoolean("atSpeed", isAtSpeed());
@@ -268,8 +269,9 @@ public class Shooter implements ISubsystem {
      */
     public boolean isAtSpeed() {
         return robotSettings.ENABLE_SHOOTER_BACKSPIN ?
-                Math.abs(leader.getSpeed() - speed) < 50 && Math.abs(backSpin.getSpeed() - (speed * backspinMult)) < 50
-                : Math.abs(leader.getSpeed() - speed) < 50;
+                Math.abs(leader.getSpeed() - speed) < 150
+                        && Math.abs(backSpin.getSpeed() - (speed * backspinMult)) < 150
+                : Math.abs(leader.getSpeed() - speed) < 150;
     }
 
     @Override

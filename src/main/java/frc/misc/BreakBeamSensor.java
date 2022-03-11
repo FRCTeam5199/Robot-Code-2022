@@ -6,10 +6,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.Robot.robotSettings;
 
 public class BreakBeamSensor implements ISubsystem {
-    DigitalInput indexerBreakBeam;
-    DigitalInput intakeBreakBeam;
-    boolean indexerIsBroken = false, intakeIsBroken = false;
-    boolean isIndexerOperational = false, isIntakeOperational = false;
+    private final boolean DEBUG = false;
+    private DigitalInput indexerBreakBeam;
+    private DigitalInput intakeBreakBeam;
+    private boolean indexerIsBroken = false, intakeIsBroken = false;
+    private boolean isIndexerOperational = false, isIntakeOperational = false;
+    private int ticksPassedIntake = 0, ticksPassedIndexer = 0;
 
     public BreakBeamSensor() {
         addToMetaList();
@@ -18,10 +20,34 @@ public class BreakBeamSensor implements ISubsystem {
 
     public boolean getIndexerIsBroken() {
         return indexerIsBroken;
+        /*
+        if (ticksPassedIndexer >= robotSettings.BREAK_BEAM_DELAY_20ms) {
+            return true;
+        } else {
+            if (indexerIsBroken) {
+                ticksPassedIndexer++;
+            } else {
+                ticksPassedIndexer = 0;
+            }
+            return false;
+        }
+         */
     }
 
     public boolean getIntakeIsBroken() {
         return intakeIsBroken;
+        /*
+        if (ticksPassedIntake >= robotSettings.BREAK_BEAM_DELAY_20ms) {
+            return intakeIsBroken;
+        } else {
+            if (intakeIsBroken) {
+                ticksPassedIntake++;
+            } else {
+                ticksPassedIntake = 0;
+            }
+            return false;
+        }
+         */
     }
 
     @Override
@@ -58,7 +84,7 @@ public class BreakBeamSensor implements ISubsystem {
             isIntakeOperational = true;
         indexerIsBroken = !indexerBreakBeam.get();
         intakeIsBroken = !intakeBreakBeam.get();
-        if (robotSettings.DEBUG) {
+        if (robotSettings.DEBUG && DEBUG) {
             SmartDashboard.putBoolean("Intake Sensor Operational?", isIntakeOperational);
             SmartDashboard.putBoolean("Intake Broken", intakeIsBroken);
         }

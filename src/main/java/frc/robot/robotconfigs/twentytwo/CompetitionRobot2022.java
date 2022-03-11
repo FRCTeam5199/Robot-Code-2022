@@ -126,6 +126,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
                 //Hopper
         ENABLE_BREAK_BEAM = true;
+        BREAK_BEAM_DELAY_20ms = 1;
         INDEXER_BREAK_BEAM_ID = 7;
         //INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 59;

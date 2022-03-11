@@ -56,6 +56,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
     private PIDController TELEOP_AIMING_PID, AUTON_AIMING_PID;
     private boolean isFirstStageEnergySaverOn = false, isSecondStageEnergySaverOn = false;
     private int energySaverLevel = 0;
+    private int ticksElapsed = 0;
 
     public DriveManagerStandard() throws UnsupportedOperationException, InitializationFailureException {
         super();
@@ -577,6 +578,23 @@ public class DriveManagerStandard extends AbstractDriveManager {
             driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 20);
         }
         return !(rotating180);
+    }
+
+    public boolean driveTimed(int ticks, boolean direction) {
+        if (ticksElapsed > 0) {
+            if (ticksElapsed >= ticks) {
+                driveCringe(0, 0);
+                ticksElapsed = 0;
+                return true;
+            } else {
+                driveCringe(direction ? -0.25 : 0.25, 0);
+                ticksElapsed++;
+                return false;
+            }
+        } else {
+            ticksElapsed = 1;
+            return false;
+        }
     }
 
     public void driveCringe(double forward, double rotation) {

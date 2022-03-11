@@ -321,7 +321,7 @@ public class Hopper implements ISubsystem {
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            agitatorTop.moveAtPercent(0.2);
+                            agitatorTop.moveAtPercent(0.15);
                         } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
                             //lol imagine mechanical being bad
                             agitatorTop.moveAtPercent(0);

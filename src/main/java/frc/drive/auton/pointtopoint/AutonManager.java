@@ -130,14 +130,20 @@ public class AutonManager extends AbstractAutonManager {
                     break;
                 case INTAKE_IN:
                     Robot.intake.setIntake(Intake.IntakeDirection.IN);
+                    Robot.hopper.setAgitatorTopbar(true);
+                    //Robot.hopper.agitatorTop.moveAtPercent(0.1);
                     specialActionComplete = true;
                     break;
                 case INTAKE_OFF:
                     Robot.intake.setIntake(Intake.IntakeDirection.OFF);
+                    Robot.hopper.setAgitatorTopbar(false);
+                    //Robot.hopper.agitatorTop.moveAtPercent(0);
                     specialActionComplete = true;
                     break;
                 case INTAKE_UP:
                     Robot.intake.deployIntake(false);
+                    Robot.hopper.setAgitatorTopbar(false);
+                    //Robot.hopper.agitatorTop.moveAtPercent(0);
                     specialActionComplete = true;
                     break;
                 case INTAKE_DOWN:
@@ -154,13 +160,17 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = drivingChild.rotate180();
                     break;
                 case SHOOT_ALL_2022_INSIDE_TARMAC:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 3000);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 1900);
                     break;
                 case SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 3200);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2000);
                     break;
                 case SHOOT_ALL_2022_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 3800);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2800);
+                    break;
+                case DRIVE_BACK_TIMED:
+                    specialActionComplete = drivingChild.driveTimed(20*6, false);
+                    break;
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
             }
