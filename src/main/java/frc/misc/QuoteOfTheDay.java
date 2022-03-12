@@ -71,7 +71,8 @@ public class QuoteOfTheDay {
             "s2: If there's chinese writing on it, it's bad",
             "Kyle: How can I live laugh love in these conditions?",
             "Rick: Teddy's just tall, that's it",
-            "Ali: Try blowing on [the ethernet cable] (to fix it)"
+            "Ali: Try blowing on [the ethernet cable] (to fix it)",
+            "Stryker: Considering my age and size I'm pretty bulked"
     };
 
     /**

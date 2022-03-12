@@ -61,7 +61,7 @@ public enum AutonRoutines {
     PICKUP_ONE_DRIVE_SHOOT_TWO_2022(
             new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
             new AutonWaypoint(INTAKE_DOWN),
-            new AutonWaypoint(new Point(1.9, 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(new Point(2.2, 0), 1), //(1.7741787849766635, 0.01580735327687336)
             new AutonWaypoint(new Point(0.5, 0), -1, DRIVE_180),
             new AutonWaypoint(INTAKE_OFF),
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),

@@ -163,7 +163,7 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = Robot.shooter.fireAmount2022(5, 1900);
                     break;
                 case SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE:
-                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2000);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2300);
                     break;
                 case SHOOT_ALL_2022_FAR:
                     specialActionComplete = Robot.shooter.fireAmount2022(5, 2800);

@@ -63,6 +63,15 @@ public class Hopper implements ISubsystem {
         if (robotSettings.DEBUG && DEBUG && controller != null) System.out.println("Created a " + controller);
     }
 
+    private void setBreak(boolean isBreak) {
+        if (robotSettings.ENABLE_INDEXER)
+            indexer.setBrake(isBreak);
+        if (robotSettings.ENABLE_AGITATOR)
+            agitator.setBrake(isBreak);
+        if (robotSettings.ENABLE_AGITATOR_TOP)
+            agitatorTop.setBrake(isBreak);
+    }
+
     private void createControllers() {
         switch (robotSettings.HOPPER_CONTROL_STYLE) {
             case COMP_2022:
@@ -110,7 +119,7 @@ public class Hopper implements ISubsystem {
                 default:
                     throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
             }
-            agitator.setInverted(robotSettings.HOPPER_AGITATOR_INVERT_MOTOR);
+            agitator.setInverted(robotSettings.HOPPER_AGITATOR_INVERT_MOTOR).setBrake(true);
         }
         if (robotSettings.ENABLE_AGITATOR_TOP) {
             switch (robotSettings.AGITATOR_TOP_MOTOR_TYPE) {
@@ -129,7 +138,7 @@ public class Hopper implements ISubsystem {
                 default:
                     throw new IllegalStateException("No such supported hopper agitator topbar motor config for " + robotSettings.AGITATOR_TOP_MOTOR_TYPE.name());
             }
-            agitatorTop.setInverted(robotSettings.HOPPER_TOP_INVERT_MOTOR);
+            agitatorTop.setInverted(robotSettings.HOPPER_TOP_INVERT_MOTOR).setBrake(true);
         }
         if (robotSettings.ENABLE_INDEXER) {
             switch (robotSettings.INDEXER_MOTOR_TYPE) {
@@ -148,7 +157,7 @@ public class Hopper implements ISubsystem {
                 default:
                     throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
             }
-            indexer.setInverted(robotSettings.HOPPER_INDEXER_INVERT_MOTOR);
+            indexer.setInverted(robotSettings.HOPPER_INDEXER_INVERT_MOTOR).setBrake(true);
         }
     }
 
@@ -378,11 +387,12 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void initDisabled() {
-
+        setBreak(false);
     }
 
     @Override
     public void initGeneric() {
+        setBreak(true);
     }
 
     @Override
