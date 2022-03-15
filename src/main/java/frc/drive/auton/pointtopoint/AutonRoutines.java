@@ -65,7 +65,7 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(0.5, 0), -1, DRIVE_180),
             new AutonWaypoint(INTAKE_OFF),
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
-            new AutonWaypoint(SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE),
+            new AutonWaypoint(SHOOT_ALL_2022_FAR),
             new AutonWaypoint(DRIVE_BACK_TIMED)
             //new AutonWaypoint(new Point(1.9, 0), -1)
     ),
