@@ -2,7 +2,6 @@ package frc.misc;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.*;
-import frc.climber.Climber;
 
 import static frc.robot.Robot.robotSettings;
 
@@ -19,6 +18,7 @@ public class Pneumatics implements ISubsystem {
     public DoubleSolenoid buddyClimberLock;
     public Solenoid shooterCooling;
     public DoubleSolenoid hoodArticulator;
+    public DoubleSolenoid indexerBlocker;
     public Compressor compressor;
     public PneumaticHub pneumaticsHub;
     private final NetworkTableEntry
@@ -53,9 +53,11 @@ public class Pneumatics implements ISubsystem {
         if (robotSettings.ENABLE_BUDDY_CLIMBER && robotSettings.ENABLE_PNOOMATICS) {
             buddyClimberLock = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.BUDDY_CLIMBER_LOCK_IN_ID, robotSettings.BUDDY_CLIMBER_LOCK_OUT_ID);
         }
-
         if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
             hoodArticulator = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.HOOD_ARTICULATOR_IN_ID, robotSettings.HOOD_ARTICULATOR_OUT_ID);
+        }
+        if (robotSettings.ENABLE_INDEXER && robotSettings.ENABLE_HOPPER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK) {
+            indexerBlocker = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.INDEXER_BLOCK_IN_ID, robotSettings.INDEXER_BLOCK_OUT_ID);
         }
     }
 
@@ -122,11 +124,14 @@ public class Pneumatics implements ISubsystem {
 
     @Override
     public void initDisabled() {
-
+        if (robotSettings.ENABLE_INDEXER && robotSettings.ENABLE_HOPPER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+            indexerBlocker.set(DoubleSolenoid.Value.kReverse);
     }
 
     @Override
     public void initGeneric() {
+        if (robotSettings.ENABLE_INDEXER && robotSettings.ENABLE_HOPPER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+            indexerBlocker.set(DoubleSolenoid.Value.kForward);
         if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS)
             climberLock.set(DoubleSolenoid.Value.kReverse);
         if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS)

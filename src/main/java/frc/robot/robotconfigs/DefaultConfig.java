@@ -82,6 +82,7 @@ public abstract class DefaultConfig {
     //INTAKE
     public boolean ENABLE_INDEXER_AUTO_INDEX = true;
     public double INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
+    public boolean ENABLE_INDEXER_PISTON_BLOCK = false;
 
     /**
      * The delay ticks that should be waited before breaking the beam
@@ -227,6 +228,8 @@ public abstract class DefaultConfig {
     public int BALL_SHIFTERS_OUT_ID;
     public int BUDDY_CLIMBER_LOCK_IN_ID;
     public int BUDDY_CLIMBER_LOCK_OUT_ID;
+    public int INDEXER_BLOCK_IN_ID;
+    public int INDEXER_BLOCK_OUT_ID;
 
     //climber
     public int[] CLIMBER_MOTOR_IDS;

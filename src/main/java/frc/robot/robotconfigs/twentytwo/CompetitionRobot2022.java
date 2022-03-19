@@ -21,6 +21,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_SHOOTER_BACKSPIN = true;
         ENABLE_HOPPER = true;
         ENABLE_INDEXER = true;
+        ENABLE_INDEXER_PISTON_BLOCK = true;
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
@@ -29,8 +30,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
         ENABLE_CAMERA = false;
-        ENABLE_HOOD_PISTON = true;
-        ENABLE_HOOD_ARTICULATION = true;
+        ENABLE_HOOD_PISTON = false;
+        ENABLE_HOOD_ARTICULATION = false;
         ENABLE_PDP = true;
         ENABLE_MUSIC = false;
         ENABLE_TOGGLEABLE_RING = true;
@@ -40,7 +41,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_CLIMBER = true;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
-        PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
+        PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
 
         DRIVE_INVERT_LEFT = false;
         DRIVE_INVERT_RIGHT = true;
@@ -151,8 +152,12 @@ public class CompetitionRobot2022 extends DefaultConfig {
         CLIMBER_OUT_ID = 5;
 
         //hood
-        HOOD_ARTICULATOR_IN_ID = 1;
-        HOOD_ARTICULATOR_OUT_ID = 0;
+        //HOOD_ARTICULATOR_IN_ID = 1;
+        //HOOD_ARTICULATOR_OUT_ID = 0;
+
+        //indexer
+        INDEXER_BLOCK_IN_ID = 0;
+        INDEXER_BLOCK_OUT_ID = 1;
 
         PCM_ID = 33;
         PDP_ID = 50;

@@ -72,7 +72,8 @@ public class QuoteOfTheDay {
             "Kyle: How can I live laugh love in these conditions?",
             "Rick: Teddy's just tall, that's it",
             "Ali: Try blowing on [the ethernet cable] (to fix it)",
-            "Stryker: Considering my age and size I'm pretty bulked"
+            "Stryker: Considering my age and size I'm pretty bulked",
+            "Here in soviet programmer fun time land, you do not turn robot; robot turns you."
     };
 
     /**

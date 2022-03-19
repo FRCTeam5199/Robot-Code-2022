@@ -5,6 +5,7 @@ import frc.ballstuff.shooting.Shooter;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.misc.ISubsystem;
+import frc.misc.PID;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;
@@ -157,6 +158,7 @@ public class Hopper implements ISubsystem {
                 default:
                     throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
             }
+            indexer.setPid(new PID(0, 0, 0, 0.0001));
             indexer.setInverted(robotSettings.HOPPER_INDEXER_INVERT_MOTOR).setBrake(true);
         }
     }
@@ -316,7 +318,13 @@ public class Hopper implements ISubsystem {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            indexer.moveAtPercent(!isIndexed() ? 0.05 : 0);
+                            if (!isIndexed())
+                                indexer.moveAtPercent(0.6);//0.05*3.5);
+                            else {
+                                //double rot = indexer.getRotations() / indexer.sensorToRealDistanceFactor;
+                                //indexer.moveAtPosition(rot);
+                                indexer.moveAtPercent(0);
+                            }
                         } else {
                             indexer.moveAtPercent(0);
                         }
@@ -342,7 +350,7 @@ public class Hopper implements ISubsystem {
                     }
                 } else {
                     if (robotSettings.ENABLE_INDEXER) {
-                        indexer.moveAtPercent(indexerActive ? 0.3 : 0);//0.3 : 0);
+                        indexer.moveAtPercent(indexerActive ? 0.6 : 0);//0.3*1.5 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
                         agitator.moveAtPercent(agitatorActive ? 0.6 : 0);

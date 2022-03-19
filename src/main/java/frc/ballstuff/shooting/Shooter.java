@@ -1,6 +1,7 @@
 package frc.ballstuff.shooting;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.ballstuff.intaking.Hopper2020;
 import frc.climber.Climber;
@@ -245,6 +246,8 @@ public class Shooter implements ISubsystem {
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll(false);
         }
+        if (robotSettings.ENABLE_HOPPER)
+            hopper.setAll(false);
         double speedYouWant = constSpeed.getDouble(0);
         if (speedYouWant != 0) {
             isConstSpeed = true;
@@ -552,6 +555,7 @@ public class Shooter implements ISubsystem {
                     backSpin.moveAtPercent(0);
                     ballsShot = 0;
                     shooterDefault();
+                    pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
                 }
                 break;
             }

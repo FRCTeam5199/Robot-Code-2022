@@ -1,5 +1,6 @@
 package frc.ballstuff.shooting;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.controllers.ControllerEnums;
 import frc.misc.UserInterface;
 
@@ -38,14 +39,21 @@ public enum ShootingEnums {
         double rpm = shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * shooter.leader.getMaxRPM();
         shooter.setSpeed(rpm, rpm * 1.625);
         if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
         }
-    }),
-    FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter1 -> {
+    }), FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter1 -> {
         double rpm = 2200;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
         }
     }),
 
@@ -53,7 +61,11 @@ public enum ShootingEnums {
         double rpm = 2400;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
         }
     }),
 
@@ -61,7 +73,11 @@ public enum ShootingEnums {
         double rpm = 3000;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
         }
     }),
 
@@ -69,7 +85,11 @@ public enum ShootingEnums {
         double rpm = 1900;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
         }
     }),
 
@@ -188,8 +208,7 @@ public enum ShootingEnums {
             }
         }
         shooter.setSpeed(4200);
-    }),
-    FIRE_MULTIPLE_SHOTS(shooter -> {
+    }), FIRE_MULTIPLE_SHOTS(shooter -> {
         if (shooter.ballsToShoot > shooter.ballsShot && shooter.ballsToShoot != -1) {
             shooter.setSpeed(4300); //The speed to run the shooter at during firing, typically 4200
             if (robotSettings.ENABLE_2020_HOPPER) {
@@ -281,8 +300,7 @@ public enum ShootingEnums {
                 hopper.setAll(false);
             }
         }
-    }),
-    FIRE_TIMED(shooter -> {
+    }), FIRE_TIMED(shooter -> {
         shooter.setSpeed(4200);
         if (Shooter.DEBUG) {
             System.out.println("Balls shot: " + shooter.ballsShot);
@@ -306,8 +324,7 @@ public enum ShootingEnums {
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll(shooter.getSpeed() >= 4200);
         }
-    }),
-    FIRE_WITH_HOPPER_CONTROLLED(shooter -> {
+    }), FIRE_WITH_HOPPER_CONTROLLED(shooter -> {
         shooter.setSpeed(4400);
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setIndexer(shooter.getSpeed() >= 4200);
