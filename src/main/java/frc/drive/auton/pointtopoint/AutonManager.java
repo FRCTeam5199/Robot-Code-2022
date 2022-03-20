@@ -10,10 +10,8 @@ import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.Point;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
-import frc.misc.UtilFunctions;
 import frc.motors.SparkMotorController;
 import frc.robot.Robot;
-import frc.telemetry.RobotTelemetryStandard;
 
 import static frc.robot.Robot.robotSettings;
 
@@ -132,10 +130,12 @@ public class AutonManager extends AbstractAutonManager {
                     break;
                 case INTAKE_IN:
                     Robot.intake.setIntake(Intake.IntakeDirection.IN);
+                    Robot.hopper.setAgitatorTopbar(true);
                     specialActionComplete = true;
                     break;
                 case INTAKE_OFF:
                     Robot.intake.setIntake(Intake.IntakeDirection.OFF);
+                    Robot.hopper.setAgitatorTopbar(false);
                     specialActionComplete = true;
                     break;
                 case INTAKE_UP:
@@ -153,13 +153,25 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = drivingChild.aimAtTarget();
                     break;
                 case DRIVE_180:
-                    specialActionComplete = drivingChild.rotate180();
+                    specialActionComplete = drivingChild.rotateDegrees(180);
                     break;
-                case SHOOT_ALL_2022_BEHIND_TARMAC:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2300);
+                case DRIVE_160:
+                    specialActionComplete = drivingChild.rotateDegrees(160);
+                    break;
+                case DRIVE_165:
+                    specialActionComplete = drivingChild.rotateDegrees(165);
                     break;
                 case SHOOT_ALL_2022_INSIDE_TARMAC:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2000);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 1900);
+                    break;
+                case SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE:
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2300);
+                    break;
+                case SHOOT_ALL_2022_FAR:
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2500);
+                    break;
+                case DRIVE_BACK_TIMED:
+                    specialActionComplete = drivingChild.driveTimed(20*6, false);
                     break;
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
@@ -198,7 +210,7 @@ public class AutonManager extends AbstractAutonManager {
         }
         UserInterface.smartDashboardPutNumber("WheelRotations", drivingChild.leaderL.getRotations());
         boolean inTolerance = here.isWithin(robotSettings.AUTON_TOLERANCE * 3, point);
-        if (point.X == -9999 && point.Y == -9999)
+        if (point.X <= -9000 && point.Y <= -9000)
             inTolerance = true;
         UserInterface.smartDashboardPutNumber("rotOffset", -rotationOffset);
         UserInterface.smartDashboardPutString("Current Position", here.toString());
@@ -207,7 +219,7 @@ public class AutonManager extends AbstractAutonManager {
             double y = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION).Y;
             double targetHeading = speed < 0 ? drivingChild.guidance.realRetrogradeHeadingError(x,y) : drivingChild.guidance.realHeadingError(x,y);
 
-            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed /** (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0)*/, ROT_PID.calculate(targetHeading) * robotSettings.AUTO_ROTATION_SPEED);
+            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed /* (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0)*/, ROT_PID.calculate(targetHeading) * -robotSettings.AUTO_ROTATION_SPEED);
         } else {
             drivingChild.drivePure(0, 0);
             System.out.println("In tolerance.");
@@ -241,6 +253,7 @@ public class AutonManager extends AbstractAutonManager {
     @Override
     public void initAuton() {
         robotSettings.autonComplete = false;
+        drivingChild.setBrake(true);
         if (robotSettings.ENABLE_IMU) {
             drivingChild.guidance.resetOdometry();
             drivingChild.guidance.imu.resetOdometry();

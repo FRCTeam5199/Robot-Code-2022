@@ -53,6 +53,12 @@ public class VictorMotorController extends AbstractMotorController {
     }
 
     @Override
+    public AbstractMotorController unfollow() {
+        motor.follow(motor);
+        return this;
+    }
+
+    @Override
     public void resetEncoder() {
         if (motor.setSelectedSensorPosition(0) != ErrorCode.OK)
             if (!Robot.SECOND_TRY)

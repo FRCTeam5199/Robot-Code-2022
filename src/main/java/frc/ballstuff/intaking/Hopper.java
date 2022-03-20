@@ -5,6 +5,7 @@ import frc.ballstuff.shooting.Shooter;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.misc.ISubsystem;
+import frc.misc.PID;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;
@@ -60,6 +61,15 @@ public class Hopper implements ISubsystem {
         if (robotSettings.DEBUG && DEBUG && controller != null) System.out.println("Created a " + controller);
     }
 
+    private void setBreak(boolean isBreak) {
+        if (robotSettings.ENABLE_INDEXER)
+            indexer.setBrake(isBreak);
+        if (robotSettings.ENABLE_AGITATOR)
+            agitator.setBrake(isBreak);
+        if (robotSettings.ENABLE_AGITATOR_TOP)
+            agitatorTop.setBrake(isBreak);
+    }
+
     private void createControllers() {
         switch (robotSettings.HOPPER_CONTROL_STYLE) {
             case COMP_2022:
@@ -91,27 +101,9 @@ public class Hopper implements ISubsystem {
 
     private void createAndInitMotors() throws IllegalStateException {
         if (robotSettings.ENABLE_AGITATOR) {
-            agitatorTop = robotSettings.AGITATOR_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_MOTOR_ID);
-            agitatorTop.setRealFactorFromMotorRPS(1);
-            //old architecture, just rollback changes in case of emergency
-            //TODO remove this
-            /*switch (robotSettings.AGITATOR_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    agitator = new SparkMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(1);
-                    break;
-                case TALON_FX:
-                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    agitator = new VictorMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
-            }*/
-            agitator.setInverted(robotSettings.HOPPER_AGITATOR_INVERT_MOTOR);
+            agitator = robotSettings.AGITATOR_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_MOTOR_ID);
+            agitator.setRealFactorFromMotorRPS(1);
+            agitator.setInverted(robotSettings.HOPPER_AGITATOR_INVERT_MOTOR).setBrake(true);
         }
         if (robotSettings.ENABLE_AGITATOR_TOP) {
             agitatorTop = robotSettings.AGITATOR_TOP_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
@@ -175,7 +167,7 @@ public class Hopper implements ISubsystem {
 
     public boolean isIndexed() {
         if (robotSettings.ENABLE_BREAK_BEAM) {
-            return breakBeam.getBroken();
+            return breakBeam.getIndexerIsBroken();
         } else {
             return robotSettings.ENABLE_INDEXER_AUTO_INDEX && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE && indexerSensorRange() > 0;
         }
@@ -280,39 +272,48 @@ public class Hopper implements ISubsystem {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            indexer.moveAtPercent(!isIndexed() ? 0.05 : 0);
+                            if (!isIndexed())
+                                indexer.moveAtPercent(0.8);//0.05*3.5);
+                                    //Morganne set to 0.8 "all time" 3/19/22 17:34
+                            //"Can we only do tarmac from now on" -Morganne 3/19/22 16:42
+                            else {
+                                //double rot = indexer.getRotations() / indexer.sensorToRealDistanceFactor;
+                                //indexer.moveAtPosition(rot);
+                                indexer.moveAtPercent(0);
+                            }
                         } else {
                             indexer.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitator.moveAtPercent(!isIndexed() ? 0.2 : 0);
+                            agitator.moveAtPercent(!isIndexed() ? 0.6 : 0);
                         } else {
                             agitator.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            agitatorTop.moveAtPercent(0.5);
+                            agitatorTop.moveAtPercent(0.15);
                         } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
                             //lol imagine mechanical being bad
                             agitatorTop.moveAtPercent(0);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(!isIndexed() ? 0.2 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.1 : 0);
                         } else {
                             agitatorTop.moveAtPercent(0);
                         }
                     }
                 } else {
                     if (robotSettings.ENABLE_INDEXER) {
-                        indexer.moveAtPercent(indexerActive ? 0.3 : 0);
+                        indexer.moveAtPercent(indexerActive ? 0.8 : 0);//0.3*1.5 : 0);
+                        // Morganne 16:10 3/19/22 change it from 0.6 to 0.8
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
-                        agitator.moveAtPercent(agitatorActive ? 0.3 : 0);
+                        agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.2 : 0);
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.1 : 0);
                     }
                 }
                 if (robotSettings.DEBUG && DEBUG) {
@@ -351,11 +352,12 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void initDisabled() {
-
+        setBreak(false);
     }
 
     @Override
     public void initGeneric() {
+        setBreak(true);
     }
 
     @Override

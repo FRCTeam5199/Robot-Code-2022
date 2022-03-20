@@ -67,7 +67,13 @@ public class QuoteOfTheDay {
             "Teddy: Idk they obviously can’t read\nStryker: Bro you're so mean\nTeddy: Nvm he can read",
             "Sterling: Someone fried my RIO ports\nBrandon: Just like someone fried my teensy?",
             "Alex: I don't talk to the press",
-            "Sterling: Well I didn't have the budget of 5.99 so I couldn't afford the MathematicalMod."
+            "Sterling: Well I didn't have the budget of 5.99 so I couldn't afford the MathematicalMod.",
+            "s2: If there's chinese writing on it, it's bad",
+            "Kyle: How can I live laugh love in these conditions?",
+            "Rick: Teddy's just tall, that's it",
+            "Ali: Try blowing on [the ethernet cable] (to fix it)",
+            "Stryker: Considering my age and size I'm pretty bulked",
+            "Here in soviet programmer fun time land, you do not turn robot; robot turns you."
     };
 
     /**

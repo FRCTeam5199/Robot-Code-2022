@@ -185,6 +185,12 @@ public class SparkMotorController extends AbstractMotorController {
     }
 
     @Override
+    public AbstractMotorController unfollow() {
+        motor.follow(motor);
+        return this;
+    }
+
+    @Override
     public AbstractMotorController follow(AbstractMotorController leader, boolean invert) {
         if (!(leader instanceof SparkMotorController))
             throw new IllegalArgumentException("I cant follow that!!");

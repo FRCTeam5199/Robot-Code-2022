@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -36,6 +37,7 @@ import frc.selfdiagnostics.ISimpleIssue;
 import frc.selfdiagnostics.IssueHandler;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.vision.camera.CameraViewer;
+import frc.vision.camera.IVision;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -80,12 +82,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() throws IllegalStateException {
-        getRestartProximity();
         robotSettings = getSettings();
         robotSettings.printMappings();
         robotSettings.printToggles();
         robotSettings.printNumbers();
+        getRestartProximity();
         UserInterface.initRobot();
+        if (DriverStation.isFMSAttached())
+            robotSettings.DEBUG = false;
+
         if (robotSettings.ENABLE_MEMES) {
             Main.pipeline = ClientServerPipeline.getClient();
         }
@@ -93,10 +98,12 @@ public class Robot extends TimedRobot {
         //flashlight = new Flashlight();
 
         if (robotSettings.ENABLE_DRIVE) {
-            if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD)
+            if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD) {
                 driver = new DriveManagerStandard();
-            else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL)
+            } else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL) {
                 driver = new DriveManagerSwerve();
+            }
+
         }
         if (robotSettings.ENABLE_LEDS) {
             leds = new LEDs();
@@ -173,6 +180,8 @@ public class Robot extends TimedRobot {
         String quote = QuoteOfTheDay.getRandomQuote();
         System.out.println("\n\n" + quote);
         UserInterface.smartDashboardPutString("Quote", quote);
+        if (robotSettings.ENABLE_VISION)
+            IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE).setLedMode(IVision.VisionLEDMode.OFF);
     }
 
     /**
@@ -181,18 +190,21 @@ public class Robot extends TimedRobot {
      * half a century then it might not work right so please refrain from that
      */
     private static void getRestartProximity() {
-        long lastBoot = Long.parseLong(Preferences.getString("lastboot", "0"));
-        long currentBoot = System.currentTimeMillis();
-        Preferences.setString("lastboot", "0" + currentBoot);
-        if (lastBoot > currentBoot) {
-            SECOND_TRY = false;
-        } else if (lastBoot > 1614461266977L) {
-            SECOND_TRY = currentBoot - lastBoot < 30000;
-        } else if (lastBoot < 1614461266977L && currentBoot < 1614461266977L) {
-            SECOND_TRY = currentBoot - lastBoot < 30000;
-        } else {
-            SECOND_TRY = false;
-        }
+        if (robotSettings.ENABLE_ERROR_HANDLING) {
+            long lastBoot = Long.parseLong(Preferences.getString("lastboot", "0"));
+            long currentBoot = System.currentTimeMillis();
+            Preferences.setString("lastboot", "0" + currentBoot);
+            if (lastBoot > currentBoot) {
+                SECOND_TRY = false;
+            } else if (lastBoot > 1614461266977L) {
+                SECOND_TRY = currentBoot - lastBoot < 30000;
+            } else if (lastBoot < 1614461266977L && currentBoot < 1614461266977L) {
+                SECOND_TRY = currentBoot - lastBoot < 30000;
+            } else {
+                SECOND_TRY = false;
+            }
+        } else
+            SECOND_TRY = true;
     }
 
     /**
@@ -222,7 +234,7 @@ public class Robot extends TimedRobot {
                 return new CompetitionRobot2022();
             case "ERR_NOT_FOUND":
                 return new CompetitionRobot2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
-                //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
+            //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
             default:
                 throw new InitializationFailureException(String.format("Invalid ID %s for robot.", hostName), "In the SmartDashboard, set the key \"hostname\" to a correct value (ex: \"202#-(Comp/Prac)\")");
         }
@@ -333,7 +345,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        if (System.currentTimeMillis() > lastDisable + 5000) {
+        if (System.currentTimeMillis() > lastDisable + 2000) {
             if (robotSettings.ENABLE_DRIVE)
                 driver.setBrake(false);
             if (robotSettings.ENABLE_HOOD_ARTICULATION && !robotSettings.ENABLE_HOOD_PISTON)

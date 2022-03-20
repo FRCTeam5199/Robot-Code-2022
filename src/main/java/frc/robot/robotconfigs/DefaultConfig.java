@@ -34,7 +34,7 @@ public abstract class DefaultConfig {
     public static final String BOTKEY = loadEnvVariable("bottoken");
     public static final String SLACKBOTKEY = loadEnvVariable("slackbottoken");
     public static final String SLACKSOCKETKEY = loadEnvVariable("slacksockettoken");
-    public final boolean DEBUG = true;
+    public boolean DEBUG = true;
     public String AUTON_COMPLETE_NOISE = "";
     public boolean autonComplete = false;
     //Subsystems
@@ -67,6 +67,8 @@ public abstract class DefaultConfig {
     public boolean ENABLE_CAMERA = false;
     public boolean ENABLE_HOOD_PISTON = false;
     public boolean ENABLE_TOGGLEABLE_RING = false;
+    public boolean ENABLE_INTAKE_RUMBLE = false;
+    public boolean ENABLE_ERROR_HANDLING = true;
 
     //Misc
     public boolean ENABLE_VISION = false;
@@ -84,6 +86,12 @@ public abstract class DefaultConfig {
     //INTAKE
     public boolean ENABLE_INDEXER_AUTO_INDEX = true;
     public double INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
+    public boolean ENABLE_INDEXER_PISTON_BLOCK = false;
+
+    /**
+     * The delay ticks that should be waited before breaking the beam
+     */
+    public double BREAK_BEAM_DELAY_20ms = 0;
 
     //UI Styles
     public DriveControlStyles DRIVE_STYLE = DriveControlStyles.STANDARD;
@@ -127,14 +135,13 @@ public abstract class DefaultConfig {
     public PID SHOOTER_RECOVERY_PID = SHOOTER_PID;
     public PID TURRET_PID = EMPTY_PID;
     public PID HEADING_PID = EMPTY_PID;
+    public PID TELEOP_AIMING_PID = EMPTY_PID;
+    public PID AUTON_AIMING_PID = EMPTY_PID;
     public PID TURRET_HEADING_PID = EMPTY_PID;
     public PID BACKSPIN_PID = EMPTY_PID;
     public double CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
     public double motorPulleySize = 0;//?;
     public double driverPulleySize = 0;//?;
-    public double CAMERA_HEIGHT = 0; //Inches
-    public double CAMERA_PITCH = 0; //Radians
-    public double TARGET_HEIGHT = 0;//2.44; //Meters
 
     public double XBOX_CONTROLLER_DEADZONE = 0.07;
     public double MOTOR_SPROCKET_SIZE = 0;
@@ -167,6 +174,7 @@ public abstract class DefaultConfig {
     public int BACKSPIN_ID;
     public int SHOOTER_LEADER_ID = 7; //talon
     public int SHOOTER_FOLLOWER_ID = 8; //talon
+    public double BACKSPIN_MULTIPLIER = 1;
     //hood
     public int SHOOTER_HOOD_ID; //HD HEX motor via spark max
     public double SHOOTER_HOOD_MAX_POS;
@@ -192,7 +200,8 @@ public abstract class DefaultConfig {
     public int AGITATOR_MOTOR_ID = 10; //victor
     public int AGITATOR_TOPBAR_MOTOR_ID;
     public int INDEXER_MOTOR_ID = 11; //victor
-    public int BREAK_BEAM_ID;
+    public int INDEXER_BREAK_BEAM_ID;
+    public int INTAKE_BREAK_BEAM_ID;
     public Boolean ENABLE_BREAK_BEAM = false;
     //intake
     public int INTAKE_MOTOR_ID = 12; //victor
@@ -209,6 +218,11 @@ public abstract class DefaultConfig {
     public int FLIGHT_STICK_USB_SLOT = 1;
     public int BUTTON_PANEL_USB_SLOT = 2;
 
+    //Limelight Distance Tracking
+    public double CAMERA_HEIGHT = 0; //Inches
+    public double CAMERA_ANGLE = 0; //Radians
+    public double TARGET_HEIGHT = 0; //Meters
+
     //pnoomatics
     public int PCM_ID = 1;
     public int SHOOTER_COOLING_ID;
@@ -220,6 +234,8 @@ public abstract class DefaultConfig {
     public int BALL_SHIFTERS_OUT_ID;
     public int BUDDY_CLIMBER_LOCK_IN_ID;
     public int BUDDY_CLIMBER_LOCK_OUT_ID;
+    public int INDEXER_BLOCK_IN_ID;
+    public int INDEXER_BLOCK_OUT_ID;
 
     //climber
     public int[] CLIMBER_MOTOR_IDS;

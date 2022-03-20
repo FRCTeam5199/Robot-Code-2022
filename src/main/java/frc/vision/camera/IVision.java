@@ -2,6 +2,8 @@ package frc.vision.camera;
 
 import frc.misc.ISubsystem;
 
+import static frc.robot.Robot.robotSettings;
+
 /**
  * I'm just simply vibing here, calm down bro. Anyone that can SEE would use me
  *
@@ -69,6 +71,30 @@ public interface IVision extends ISubsystem {
      */
     default double getSize() {
         return getSize(0);
+    }
+
+    /**
+     * How far are we from the target? Let's find out!
+     * Uses the camera's {@link IVision#getPitch() pitch} to find the target offset
+     *
+     * @return the distance in inches from the target
+     */
+    default double getDistanceUsingPitch() {
+        double angleToGoalDegrees = robotSettings.CAMERA_ANGLE + getPitch();
+        double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
+        return (robotSettings.TARGET_HEIGHT - robotSettings.CAMERA_HEIGHT) / Math.tan(angleToGoalRadians);
+    }
+
+    /**
+     * How far are we from the target? Let's find out!
+     * Uses the camera's {@link IVision#getAngle() yaw} to find the target offset
+     *
+     * @return the distance in inches from the target
+     */
+    default double getDistanceUsingYaw() {
+        double angleToGoalDegrees = robotSettings.CAMERA_ANGLE + getAngle();
+        double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
+        return (robotSettings.TARGET_HEIGHT - robotSettings.CAMERA_HEIGHT) / Math.tan(angleToGoalRadians);
     }
 
     double getSize(int targetId);

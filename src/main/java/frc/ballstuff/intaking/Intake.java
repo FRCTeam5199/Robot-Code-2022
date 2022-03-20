@@ -32,8 +32,9 @@ public class Intake implements ISubsystem {
     public AbstractMotorController intakeMotor;
     public Servo intakeServo1;
     public Servo intakeServo2;
-    public BaseController joystick, buttonpanel;
+    public BaseController xbox, joystick, buttonpanel;
     public double intakeMult;
+    public boolean isIntakeUp = false;
 
     public Intake() throws InitializationFailureException, IllegalStateException {
         addToMetaList();
@@ -137,6 +138,9 @@ public class Intake implements ISubsystem {
                 break;
             }
             case ROBOT_2022_COMP:
+                if (robotSettings.ENABLE_BREAK_BEAM && robotSettings.ENABLE_INTAKE_RUMBLE && Robot.breakBeam.getIntakeIsBroken()) {
+                    xbox.rumble(0.5);
+                }
             case ROBOT_2022_OLD: {
                 if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
                     setIntake(IntakeDirection.IN);
@@ -186,18 +190,21 @@ public class Intake implements ISubsystem {
     }
 
     public void doIntakeArticulation() {
-        if (robotSettings.INTAKE_CONTROL_STYLE == IntakeControlStyles.ROBOT_2022_OLD) {
-            if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
-                deployIntake(false);
-            } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
-                deployIntake(true);
-            }
-        } else if (robotSettings.INTAKE_CONTROL_STYLE == IntakeControlStyles.ROBOT_2022_COMP) {
-            if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
-                deployIntake(false);
-            } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.SECOND_STAGE_CLIMB) == ButtonStatus.DOWN) {
-                deployIntake(true);
-            }
+        switch (robotSettings.INTAKE_CONTROL_STYLE) {
+            case ROBOT_2022_OLD:
+                if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
+                    deployIntake(false);
+                } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
+                    deployIntake(true);
+                }
+                break;
+            case ROBOT_2022_COMP:
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
+                    deployIntake(false);
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
+                    deployIntake(true);
+                }
+                break;
         }
     }
 
@@ -243,6 +250,7 @@ public class Intake implements ISubsystem {
     public void deployIntake(boolean deployed) {
         if (robotSettings.ENABLE_PNOOMATICS)
             Robot.pneumatics.solenoidIntake.set(deployed ? Value.kForward : Value.kReverse);
+        isIntakeUp = deployed;
     }
 
     /**
@@ -264,6 +272,7 @@ public class Intake implements ISubsystem {
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
             case ROBOT_2022_COMP:
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
                 break;
