@@ -26,7 +26,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
         ENABLE_INTAKE_RUMBLE = false;
-        ENABLE_PNOOMATICS = true;
+        ENABLE_PNOOMATICS = false;
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
         ENABLE_CAMERA = false;
@@ -45,7 +45,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
         DRIVE_INVERT_LEFT = false;
         DRIVE_INVERT_RIGHT = true;
-        HOPPER_TOP_INVERT_MOTOR = false;
+        HOPPER_TOP_INVERT_MOTOR = true;
         HOPPER_AGITATOR_INVERT_MOTOR = true;
         HOPPER_INDEXER_INVERT_MOTOR = true;
         INTAKE_INVERT_MOTOR = true;
@@ -67,12 +67,14 @@ public class CompetitionRobot2022 extends DefaultConfig {
         AUTON_TYPE = AutonType.POINT_TO_POINT;
         AUTO_SPEED = .25;
         AUTO_ROTATION_SPEED = .1;
-        AUTON_TOLERANCE = 0.15;
+        AUTON_TOLERANCE = 0.08;
         GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
 
         DRIVEBASE_VOLTAGE_MULTIPLIER = 3.5 * (1.050830889540567 / 2145); //3.4635 volts = 2825 RPM.
-        DRIVEBASE_PID = new PID(0.001, 0, 0, 0.00025);
-        HEADING_PID = new PID(0.01, 0, 0);
+        //DRIVEBASE_PID = new PID(0.001, 0, 0, 0.00025); //new PID(0.0025, 0.0, 0.0);
+        //HEADING_PID = new PID(0.01, 0, 0); new PID(0.15, 0.000, 0.02);//
+        DRIVEBASE_PID = new PID(0.002, 0, 0.005, 0.00025);
+        HEADING_PID = new PID(0.07, 0.000, 0.0015);
         TELEOP_AIMING_PID = new PID(0.005, 0.00001, 0.0005);
         AUTON_AIMING_PID = new PID(0.02, 0.000005, 0.0005);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
