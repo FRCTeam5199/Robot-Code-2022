@@ -86,6 +86,8 @@ public enum AutonSpecialActions {
      * Rotates the robot 180 degrees
      */
     DRIVE_180,
+    DRIVE_160,
+    DRIVE_165,
 
     /**
      * Shoots the two balls in the hopper for 2022

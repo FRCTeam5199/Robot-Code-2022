@@ -565,10 +565,10 @@ public class DriveManagerStandard extends AbstractDriveManager {
     /**
      * @return true when done rotating
      */
-    public boolean rotate180() {
+    public boolean rotateDegrees(int deg) {
         if (!rotating180) {
             rotating180 = true;
-            rotate180Goal = guidance.imu.relativeYaw() + 180;
+            rotate180Goal = guidance.imu.relativeYaw() + deg;
         }
         //if not (continue rotating while not yet at our goal) or
         //if (stop rotating when we stop rotating because we reached our goal)
@@ -576,7 +576,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
             driveCringe(0, 0);
             TELEOP_AIMING_PID.reset();
         } else {
-            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 20);
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 20 * Math.min(Math.abs((rotate180Goal - guidance.imu.relativeYaw())), 1));
         }
         return !(rotating180);
     }
