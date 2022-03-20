@@ -138,9 +138,6 @@ public abstract class DefaultConfig {
     public double CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
     public double motorPulleySize = 0;//?;
     public double driverPulleySize = 0;//?;
-    public double CAMERA_HEIGHT = 0; //Inches
-    public double CAMERA_PITCH = 0; //Radians
-    public double TARGET_HEIGHT = 0;//2.44; //Meters
 
     public double XBOX_CONTROLLER_DEADZONE = 0.07;
     public double MOTOR_SPROCKET_SIZE = 0;
@@ -216,6 +213,11 @@ public abstract class DefaultConfig {
     public int XBOX_CONTROLLER_USB_SLOT = 0;
     public int FLIGHT_STICK_USB_SLOT = 1;
     public int BUTTON_PANEL_USB_SLOT = 2;
+
+    //Limelight Distance Tracking
+    public double CAMERA_HEIGHT = 0; //Inches
+    public double CAMERA_ANGLE = 0; //Radians
+    public double TARGET_HEIGHT = 0; //Meters
 
     //pnoomatics
     public int PCM_ID = 1;

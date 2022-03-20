@@ -1,5 +1,6 @@
 package frc.robot.robotconfigs.twentytwo;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.ballstuff.intaking.Hopper;
@@ -117,11 +118,11 @@ public class CompetitionRobot2022 extends DefaultConfig {
         SHOOTER_FOLLOWER_ID = 10; //talon
         SHOOTER_USE_TWO_MOTORS = true;
         SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        SHOOTER_PID = new PID(0.1, 0.0002, 12, 0.05);
+        SHOOTER_PID = new PID(0.195, 0.000055, 10, 0.048825);
         SHOOTER_CONST_SPEED_PID = SHOOTER_PID;//new PID(1.9, .0001, 70, 0.0851136);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
         SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
-        BACKSPIN_PID = new PID(0.1, 0, 0, 0.05);//PID(.132, 0.0, 10, 0.0461851);
+        BACKSPIN_PID = new PID(0.2046, 0, 0, 0.0478708469817501169864295741694);//BACKSPIN_PID = new PID(0.1, 0, 0, 0.05);//PID(.132, 0.0, 10, 0.0461851);
         BACKSPIN_ID = 6;
         BACKSPIN_MULTIPLIER = 1.625;
         BACKSPIN_INVERTED = true;
@@ -164,5 +165,10 @@ public class CompetitionRobot2022 extends DefaultConfig {
         PCM_ID = 33;
         PDP_ID = 50;
         POWER_DISTRIBUTION_MODULE_TYPE = PowerDistribution.ModuleType.kRev;
+
+        //target distance tracking
+        CAMERA_HEIGHT = 0;
+        CAMERA_ANGLE = 0;
+        TARGET_HEIGHT = 104.0;
     }
 }

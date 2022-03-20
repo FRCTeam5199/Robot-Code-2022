@@ -228,6 +228,20 @@ public class Shooter implements ISubsystem {
         //UserInterface.smartDashboardPutNumber("RPM", leader.getSpeed());
         rpmGraph.setNumber(leader.getSpeed());
         rpm.setNumber(leader.getSpeed());
+        if (robotSettings.TARGET_HEIGHT != 0 && robotSettings.ENABLE_VISION) {
+            if (isValidTarget()) {
+                switch (robotSettings.SHOOTER_CONTROL_STYLE) {
+                    case COMP_2022:
+                    case STANDARD_2022:
+                    case PRACTICE_2022:
+                        UserInterface.smartDashboardPutNumber("Distance from Target", goalCamera.getDistanceUsingYaw());
+                        break;
+                    case STANDARD_OFFSEASON_2021:
+                        UserInterface.smartDashboardPutNumber("Distance from Target", goalCamera.getDistanceUsingPitch());
+                        break;
+                }
+            }
+        }
         if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
             backspinGraph.setNumber(backSpin.getSpeed());
             UserInterface.smartDashboardPutNumber("Current BackSpin RPM", backSpin.getSpeed());

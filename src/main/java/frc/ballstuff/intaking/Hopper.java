@@ -319,7 +319,9 @@ public class Hopper implements ISubsystem {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             if (!isIndexed())
-                                indexer.moveAtPercent(0.6);//0.05*3.5);
+                                indexer.moveAtPercent(0.8);//0.05*3.5);
+                                    //Morganne set to 0.8 "all time" 3/19/22 17:34
+                            //"Can we only do tarmac from now on" -Morganne 3/19/22 16:42
                             else {
                                 //double rot = indexer.getRotations() / indexer.sensorToRealDistanceFactor;
                                 //indexer.moveAtPosition(rot);
@@ -350,7 +352,8 @@ public class Hopper implements ISubsystem {
                     }
                 } else {
                     if (robotSettings.ENABLE_INDEXER) {
-                        indexer.moveAtPercent(indexerActive ? 0.6 : 0);//0.3*1.5 : 0);
+                        indexer.moveAtPercent(indexerActive ? 0.8 : 0);//0.3*1.5 : 0);
+                        // Morganne 16:10 3/19/22 change it from 0.6 to 0.8
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
                         agitator.moveAtPercent(agitatorActive ? 0.6 : 0);

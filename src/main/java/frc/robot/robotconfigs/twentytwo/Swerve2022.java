@@ -81,7 +81,7 @@ public class Swerve2022 extends DefaultConfig {
         motorPulleySize = 0;//?;
         driverPulleySize = 0;//?;
         CAMERA_HEIGHT = 0; //Inches
-        CAMERA_PITCH = 0; //Radians
+        CAMERA_ANGLE = 0; //Radians
         TARGET_HEIGHT = 0;//2.44; //Meters
 
         XBOX_CONTROLLER_DEADZONE = 0.07;

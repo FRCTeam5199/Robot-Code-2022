@@ -100,8 +100,6 @@ public class Robot extends TimedRobot {
         if (robotSettings.ENABLE_DRIVE) {
             if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD) {
                 driver = new DriveManagerStandard();
-                //if (robotSettings.ENABLE_VISION)
-                //((DriveManagerStandard) driver).visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
             } else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL) {
                 driver = new DriveManagerSwerve();
             }
@@ -182,6 +180,8 @@ public class Robot extends TimedRobot {
         String quote = QuoteOfTheDay.getRandomQuote();
         System.out.println("\n\n" + quote);
         UserInterface.smartDashboardPutString("Quote", quote);
+        if (robotSettings.ENABLE_VISION)
+            IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE).setLedMode(IVision.VisionLEDMode.OFF);
     }
 
     /**
