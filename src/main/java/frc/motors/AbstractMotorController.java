@@ -4,6 +4,8 @@ import frc.gpws.Alarms;
 import frc.misc.PID;
 import frc.misc.UserInterface;
 import frc.motors.followers.AbstractFollowerMotorController;
+import frc.motors.followers.SparkFollowerMotorsController;
+import frc.motors.followers.TalonFollowerMotorController;
 import frc.robot.Main;
 import frc.robot.Robot;
 
@@ -136,6 +138,16 @@ public abstract class AbstractMotorController {
      */
     public abstract boolean isFailed();
 
+    public abstract int getMaxRPM();
+
+    /**
+     * Different from {@link #setSensorToRealDistanceFactor(double)} because this will first convert sensor units to
+     * revolutions per second, and then apply the supplied conversion
+     *
+     * @param r2rf Conversion from motor RPS to real RPM, ft/s, etc
+     */
+    public abstract void setRealFactorFromMotorRPS(double r2rf);
+
     /**
      * In order to prevent out of control PID loops from emerging, especially coming out of a disable in test mde, we
      * set all motors to idle. If we really want them to move then this method will take no effect because
@@ -238,8 +250,6 @@ public abstract class AbstractMotorController {
      */
     public abstract int getID();
 
-    public abstract int getMaxRPM();
-
 
     /**
      * This should be one-for-one replicated for each {@link AbstractMotorController motor controller} in order to
@@ -260,6 +270,33 @@ public abstract class AbstractMotorController {
 
         SupportedMotors() {
             MAX_SPEED_RPM = 0;
+        }
+
+        public AbstractFollowerMotorController createFollowerMotorsOfType(int... followerIDs) {
+            switch (this) {
+                case CAN_SPARK_MAX:
+                    return new SparkFollowerMotorsController(followerIDs);
+                case TALON_FX:
+                    return new TalonFollowerMotorController(followerIDs);
+                case VICTOR:
+                case SERVO:
+                default:
+                    throw new IllegalArgumentException("I cannot make a motor follower of type " + name());
+            }
+        }
+
+        public AbstractMotorController createMotorOfType(int ID) {
+            switch (this) {
+                case CAN_SPARK_MAX:
+                    return new SparkMotorController(ID);
+                case TALON_FX:
+                    return new TalonMotorController(ID);
+                case VICTOR:
+                    return new VictorMotorController(ID);
+                case SERVO:
+                default:
+                    throw new IllegalArgumentException("I cannot make a motor of type " + name());
+            }
         }
     }
 }

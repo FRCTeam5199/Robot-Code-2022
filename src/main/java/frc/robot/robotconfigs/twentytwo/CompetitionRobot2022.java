@@ -15,6 +15,8 @@ import frc.robot.robotconfigs.DefaultConfig;
 import frc.telemetry.imu.AbstractIMU;
 import frc.vision.camera.IVision;
 
+import static frc.motors.AbstractMotorController.*;
+
 public class CompetitionRobot2022 extends DefaultConfig {
     public CompetitionRobot2022() {
         ENABLE_DRIVE = true;
@@ -61,9 +63,9 @@ public class CompetitionRobot2022 extends DefaultConfig {
         HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.COMP_2022;
         CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD_2022;
 
-        DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+        DRIVE_MOTOR_TYPE = SupportedMotors.TALON_FX;
+        CLIMBER_MOTOR_TYPE = SupportedMotors.TALON_FX;
+        CLIMBER_STG2_MOTOR_TYPE = SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
         AUTO_SPEED = .25;
@@ -117,7 +119,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         SHOOTER_LEADER_ID = 9; //talon
         SHOOTER_FOLLOWER_ID = 10; //talon
         SHOOTER_USE_TWO_MOTORS = true;
-        SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
+        SHOOTER_MOTOR_TYPE = SupportedMotors.TALON_FX;
         SHOOTER_PID = new PID(0.195, 0.000055, 10, 0.048825);
         SHOOTER_CONST_SPEED_PID = SHOOTER_PID;//new PID(1.9, .0001, 70, 0.0851136);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
@@ -136,14 +138,14 @@ public class CompetitionRobot2022 extends DefaultConfig {
         INDEXER_MOTOR_ID = 59;
         AGITATOR_MOTOR_ID = 58; //spark
         AGITATOR_TOPBAR_MOTOR_ID = 40;
-        AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
-        INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
-        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        AGITATOR_MOTOR_TYPE = SupportedMotors.CAN_SPARK_MAX;
+        INDEXER_MOTOR_TYPE = SupportedMotors.CAN_SPARK_MAX;
+        AGITATOR_TOP_MOTOR_TYPE = SupportedMotors.CAN_SPARK_MAX;
 
         //Intake
         INTAKE_MOTOR_ID = 60;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_COMP;
-        INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        INTAKE_MOTOR_TYPE = SupportedMotors.CAN_SPARK_MAX;
         INTAKE_IN_ID = 3;
         INTAKE_OUT_ID = 2;
         INTAKE_BREAK_BEAM_ID = 5;
