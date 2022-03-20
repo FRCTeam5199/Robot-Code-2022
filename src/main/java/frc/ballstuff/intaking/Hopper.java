@@ -101,26 +101,8 @@ public class Hopper implements ISubsystem {
 
     private void createAndInitMotors() throws IllegalStateException {
         if (robotSettings.ENABLE_AGITATOR) {
-            agitatorTop = robotSettings.AGITATOR_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_MOTOR_ID);
-            agitatorTop.setRealFactorFromMotorRPS(1);
-            //old architecture, just rollback changes in case of emergency
-            //TODO remove this
-            /*switch (robotSettings.AGITATOR_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    agitator = new SparkMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(1);
-                    break;
-                case TALON_FX:
-                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    agitator = new VictorMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
-            }*/
+            agitator = robotSettings.AGITATOR_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_MOTOR_ID);
+            agitator.setRealFactorFromMotorRPS(1);
             agitator.setInverted(robotSettings.HOPPER_AGITATOR_INVERT_MOTOR).setBrake(true);
         }
         if (robotSettings.ENABLE_AGITATOR_TOP) {
