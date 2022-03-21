@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
+import frc.drive.DriveManagerSwerve;
 import frc.drive.OldDriveManagerSwerve;
 import frc.drive.auton.Point;
 import frc.misc.ISubsystem;
@@ -23,7 +24,7 @@ public abstract class AbstractRobotTelemetry implements ISubsystem {
     public Rotation2d robotRotation;
 
     public static AbstractRobotTelemetry createTelem(AbstractDriveManager driver) {
-        if (driver instanceof OldDriveManagerSwerve)
+        if (driver instanceof OldDriveManagerSwerve || driver instanceof DriveManagerSwerve)
             return new RobotTelemetrySwivel(driver);
         if (driver instanceof DriveManagerStandard)
             return new RobotTelemetryStandard(driver);
@@ -31,7 +32,8 @@ public abstract class AbstractRobotTelemetry implements ISubsystem {
     }
 
     protected AbstractRobotTelemetry(AbstractDriveManager driver) {
-        if (this instanceof RobotTelemetrySwivel ^ (this.driver = driver) instanceof OldDriveManagerSwerve)
+        this.driver = driver;
+        if ((this instanceof RobotTelemetrySwivel ^ (driver) instanceof OldDriveManagerSwerve) || (this instanceof RobotTelemetrySwivel ^ (driver) instanceof DriveManagerSwerve))
             throw new IllegalArgumentException("Incompatible telem and drive combo");
         addToMetaList();
         init();
