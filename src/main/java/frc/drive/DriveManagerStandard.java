@@ -436,6 +436,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
      */
     private void createDriveMotors() throws InitializationFailureException {
         double s2rf;
+        /*
         leaderL = robotSettings.DRIVE_MOTOR_TYPE.createMotorOfType(robotSettings.DRIVE_LEADER_L_ID);
         leaderR = robotSettings.DRIVE_MOTOR_TYPE.createMotorOfType(robotSettings.DRIVE_LEADER_R_ID);
 
@@ -444,10 +445,10 @@ public class DriveManagerStandard extends AbstractDriveManager {
 
         leaderL.setSensorToRealDistanceFactor(robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI));
         leaderR.setSensorToRealDistanceFactor(robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI));
-
+*/
         //this is what it used to be. in case of emergency, rollback changes
         // todo remove this
-        /*switch (robotSettings.DRIVE_MOTOR_TYPE) {
+        switch (robotSettings.DRIVE_MOTOR_TYPE) {
             case CAN_SPARK_MAX: {
                 leaderL = new SparkMotorController(robotSettings.DRIVE_LEADER_L_ID);
                 leaderR = new SparkMotorController(robotSettings.DRIVE_LEADER_R_ID);
@@ -469,7 +470,9 @@ public class DriveManagerStandard extends AbstractDriveManager {
             default:
                 throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
         }
-        System.out.println(s2rf + " !!!!!!!!!!!! ");*/
+        leaderL.setSensorToRealDistanceFactor(s2rf);
+        leaderR.setSensorToRealDistanceFactor(s2rf);
+        System.out.println(s2rf + " !!!!!!!!!!!! ");
         followerL.follow(leaderL);
         followerR.follow(leaderR);
 
