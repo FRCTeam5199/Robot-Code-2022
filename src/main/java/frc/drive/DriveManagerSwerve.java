@@ -20,6 +20,7 @@ import frc.selfdiagnostics.MotorDisconnectedIssue;
 
 import java.util.Objects;
 
+import static frc.robot.Robot.driver;
 import static frc.robot.Robot.robotSettings;
 
 /*
@@ -364,6 +365,10 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         MAX_VELOCITY_METERS_PER_SECOND = freeSpeed / 60.0 */*
                 SdsModuleConfigurations.MK3_STANDARD.getDriveReduction() *
                 SdsModuleConfigurations.MK3_STANDARD.getWheelDiameter() **/ Math.PI;
+        driverFR.driver.setSensorToRealDistanceFactor(s2rf);
+        driverFL.driver.setSensorToRealDistanceFactor(s2rf);
+        driverBR.driver.setSensorToRealDistanceFactor(s2rf);
+        driverBL.driver.setSensorToRealDistanceFactor(s2rf);
 
         driverFR.driver.setBrake(true);
         driverFL.driver.setInverted(true).setBrake(true);

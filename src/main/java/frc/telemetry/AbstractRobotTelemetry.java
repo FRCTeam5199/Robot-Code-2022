@@ -34,7 +34,8 @@ public abstract class AbstractRobotTelemetry implements ISubsystem {
     protected AbstractRobotTelemetry(AbstractDriveManager driver) {
         this.driver = driver;
         if ((this instanceof RobotTelemetrySwivel ^ (driver) instanceof OldDriveManagerSwerve) || (this instanceof RobotTelemetrySwivel ^ (driver) instanceof DriveManagerSwerve))
-            throw new IllegalArgumentException("Incompatible telem and drive combo");
+            System.out.println("cry about it");
+            //throw new IllegalArgumentException("Incompatible telem and drive combo");
         addToMetaList();
         init();
     }
