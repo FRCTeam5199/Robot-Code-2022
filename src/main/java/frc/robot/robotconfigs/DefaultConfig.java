@@ -69,6 +69,7 @@ public abstract class DefaultConfig {
     public boolean ENABLE_TOGGLEABLE_RING = false;
     public boolean ENABLE_INTAKE_RUMBLE = false;
     public boolean ENABLE_ERROR_HANDLING = true;
+    public boolean ENABLE_SHOOTER_RPM_ARTICULATION = false;
 
     //Misc
     public boolean ENABLE_VISION = false;
@@ -190,6 +191,7 @@ public abstract class DefaultConfig {
     public double TRENCH_FRONT_HOOD_POSITION;
     public double INITIATION_LINE_HOOD_POSITION;
     public double[][] CALIBRATED_HOOD_POSITION_ARRAY;
+    public double[][] CALIBRATED_SHOOTER_RPM_ARRAY;
 
     public double SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 1;
 

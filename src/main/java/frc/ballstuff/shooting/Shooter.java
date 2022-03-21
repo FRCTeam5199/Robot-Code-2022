@@ -23,6 +23,7 @@ import frc.vision.camera.IVision;
 
 import java.util.Objects;
 
+import static frc.misc.UtilFunctions.weightedAverage;
 import static frc.robot.Robot.*;
 
 /**
@@ -59,6 +60,7 @@ public class Shooter implements ISubsystem {
     private PID lastPID = PID.EMPTY_PID;
     private PID backspinLastPID = PID.EMPTY_PID;
     public double backspinMult = 1.625;
+    private double distanceFromGoal = 0;
 
     public Shooter() {
         addToMetaList();
@@ -234,12 +236,15 @@ public class Shooter implements ISubsystem {
                     case COMP_2022:
                     case STANDARD_2022:
                     case PRACTICE_2022:
-                        UserInterface.smartDashboardPutNumber("Distance from Target", goalCamera.getDistanceUsingYaw());
+                        distanceFromGoal = goalCamera.getDistanceUsingYaw();
                         break;
                     case STANDARD_OFFSEASON_2021:
-                        UserInterface.smartDashboardPutNumber("Distance from Target", goalCamera.getDistanceUsingPitch());
+                        distanceFromGoal = goalCamera.getDistanceUsingPitch();
                         break;
                 }
+                UserInterface.smartDashboardPutNumber("Distance from Target", distanceFromGoal);
+            } else {
+                distanceFromGoal = -1;
             }
         }
         if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
@@ -555,20 +560,29 @@ public class Shooter implements ISubsystem {
                 break;
             }
             case COMP_2022: {
-                if (panel.get(ControllerEnums.ButtonPanelButtons2022.CLOSE_SHOT) == ButtonStatus.DOWN) {
-                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022.shoot(this);
-                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.MEDIUM_SHOT) == ButtonStatus.DOWN) {
+                if (panel.get(ControllerEnums.ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN) {
+                    if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
+                        ShootingEnums.FIRE_FROM_RPM_ARTICULATION_2022.shoot(this);
+                    } else {
+                        ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022.shoot(this);
+                    }
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022.shoot(this);
                 } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_FAR_2022.shoot(this);
                 } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
-                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_LOW_2022.shoot(this);
+                    if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
+                        ShootingEnums.FIRE_FROM_RPM_ARTICULATION_2022.shoot(this);
+                    } else {
+                        ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_LOW_2022.shoot(this);
+                    }
                 } else {
                     tryFiringBalls = false;
                     leader.moveAtPercent(0);
                     backSpin.moveAtPercent(0);
                     ballsShot = 0;
                     shooterDefault();
+                    if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
                     pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
                 }
                 break;
@@ -700,6 +714,24 @@ public class Shooter implements ISubsystem {
      */
     public double getSpeed() {
         return leader.getSpeed();
+    }
+
+    public double getSpeedToShoot() {
+        if (distanceFromGoal >= robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][0]) { //high bound
+            //System.out.println("A " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1]);
+            return robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1];
+        }
+        if (distanceFromGoal <= robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][0]) { //low bound
+            //System.out.println("B " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1]);
+            return robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1];
+        }
+        for (int i = 1; i < robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length; i++) {
+            if (distanceFromGoal < robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i][0]) {
+                //System.out.println("C " + weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i]));
+                return weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i]);
+            }
+        }
+        return 0;
     }
 
     /**

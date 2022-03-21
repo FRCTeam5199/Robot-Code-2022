@@ -5,7 +5,6 @@ import frc.ballstuff.shooting.Shooter;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.misc.ISubsystem;
-import frc.misc.PID;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;

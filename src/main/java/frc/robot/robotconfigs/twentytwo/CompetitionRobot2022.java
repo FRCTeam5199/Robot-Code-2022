@@ -29,19 +29,19 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
         ENABLE_INTAKE_RUMBLE = false;
-        ENABLE_PNOOMATICS = false;
+        ENABLE_PNOOMATICS = true;
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
         ENABLE_CAMERA = false;
-        ENABLE_HOOD_PISTON = false;
-        ENABLE_HOOD_ARTICULATION = false;
+        ENABLE_HOOD_PISTON = true;
+        ENABLE_HOOD_ARTICULATION = true;
         ENABLE_PDP = true;
         ENABLE_MUSIC = false;
         ENABLE_TOGGLEABLE_RING = true;
         ENABLE_ERROR_HANDLING = false;
 
         ENABLE_VISION = true;
-        ENABLE_CLIMBER = true;
+        ENABLE_CLIMBER = false;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
@@ -151,14 +151,16 @@ public class CompetitionRobot2022 extends DefaultConfig {
         INTAKE_BREAK_BEAM_ID = 5;
 
         //Climber
+        /*
         CLIMBER_STG1_MOTOR_ID = 12;
         CLIMBER_STG2_MOTOR_ID = 62; //talon
         CLIMBER_IN_ID = 4;
         CLIMBER_OUT_ID = 5;
+        */
 
         //hood
-        //HOOD_ARTICULATOR_IN_ID = 1;
-        //HOOD_ARTICULATOR_OUT_ID = 0;
+        HOOD_ARTICULATOR_IN_ID = 4;
+        HOOD_ARTICULATOR_OUT_ID = 5;
 
         //indexer
         INDEXER_BLOCK_IN_ID = 0;
@@ -169,8 +171,16 @@ public class CompetitionRobot2022 extends DefaultConfig {
         POWER_DISTRIBUTION_MODULE_TYPE = PowerDistribution.ModuleType.kRev;
 
         //target distance tracking
-        CAMERA_HEIGHT = 0;
-        CAMERA_ANGLE = 0;
-        TARGET_HEIGHT = 104.0;
+        CAMERA_HEIGHT = 27.0; //inches
+        CAMERA_ANGLE = 48.0; //degrees
+        TARGET_HEIGHT = 104.0; //inches
+        ENABLE_SHOOTER_RPM_ARTICULATION = false;
+        CALIBRATED_HOOD_POSITION_ARRAY = new double[][]{
+                //Distance (in), RPM
+                {40, 2300},
+                {60, 2500},
+                {80, 2800},
+                {100, 3000},
+        };
     }
 }
