@@ -13,7 +13,7 @@ public class UtilFunctions {
      * @author jojo2357
      */
     public static double weightedAverage(double voltage, double[] uppers, double[] lowers) {
-        return lowers[1] + (uppers[1] - lowers[1]) * (voltage - lowers[0]) * (uppers[0] - lowers[0]);
+        return lowers[1] + (uppers[1] - lowers[1]) * (voltage - lowers[0]) / (uppers[0] - lowers[0]);
     }
 
     /**

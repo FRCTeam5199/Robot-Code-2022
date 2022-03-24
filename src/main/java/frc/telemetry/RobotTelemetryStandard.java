@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
 import frc.misc.ISubsystem;
@@ -45,6 +46,8 @@ public class RobotTelemetryStandard extends AbstractRobotTelemetry implements IS
             if (DEBUG && robotSettings.DEBUG) {
                 robotLocation.setString("(" + odometer.getPoseMeters().getX() + ", " + odometer.getPoseMeters().getY() + ")");
             }
+            //robotLocationOnField.setRobotPose(robotPose);
+            //SmartDashboard.putData("Field", robotLocationOnField);
         }
     }
 

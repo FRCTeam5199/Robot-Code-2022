@@ -2,6 +2,9 @@ package frc.misc;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
@@ -22,6 +25,15 @@ import java.util.Map;
 import static frc.robot.Robot.robotSettings;
 
 public class UserInterface {
+    private static NetworkTableInstance instance = NetworkTableInstance.getDefault();
+    public static NetworkTable autoDataTable = instance.getTable("autodata");
+    public static NetworkTableEntry autoPath = autoDataTable.getEntry("autoPath");
+
+    private static NetworkTable position = autoDataTable.getSubTable("position");
+    public static NetworkTableEntry xPos = position.getEntry("x");
+    public static NetworkTableEntry yPos = position.getEntry("y");
+    public static NetworkTableEntry enabled = autoDataTable.getEntry("enabled");
+
     //TABS
     public static final ShuffleboardTab SHOOTER_TAB = Shuffleboard.getTab("Shooter"),
             DRIVE_TAB = Shuffleboard.getTab("drive"),

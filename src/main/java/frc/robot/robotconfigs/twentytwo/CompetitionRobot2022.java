@@ -171,16 +171,23 @@ public class CompetitionRobot2022 extends DefaultConfig {
         POWER_DISTRIBUTION_MODULE_TYPE = PowerDistribution.ModuleType.kRev;
 
         //target distance tracking
-        CAMERA_HEIGHT = 27.0; //inches
-        CAMERA_ANGLE = 48.0; //degrees
-        TARGET_HEIGHT = 104.0; //inches
-        ENABLE_SHOOTER_RPM_ARTICULATION = false;
-        CALIBRATED_HOOD_POSITION_ARRAY = new double[][]{
+        CAMERA_HEIGHT = 27.75; //inches
+        CAMERA_ANGLE = 46.44579639;//48.0; //degrees
+        TARGET_HEIGHT = 101.5; //Our field sucks. COMP: 104.0" (in inches)
+        ENABLE_SHOOTER_RPM_ARTICULATION = true;
+        CALIBRATED_SHOOTER_RPM_ARRAY = new double[][]{ //hood down
                 //Distance (in), RPM
-                {40, 2300},
-                {60, 2500},
-                {80, 2800},
+                {23, 2200},
+                {35.89, 2200},
+                {83.63, 2400},
                 {100, 3000},
         };
     }
 }
+
+/*
+d = 40
+h1 = 27.75
+h2 = 101.5
+a2 = 15.08
+ */

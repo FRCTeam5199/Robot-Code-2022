@@ -109,7 +109,7 @@ public class ArticulatedHood implements ISubsystem {
                     if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
                         pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
                     }
-                    if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN  || panel.get(ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN) {
+                    if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN) {
                         pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kReverse);
                     }
                 }

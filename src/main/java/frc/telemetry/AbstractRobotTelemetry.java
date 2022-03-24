@@ -3,6 +3,8 @@ package frc.telemetry;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
 import frc.drive.DriveManagerSwerve;
@@ -20,6 +22,7 @@ public abstract class AbstractRobotTelemetry implements ISubsystem {
     protected final AbstractDriveManager driver;
     public AbstractIMU imu;
     public Pose2d robotPose;
+    public Field2d robotLocationOnField;
     public Translation2d robotTranslation;
     public Rotation2d robotRotation;
 

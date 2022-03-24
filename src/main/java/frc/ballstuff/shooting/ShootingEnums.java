@@ -70,7 +70,9 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_FAR_2022(shooter -> {
-        double rpm = 3000;
+        double rpm = 2700;
+        //change it to 2800 Morganne 3/21/22 23:03
+        //now 2700 Morganne/Rick 3/21/22 23:09
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
@@ -95,6 +97,18 @@ public enum ShootingEnums {
     
     FIRE_FROM_RPM_ARTICULATION_2022(shooter -> {
         double rpm = shooter.getSpeedToShoot();
+        shooter.setSpeed(rpm, true);
+        if (robotSettings.ENABLE_HOPPER) {
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
+        }
+    }),
+
+    WHAT_ARE_YOU_DOING_HERE_SHOO(shooter -> {
+        double rpm = 1000;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;

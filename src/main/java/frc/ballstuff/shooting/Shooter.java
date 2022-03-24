@@ -244,7 +244,7 @@ public class Shooter implements ISubsystem {
                 }
                 UserInterface.smartDashboardPutNumber("Distance from Target", distanceFromGoal);
             } else {
-                distanceFromGoal = -1;
+                //distanceFromGoal = -1;
             }
         }
         if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
@@ -583,7 +583,7 @@ public class Shooter implements ISubsystem {
                     ballsShot = 0;
                     shooterDefault();
                     if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
-                    pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
+                        pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
                 }
                 break;
             }
@@ -718,17 +718,17 @@ public class Shooter implements ISubsystem {
 
     public double getSpeedToShoot() {
         if (distanceFromGoal >= robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][0]) { //high bound
-            //System.out.println("A " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1]);
+            System.out.println("A " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1]);
             return robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1];
         }
         if (distanceFromGoal <= robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][0]) { //low bound
-            //System.out.println("B " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1]);
+            System.out.println("B " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1]);
             return robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1];
         }
         for (int i = 1; i < robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length; i++) {
             if (distanceFromGoal < robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i][0]) {
-                //System.out.println("C " + weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i]));
-                return weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i]);
+                System.out.println("C " + weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1]));
+                return weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1]);
             }
         }
         return 0;
