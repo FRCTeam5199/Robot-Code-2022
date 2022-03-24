@@ -39,7 +39,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_MUSIC = false;
         ENABLE_TOGGLEABLE_RING = true;
         ENABLE_ERROR_HANDLING = false;
-
+        ENABLE_COLOR_SENSOR = false;
         ENABLE_VISION = true;
         ENABLE_CLIMBER = false;
 

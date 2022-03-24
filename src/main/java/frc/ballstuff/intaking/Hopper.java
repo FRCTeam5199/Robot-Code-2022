@@ -97,7 +97,6 @@ public class Hopper implements ISubsystem {
         createControllers();
     }
 
-
     private void createAndInitMotors() throws IllegalStateException {
         if (robotSettings.ENABLE_AGITATOR) {
             agitator = robotSettings.AGITATOR_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_MOTOR_ID);

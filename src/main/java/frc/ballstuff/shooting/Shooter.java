@@ -2,7 +2,10 @@ package frc.ballstuff.shooting;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.ballstuff.intaking.Hopper2020;
 import frc.climber.Climber;
 import frc.controllers.BaseController;
@@ -20,9 +23,15 @@ import frc.motors.TalonMotorController;
 import frc.robot.Robot;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.vision.camera.IVision;
+import frc.vision.colorsensor.IColorSensor;
+import frc.vision.colorsensor.RevColorSensor;
+import frc.vision.distancesensor.RevDistanceSensor;
 
 import java.util.Objects;
 
+import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
+import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
+import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
 import static frc.misc.UtilFunctions.weightedAverage;
 import static frc.robot.Robot.*;
 
@@ -52,6 +61,7 @@ public class Shooter implements ISubsystem {
     public int ballsShot = 0, ticksPassed = 0, emptyIndexerTicks = 0, hopperCooldownTicks = 0, ballsToShoot = 0;
     public int timerTicks = 0;
     public IVision goalCamera;
+    public IColorSensor colorSensor;
     public AbstractMotorController leader, follower, backSpin;
     public boolean isConstSpeed, isConstSpeedLast = false, shooting = false, isSpinningUp = false, isSpinningUpHeld, singleShot = false, multiShot = false, loadingIndexer = false;
     public boolean checkForDips = false;
@@ -72,6 +82,11 @@ public class Shooter implements ISubsystem {
      */
     @Override
     public void init() throws IllegalStateException {
+        if (robotSettings.ENABLE_COLOR_SENSOR) {
+            colorSensor = new RevColorSensor(I2C.Port.kOnboard);
+            System.out.println("Enabling color sensor.");
+        }
+
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
             case STANDARD_2022:
             case ACCURACY_2021:
@@ -560,7 +575,12 @@ public class Shooter implements ISubsystem {
                 break;
             }
             case COMP_2022: {
-                if (panel.get(ControllerEnums.ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN) {
+                if (DEBUG && robotSettings.DEBUG && robotSettings.ENABLE_COLOR_SENSOR) {
+                    System.out.println("I'm seeing color " + colorSensor.getColor().toString());
+                }
+                if (robotSettings.ENABLE_COLOR_SENSOR && !colorSensor.isColor(DriverStation.getAlliance() == DriverStation.Alliance.Red ? Color.kRed : Color.kBlue) && panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
+                    ShootingEnums.WHAT_ARE_YOU_DOING_HERE_SHOO.shoot(this);
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN) {
                     if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
                         ShootingEnums.FIRE_FROM_RPM_ARTICULATION_2022.shoot(this);
                     } else {

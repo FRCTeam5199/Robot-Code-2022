@@ -70,6 +70,7 @@ public abstract class DefaultConfig {
     public boolean ENABLE_INTAKE_RUMBLE = false;
     public boolean ENABLE_ERROR_HANDLING = true;
     public boolean ENABLE_SHOOTER_RPM_ARTICULATION = false;
+    public boolean ENABLE_COLOR_SENSOR = false;
 
     //Misc
     public boolean ENABLE_VISION = false;
