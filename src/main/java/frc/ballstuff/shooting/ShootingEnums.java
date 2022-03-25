@@ -46,7 +46,7 @@ public enum ShootingEnums {
             hopper.setAll(criteria);
         }
     }), FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter -> {
-        double rpm = 2200;
+        double rpm = 2050;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
@@ -318,11 +318,18 @@ public enum ShootingEnums {
         } else {
             shooter.setSpeed(shooter.speed);
         }
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_HOOD_PISTON)
+            pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
         if (shooter.getSpeed() >= (shooter.speed * 0.95)) {
             shooter.timerTicks++;
-            hopper.setAll(true);
+            if(shooter.timerTicks >= 20)
+                hopper.setAll(true);
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK && (shooter.timerTicks >= 20))
+                pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kReverse);
             if (shooter.timerTicks >= shooter.goalTicks) {
                 shooter.multiShot = false;
+                if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                    pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
                 hopper.setAll(false);
             }
         }

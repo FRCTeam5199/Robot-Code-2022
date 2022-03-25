@@ -44,7 +44,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_CLIMBER = false;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
-        PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
+        PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
 
         DRIVE_INVERT_LEFT = false;
         DRIVE_INVERT_RIGHT = true;
@@ -68,8 +68,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         CLIMBER_STG2_MOTOR_TYPE = SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
-        AUTO_SPEED = .25;
-        AUTO_ROTATION_SPEED = .1;
+        AUTO_SPEED = .55;
+        AUTO_ROTATION_SPEED = .10;
         AUTON_TOLERANCE = 0.08;
         GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
 

@@ -153,13 +153,43 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = drivingChild.aimAtTarget();
                     break;
                 case DRIVE_180:
-                    specialActionComplete = drivingChild.rotateDegrees(180);
+                    specialActionComplete = drivingChild.rotateDegreesRight(180);
+                    break;
+                case DRIVE_40_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(40);
+                    break;
+                case DRIVE_140_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(140);
+                    break;
+                case DRIVE_20_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(20);
+                    break;
+                case DRIVE_3_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(2.5);
                     break;
                 case DRIVE_160:
-                    specialActionComplete = drivingChild.rotateDegrees(160);
+                    specialActionComplete = drivingChild.rotateDegreesRight(160);
                     break;
                 case DRIVE_165:
-                    specialActionComplete = drivingChild.rotateDegrees(165);
+                    specialActionComplete = drivingChild.rotateDegreesRight(165);
+                    break;
+                case DRIVE_60:
+                    specialActionComplete = drivingChild.rotateDegreesRight(60);
+                    break;
+                case DRIVE_40:
+                    specialActionComplete = drivingChild.rotateDegreesRight(40);
+                    break;
+                case DRIVE_10:
+                    specialActionComplete = drivingChild.rotateDegreesRight(10);
+                    break;
+                case DRIVE_150:
+                    specialActionComplete = drivingChild.rotateDegreesRight(150);
+                    break;
+                case DRIVE_170:
+                    specialActionComplete = drivingChild.rotateDegreesRight(170);
+                    break;
+                case DRIVE_172:
+                    specialActionComplete = drivingChild.rotateDegreesRight(174);
                     break;
                 case SHOOT_ALL_2022_INSIDE_TARMAC:
                     specialActionComplete = Robot.shooter.fireAmount2022(5, 1900);
@@ -168,7 +198,10 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = Robot.shooter.fireAmount2022(5, 2300);
                     break;
                 case SHOOT_ALL_2022_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2500);
+                    specialActionComplete = Robot.shooter.fireAmount2022(2.5, 2400);
+                    break;
+                case SHOOT_ALL_2022_VERY_FAR:
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 3100);
                     break;
                 case DRIVE_BACK_TIMED:
                     specialActionComplete = drivingChild.driveTimed(20*6, false);

@@ -389,6 +389,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
             UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
             UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
         }
+        UserInterface.smartDashboardPutNumber("leftFPS feedy BOI", (leftFPS));
+        UserInterface.smartDashboardPutNumber("leftFPS magic number", (leftFPS) * gearRatio * robotSettings.DRIVE_SCALE);
         leaderL.moveAtVelocity((leftFPS) * gearRatio * robotSettings.DRIVE_SCALE);
         leaderR.moveAtVelocity((rightFPS) * gearRatio * robotSettings.DRIVE_SCALE);
     }
@@ -576,7 +578,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
     /**
      * @return true when done rotating
      */
-    public boolean rotateDegrees(int deg) {
+    public boolean rotateDegreesRight(int deg) {
         if (!rotating180) {
             rotating180 = true;
             rotate180Goal = guidance.imu.relativeYaw() + deg;
@@ -587,7 +589,25 @@ public class DriveManagerStandard extends AbstractDriveManager {
             driveCringe(0, 0);
             TELEOP_AIMING_PID.reset();
         } else {
-            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 20 * Math.min(Math.abs((rotate180Goal - guidance.imu.relativeYaw())), 1));
+            //drivePure(0,1);
+            driveCringe(-.5 * robotSettings.AUTO_ROTATION_SPEED * 20 * Math.min(Math.abs((rotate180Goal - guidance.imu.relativeYaw())), 1), .5 * robotSettings.AUTO_ROTATION_SPEED * 20 * Math.min(Math.abs((rotate180Goal - guidance.imu.relativeYaw())), 1));
+        }
+        return !(rotating180);
+    }
+
+    public boolean rotateDegreesLeft(double deg) {
+        if (!rotating180) {
+            rotating180 = true;
+            rotate180Goal = guidance.imu.relativeYaw() - deg;
+        }
+        //if not (continue rotating while not yet at our goal) or
+        //if (stop rotating when we stop rotating because we reached our goal)
+        if (!(rotating180 = guidance.imu.relativeYaw() > rotate180Goal)) {
+            driveCringe(0, 0);
+            TELEOP_AIMING_PID.reset();
+        } else {
+            //drivePure(0,1);
+            driveCringe(0, -.5 * robotSettings.AUTO_ROTATION_SPEED * 20 * Math.min(Math.abs((guidance.imu.relativeYaw()) - rotate180Goal), 1));
         }
         return !(rotating180);
     }

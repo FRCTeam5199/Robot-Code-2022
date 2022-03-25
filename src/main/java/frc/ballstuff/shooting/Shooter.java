@@ -57,7 +57,7 @@ public class Shooter implements ISubsystem {
             calibrateBackspinPID = UserInterface.BACKSPIN_CALIBRATE_PID.getEntry(),
             constSpeedBackspinMult = UserInterface.BACKSPIN_CONST_SPEED_MULT.getEntry();
     public double speed = 4200;
-    public int goalTicks = 20 * 15; //20 ticks = 1 second
+    public double goalTicks = 20 * 15; //20 ticks = 1 second
     public int ballsShot = 0, ticksPassed = 0, emptyIndexerTicks = 0, hopperCooldownTicks = 0, ballsToShoot = 0;
     public int timerTicks = 0;
     public IVision goalCamera;
@@ -878,7 +878,7 @@ public class Shooter implements ISubsystem {
      * @return if the balls have finished shooting
      * @author Smaltin
      */
-    public boolean fireAmount2022(int seconds, int rpm) {
+    public boolean fireAmount2022(double seconds, int rpm) {
         speed = rpm;
         goalTicks = seconds * 50; //tick = 20ms. 50 ticks in a second.
         if (!shooting) {
@@ -892,6 +892,7 @@ public class Shooter implements ISubsystem {
             shooting = false;
             setPercentSpeed(0, 0);
             hopper.setAll(false);
+            shooter.timerTicks = 0;
         }
         return !multiShot;
     }

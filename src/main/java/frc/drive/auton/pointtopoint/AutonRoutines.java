@@ -26,7 +26,7 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(1.25, 0))
     ),
     TEST(
-            new AutonWaypoint(INTAKE_DOWN)
+            new AutonWaypoint(new Point(8999, 0))
 
     ),
     DRIVE_BACKWARDS_AND_SHOOT_2022(
@@ -65,11 +65,31 @@ public enum AutonRoutines {
     PICKUP_ONE_DRIVE_SHOOT_TWO_2022(
             new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
             new AutonWaypoint(new Point(2.2, 0), 1), //(1.7741787849766635, 0.01580735327687336)
-            new AutonWaypoint(new Point(0.5, 0), -1, DRIVE_165),
+            new AutonWaypoint(DRIVE_165),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(SHOOT_ALL_2022_FAR)
+    ),
+
+    FOUR_BALL_AUTON(
+            new AutonWaypoint(new Point(0, 0), INTAKE_DOWN),
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(2.2, 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_140_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
             new AutonWaypoint(SHOOT_ALL_2022_FAR),
-            new AutonWaypoint(new Point(3, 0), -1)
-            //new AutonWaypoint(new Point(1.9, 0), -1)
+            new AutonWaypoint(DRIVE_160),
+            new AutonWaypoint(new Point(7.1, -1.9), 1.6),
+            new AutonWaypoint(DRIVE_150),
+            new AutonWaypoint(new Point(5, -2), .6),
+            new AutonWaypoint(DRIVE_3_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(SHOOT_ALL_2022_VERY_FAR)
     ),
     /*
     PICKUP_ONE_DRIVE_SHOOT_TWO_DRIVE_2022(

@@ -86,8 +86,18 @@ public enum AutonSpecialActions {
      * Rotates the robot 180 degrees
      */
     DRIVE_180,
+    DRIVE_40_REVERSE,
+    DRIVE_140_REVERSE,
+    DRIVE_20_REVERSE,
+    DRIVE_3_REVERSE,
     DRIVE_160,
+    DRIVE_150,
+    DRIVE_60,
+    DRIVE_40,
+    DRIVE_10,
     DRIVE_165,
+    DRIVE_170,
+    DRIVE_172,
 
     /**
      * Shoots the two balls in the hopper for 2022
@@ -95,6 +105,7 @@ public enum AutonSpecialActions {
     SHOOT_ALL_2022_INSIDE_TARMAC,
     SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE,
     SHOOT_ALL_2022_FAR,
+    SHOOT_ALL_2022_VERY_FAR,
 
     DRIVE_BACK_TIMED
 }
