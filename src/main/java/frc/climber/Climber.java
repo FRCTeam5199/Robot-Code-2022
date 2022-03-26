@@ -97,6 +97,21 @@ public class Climber implements ISubsystem {
                 } else {
                     climberStg1.moveAtPercent(0);
                 }
+                if (joystick.get(ControllerEnums.JoystickButtons.TWELVE) == ButtonStatus.DOWN) {
+                    climberPiston(true);
+                } else if (joystick.get(ControllerEnums.JoystickButtons.ELEVEN) == ButtonStatus.DOWN) {
+                    climberPiston(false);
+                }
+            }
+            break;
+            case OLD_STANDARD_2022: {
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN && !isLocked) {
+                    climberStg1.moveAtPercent(-0.8);
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
+                    climberStg1.moveAtPercent(0.8);
+                } else {
+                    climberStg1.moveAtPercent(0);
+                }
                 /*if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
                     climberStg2.moveAtPercent(0.8);
                 } else */
@@ -112,30 +127,6 @@ public class Climber implements ISubsystem {
                 if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_2) == ButtonStatus.DOWN) {
                     climberLocks(true);
                 } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_1) == ButtonStatus.DOWN) {
-                    climberLocks(false);
-                }
-            }
-            break;
-            case OLD_STANDARD_2022: {
-                if (buttonpanel.get(AUX_TOP) == ButtonStatus.DOWN) {
-                    climberStg1.moveAtPercent(0.8);
-                } else if (buttonpanel.get(AUX_BOTTOM) == ButtonStatus.DOWN) {
-                    climberStg1.moveAtPercent(-0.8);
-                } else {
-                    climberStg1.moveAtPercent(0);
-                }
-
-                if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
-                    //climberStg2.moveAtPercent(0.8);
-                } else if (buttonpanel.get(LOWER_CLIMBER) == ButtonStatus.DOWN) {
-                    climberStg2.moveAtPercent(-0.8);
-                } else {
-                    climberStg2.moveAtPercent(0);
-                }
-
-                if (buttonpanel.get(CLIMBER_LOCK) == ButtonStatus.DOWN) {
-                    climberLocks(true);
-                } else if (buttonpanel.get(CLIMBER_UNLOCK) == ButtonStatus.DOWN) {
                     climberLocks(false);
                 }
             }
@@ -179,9 +170,14 @@ public class Climber implements ISubsystem {
     }
 
     public void climberLocks(boolean deployed) {
-        if (robotSettings.ENABLE_PNOOMATICS)
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_LOCK)
             Robot.pneumatics.climberLock.set(deployed ? Value.kForward : Value.kReverse);
         isLocked = deployed;
+    }
+
+    public void climberPiston(boolean deployed) {
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_PISTON)
+            Robot.pneumatics.climberPiston.set(deployed ? Value.kForward : Value.kReverse);
     }
 
     private void createCoolerMotors() {
@@ -256,6 +252,7 @@ public class Climber implements ISubsystem {
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
             case STANDARD_2022:
+                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
                 break;
             case OLD_STANDARD_2022:

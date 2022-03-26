@@ -71,6 +71,8 @@ public abstract class DefaultConfig {
     public boolean ENABLE_ERROR_HANDLING = true;
     public boolean ENABLE_SHOOTER_RPM_ARTICULATION = false;
     public boolean ENABLE_COLOR_SENSOR = false;
+    public boolean ENABLE_CLIMBER_PISTON = false;
+    public boolean ENABLE_CLIMBER_LOCK = false;
 
     //Misc
     public boolean ENABLE_VISION = false;
@@ -231,8 +233,8 @@ public abstract class DefaultConfig {
     public int SHOOTER_COOLING_ID;
     public int INTAKE_IN_ID;
     public int INTAKE_OUT_ID;
-    public int CLIMBER_IN_ID;
-    public int CLIMBER_OUT_ID;
+    public int CLIMBER_LOCK_IN_ID;
+    public int CLIMBER_LOCK_OUT_ID;
     public int BALL_SHIFTERS_IN_ID;
     public int BALL_SHIFTERS_OUT_ID;
     public int BUDDY_CLIMBER_LOCK_IN_ID;
@@ -244,6 +246,8 @@ public abstract class DefaultConfig {
     public int[] CLIMBER_MOTOR_IDS;
     public int CLIMBER_STG1_MOTOR_ID;
     public int CLIMBER_STG2_MOTOR_ID;
+    public int CLIMBER_PISTON_IN_ID;
+    public int CLIMBER_PISTON_OUT_ID;
 
     //hood
     public int HOOD_ARTICULATOR_IN_ID;

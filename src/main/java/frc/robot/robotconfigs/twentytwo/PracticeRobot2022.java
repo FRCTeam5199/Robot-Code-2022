@@ -26,6 +26,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
         ENABLE_CAMERA = true;
+        ENABLE_CLIMBER_LOCK = true;
 
         ENABLE_VISION = true;
         ENABLE_CLIMBER = false;
@@ -129,8 +130,8 @@ public class PracticeRobot2022 extends DefaultConfig {
         //Climber
         CLIMBER_STG1_MOTOR_ID = 11;
         CLIMBER_STG2_MOTOR_ID = 12;
-        CLIMBER_IN_ID = 2;
-        CLIMBER_OUT_ID = 3;
+        CLIMBER_LOCK_IN_ID = 2;
+        CLIMBER_LOCK_OUT_ID = 3;
 
         PCM_ID = 32;
     }

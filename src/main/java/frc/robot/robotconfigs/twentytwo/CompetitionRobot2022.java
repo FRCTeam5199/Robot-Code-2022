@@ -1,6 +1,5 @@
 package frc.robot.robotconfigs.twentytwo;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.ballstuff.intaking.Hopper;
@@ -10,7 +9,6 @@ import frc.climber.Climber;
 import frc.drive.AbstractDriveManager;
 import frc.drive.auton.AutonType;
 import frc.misc.PID;
-import frc.motors.AbstractMotorController;
 import frc.robot.robotconfigs.DefaultConfig;
 import frc.telemetry.imu.AbstractIMU;
 import frc.vision.camera.IVision;
@@ -41,7 +39,9 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_ERROR_HANDLING = false;
         ENABLE_COLOR_SENSOR = false;
         ENABLE_VISION = true;
-        ENABLE_CLIMBER = false;
+        ENABLE_CLIMBER = true;
+        ENABLE_CLIMBER_PISTON = true;
+        ENABLE_CLIMBER_LOCK = false;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
@@ -146,29 +146,27 @@ public class CompetitionRobot2022 extends DefaultConfig {
         INTAKE_MOTOR_ID = 60;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_COMP;
         INTAKE_MOTOR_TYPE = SupportedMotors.CAN_SPARK_MAX;
-        INTAKE_IN_ID = 3;
-        INTAKE_OUT_ID = 2;
         INTAKE_BREAK_BEAM_ID = 5;
 
         //Climber
-        /*
         CLIMBER_STG1_MOTOR_ID = 12;
         CLIMBER_STG2_MOTOR_ID = 62; //talon
-        CLIMBER_IN_ID = 4;
-        CLIMBER_OUT_ID = 5;
-        */
-
-        //hood
-        HOOD_ARTICULATOR_IN_ID = 4;
-        HOOD_ARTICULATOR_OUT_ID = 5;
-
-        //indexer
-        INDEXER_BLOCK_IN_ID = 0;
-        INDEXER_BLOCK_OUT_ID = 1;
 
         PCM_ID = 33;
         PDP_ID = 50;
         POWER_DISTRIBUTION_MODULE_TYPE = PowerDistribution.ModuleType.kRev;
+
+        //Solenoids
+        INTAKE_IN_ID = 3;
+        INTAKE_OUT_ID = 2;
+        INDEXER_BLOCK_IN_ID = 0;
+        INDEXER_BLOCK_OUT_ID = 1;
+        //CLIMBER_LOCK_IN_ID = 0;
+        //CLIMBER_LOCK_OUT_ID = 0;
+        CLIMBER_PISTON_IN_ID = 7;
+        CLIMBER_PISTON_OUT_ID = 6;
+        HOOD_ARTICULATOR_IN_ID = 4;
+        HOOD_ARTICULATOR_OUT_ID = 5;
 
         //target distance tracking
         CAMERA_HEIGHT = 27.75; //inches

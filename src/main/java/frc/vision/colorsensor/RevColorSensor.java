@@ -77,6 +77,7 @@ public class RevColorSensor extends ColorSensorV3 implements IColorSensor {
 
     @Override
     public boolean isColor(Color checkAgainst) {
+        double a = getColor().red;
         return getColor().equals(checkAgainst);
     }
 

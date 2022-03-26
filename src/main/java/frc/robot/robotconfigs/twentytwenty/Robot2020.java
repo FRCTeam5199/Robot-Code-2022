@@ -29,6 +29,7 @@ public class Robot2020 extends DefaultConfig {
         ENABLE_PNOOMATICS = true;
         ENABLE_CLIMBER = true;
         ENABLE_BUDDY_CLIMBER = true;
+        ENABLE_CLIMBER_LOCK = true;
 
         DRIVEBASE_VOLTAGE_MULTIPLIER = 0.91 / 371.0; // 2.359 / 143.0 calculated 2/8/2022. Likely bad
 
@@ -58,8 +59,8 @@ public class Robot2020 extends DefaultConfig {
         PCM_ID = 23;
         INTAKE_IN_ID = 5;
         INTAKE_OUT_ID = 4;
-        CLIMBER_IN_ID = 2;
-        CLIMBER_OUT_ID = 3;
+        CLIMBER_LOCK_IN_ID = 2;
+        CLIMBER_LOCK_OUT_ID = 3;
         BALL_SHIFTERS_IN_ID = 6;
         BALL_SHIFTERS_OUT_ID = 7;
         BUDDY_CLIMBER_LOCK_IN_ID = 1;

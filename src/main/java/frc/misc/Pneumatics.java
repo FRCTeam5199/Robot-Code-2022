@@ -19,6 +19,7 @@ public class Pneumatics implements ISubsystem {
     public Solenoid shooterCooling;
     public DoubleSolenoid hoodArticulator;
     public DoubleSolenoid indexerBlocker;
+    public DoubleSolenoid climberPiston;
     public Compressor compressor;
     public PneumaticHub pneumaticsHub;
     private final NetworkTableEntry
@@ -41,8 +42,8 @@ public class Pneumatics implements ISubsystem {
         if (robotSettings.ENABLE_INTAKE && robotSettings.ENABLE_PNOOMATICS) {
             solenoidIntake = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.INTAKE_OUT_ID, robotSettings.INTAKE_IN_ID);
         }
-        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS) {
-            climberLock = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_IN_ID, robotSettings.CLIMBER_OUT_ID);
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_LOCK) {
+            climberLock = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_LOCK_IN_ID, robotSettings.CLIMBER_LOCK_OUT_ID);
         }
         if (robotSettings.ENABLE_SHOOTER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_SHOOTER_COOLING) {
             shooterCooling = new Solenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.SHOOTER_COOLING_ID);
@@ -58,6 +59,9 @@ public class Pneumatics implements ISubsystem {
         }
         if (robotSettings.ENABLE_INDEXER && robotSettings.ENABLE_HOPPER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK) {
             indexerBlocker = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.INDEXER_BLOCK_IN_ID, robotSettings.INDEXER_BLOCK_OUT_ID);
+        }
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_CLIMBER_PISTON) {
+            climberPiston = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_PISTON_IN_ID, robotSettings.CLIMBER_PISTON_OUT_ID);
         }
     }
 
@@ -132,7 +136,7 @@ public class Pneumatics implements ISubsystem {
     public void initGeneric() {
         if (robotSettings.ENABLE_INDEXER && robotSettings.ENABLE_HOPPER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
             indexerBlocker.set(DoubleSolenoid.Value.kForward);
-        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS)
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_LOCK)
             climberLock.set(DoubleSolenoid.Value.kReverse);
         if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS)
             hoodArticulator.set(DoubleSolenoid.Value.kReverse);
