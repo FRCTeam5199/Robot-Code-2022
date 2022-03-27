@@ -20,6 +20,7 @@ import frc.selfdiagnostics.MotorDisconnectedIssue;
 
 import java.util.Objects;
 
+import static com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless;
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.INTAKE_DOWN;
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.INTAKE_UP;
 import static frc.robot.Robot.robotSettings;
@@ -79,7 +80,8 @@ public class Intake implements ISubsystem {
         if (robotSettings.AUTON_TYPE == AutonType.GALACTIC_SEARCH || robotSettings.AUTON_TYPE == AutonType.GALACTIC_SCAM) {
             setIntake(robotSettings.autonComplete ? IntakeDirection.OFF : IntakeDirection.IN);
         }
-        intakeMotor.moveAtPercent(0.8 * intakeMult);
+        intakeMotor.moveAtPercent(.65 * intakeMult);
+       // intakeMotor.moveAtPercent(.6 * intakeMult);
     }
 
     @Override
@@ -89,7 +91,8 @@ public class Intake implements ISubsystem {
             createControllers();
         }
         MotorDisconnectedIssue.handleIssue(this, intakeMotor);
-        intakeMotor.moveAtPercent(0.8 * intakeMult);
+        intakeMotor.moveAtPercent(.65 * intakeMult);
+       // intakeMotor.moveAtPercent(.6 * intakeMult);
         if (robotSettings.DEBUG && DEBUG) {
             UserInterface.smartDashboardPutNumber("Intake Speed", intakeMult);
         }
@@ -305,7 +308,7 @@ public class Intake implements ISubsystem {
         double s2rf;
         switch (robotSettings.INTAKE_MOTOR_TYPE) {
             case CAN_SPARK_MAX:
-                intakeMotor = new SparkMotorController(robotSettings.INTAKE_MOTOR_ID);
+                intakeMotor = new SparkMotorController(robotSettings.INTAKE_MOTOR_ID, kBrushless);
                 s2rf = 1;
                 break;
             case TALON_FX:

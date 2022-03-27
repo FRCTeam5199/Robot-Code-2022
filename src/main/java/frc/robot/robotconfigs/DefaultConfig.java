@@ -227,6 +227,7 @@ public abstract class DefaultConfig {
     public double CAMERA_HEIGHT = 0; //Inches
     public double CAMERA_ANGLE = 0; //Radians
     public double TARGET_HEIGHT = 0; //Meters
+    public boolean IS_LIMELIGHT_PITCH = false;
 
     //pnoomatics
     public int PCM_ID = 1;

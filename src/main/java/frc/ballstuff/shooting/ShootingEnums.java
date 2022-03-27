@@ -46,7 +46,7 @@ public enum ShootingEnums {
             hopper.setAll(criteria);
         }
     }), FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter -> {
-        double rpm = 2050;
+        double rpm = 1950;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
@@ -58,7 +58,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022(shooter -> {
-        double rpm = 2400;
+        double rpm = 2300;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
@@ -70,7 +70,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_FAR_2022(shooter -> {
-        double rpm = 2700;
+        double rpm = 2550;
         //change it to 2800 Morganne 3/21/22 23:03
         //now 2700 Morganne/Rick 3/21/22 23:09
         shooter.setSpeed(rpm, true);
@@ -324,7 +324,7 @@ public enum ShootingEnums {
             shooter.timerTicks++;
             if(shooter.timerTicks >= 20)
                 hopper.setAll(true);
-            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK && (shooter.timerTicks >= 20))
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK && (shooter.timerTicks >= 30))
                 pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kReverse);
             if (shooter.timerTicks >= shooter.goalTicks) {
                 shooter.multiShot = false;

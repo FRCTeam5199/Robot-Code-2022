@@ -140,7 +140,10 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     double neededRot;
                     visionCamera.setLedMode(IVision.VisionLEDMode.ON);
                     if (visionCamera.hasValidTarget()) {
-                        neededRot = adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch()));
+                        if(robotSettings.IS_LIMELIGHT_PITCH)
+                            neededRot = adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch()));
+                        else
+                            neededRot = -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle()));
                     } else {
                         neededRot = controller.get(XboxAxes.RIGHT_JOY_X);
                     }
@@ -556,13 +559,45 @@ public class DriveManagerStandard extends AbstractDriveManager {
         leaderR.setPid(pid);
     }
 
-    public boolean aimAtTarget() {
+    public boolean aimAtTargetPitch() {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
             double neededRot = adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch()));
             driveCringe(0, -neededRot);
             boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 30;
             //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) TELEOP_AIMING_PID.reset();
+            return isAligned;
+        } else {
+            return true;
+            //driveCringe(0, .75);
+            //return false;
+        }
+    }
+
+    public boolean aimAtTargetYaw() {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            double neededRot =  1 * -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle()));
+            driveCringe(0, -neededRot);
+            boolean isAligned = Math.abs(visionCamera.getAngle()) <= (robotSettings.AUTON_TOLERANCE * 25);
+            System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) TELEOP_AIMING_PID.reset();
+            return isAligned;
+        } else {
+            return true;
+            //driveCringe(0, .75);
+            //return false;
+        }
+    }
+
+    public boolean aimAtTargetYawOffsetRight() {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            double neededRot =  1 * -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle() + .25));
+            driveCringe(0, -neededRot);
+            boolean isAligned = Math.abs(visionCamera.getAngle()+ 3.5) <= (robotSettings.AUTON_TOLERANCE * 22);
+            System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
             if (isAligned) TELEOP_AIMING_PID.reset();
             return isAligned;
         } else {
@@ -590,7 +625,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
             TELEOP_AIMING_PID.reset();
         } else {
             //drivePure(0,1);
-            driveCringe(-.5 * robotSettings.AUTO_ROTATION_SPEED * 20 * Math.min(Math.abs((rotate180Goal - guidance.imu.relativeYaw())), 1), .5 * robotSettings.AUTO_ROTATION_SPEED * 20 * Math.min(Math.abs((rotate180Goal - guidance.imu.relativeYaw())), 1));
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((rotate180Goal - guidance.imu.relativeYaw())), 1));
         }
         return !(rotating180);
     }
@@ -607,7 +642,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
             TELEOP_AIMING_PID.reset();
         } else {
             //drivePure(0,1);
-            driveCringe(0, -.5 * robotSettings.AUTO_ROTATION_SPEED * 20 * Math.min(Math.abs((guidance.imu.relativeYaw()) - rotate180Goal), 1));
+            driveCringe(0, -.5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((guidance.imu.relativeYaw()) - rotate180Goal), 1));
         }
         return !(rotating180);
     }
@@ -619,7 +654,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 ticksElapsed = 0;
                 return true;
             } else {
-                driveCringe(direction ? -0.25 : 0.25, 0);
+                drivePure(direction ? 1 : -1, 0);
                 ticksElapsed++;
                 return false;
             }

@@ -81,16 +81,23 @@ public enum AutonSpecialActions {
      * Uses the pitch of the vision camera to rotate the bot towards the target
      */
     AIM_ROBOT_AT_TARGET_PITCH,
+    AIM_ROBOT_AT_TARGET_YAW,
+    AIM_ROBOT_AT_TARGET_YAW_OFFSET_RIGHT,
 
     /**
      * Rotates the robot 180 degrees
      */
     DRIVE_180,
     DRIVE_40_REVERSE,
-    DRIVE_140_REVERSE,
+    DRIVE_137_REVERSE,
+    DRIVE_155_REVERSE,
+    DRIVE_160_REVERSE,
+    DRIVE_180_REVERSE,
+    DRIVE_165_REVERSE,
+    DRIVE_135_REVERSE,
     DRIVE_20_REVERSE,
     DRIVE_3_REVERSE,
-    DRIVE_160,
+    DRIVE_155,
     DRIVE_150,
     DRIVE_60,
     DRIVE_40,
@@ -107,5 +114,6 @@ public enum AutonSpecialActions {
     SHOOT_ALL_2022_FAR,
     SHOOT_ALL_2022_VERY_FAR,
 
-    DRIVE_BACK_TIMED
+    DRIVE_BACK_TIMED,
+    DRIVE_FORWARD_TIMED
 }

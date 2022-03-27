@@ -19,7 +19,7 @@ public class QuoteOfTheDay {
             "It's what I like to call a gameing laptop. And by gameing I mean Joey's Awesome Boat Game.",
             "Sterling, you have what I like to call a not gameing laptop. You can't run Joey's Awesome Boat Game at 1,000 FPS.",
             "Aliiiiiiiiiii, why is the bot not working?",
-            "Why does this sound so crap?",
+            "Why does this sound so crap?", //Brandon's favorite
             "Me: Mom, can we get a random? \nMom: No, we have random at home. \nRandom at home:",
             "You mean to tell me its open source? hows it still *that* crap?",
             "your life savings? null",
@@ -30,7 +30,7 @@ public class QuoteOfTheDay {
             "The best IDE for programming is Microsoft Word. It has the most customizable syntax hilighting you can get.",
             "You can also hide your code. If you have your API key exposed, you can just unexpose it like that.",
             "You see this auto capitalization? You might think that this is an inconvenience, but it's actually great",
-            "It does that sometimes",
+            "It does that sometimes", //A close second - brandon
             "If you don't do that, it won't work. This is a feature, not a bug. It's, um, to prevent hackers from saving malicious code while they access your desktop.",
             "I'll start up Windows PowerShell because it is the best since Microsoft is the best and anything they make is the best.",
             "I understand what your saying... from a voodoo point of view.",
@@ -73,7 +73,8 @@ public class QuoteOfTheDay {
             "Rick: Teddy's just tall, that's it",
             "Ali: Try blowing on [the ethernet cable] (to fix it)",
             "Stryker: Considering my age and size I'm pretty bulked",
-            "Here in soviet programmer fun time land, you do not turn robot; robot turns you."
+            "Here in soviet programmer fun time land, you do not turn robot; robot turns you.",
+            "Ah I'm bleeding, it's probably fine - everyone"
     };
 
     /**

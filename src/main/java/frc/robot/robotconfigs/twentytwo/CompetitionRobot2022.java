@@ -72,12 +72,13 @@ public class CompetitionRobot2022 extends DefaultConfig {
         AUTO_ROTATION_SPEED = .10;
         AUTON_TOLERANCE = 0.08;
         GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
+        IS_LIMELIGHT_PITCH = false;
 
         DRIVEBASE_VOLTAGE_MULTIPLIER = 3.5 * (1.050830889540567 / 2145); //3.4635 volts = 2825 RPM.
         //DRIVEBASE_PID = new PID(0.001, 0, 0, 0.00025); //new PID(0.0025, 0.0, 0.0);
         //HEADING_PID = new PID(0.01, 0, 0); new PID(0.15, 0.000, 0.02);//
         DRIVEBASE_PID = new PID(0.002, 0, 0.005, 0.00025);
-        HEADING_PID = new PID(0.07, 0.000, 0.0015);
+        HEADING_PID = new PID(0.085, 0.000, 0.0015);
         TELEOP_AIMING_PID = new PID(0.005, 0.00001, 0.0005);
         AUTON_AIMING_PID = new PID(0.02, 0.000005, 0.0005);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
@@ -145,7 +146,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         //Intake
         INTAKE_MOTOR_ID = 60;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_COMP;
-        INTAKE_MOTOR_TYPE = SupportedMotors.CAN_SPARK_MAX;
+        INTAKE_MOTOR_TYPE = SupportedMotors.TALON_FX;
         INTAKE_BREAK_BEAM_ID = 5;
 
         //Climber
@@ -172,7 +173,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         CAMERA_HEIGHT = 27.75; //inches
         CAMERA_ANGLE = 46.44579639;//48.0; //degrees
         TARGET_HEIGHT = 101.5; //Our field sucks. COMP: 104.0" (in inches)
-        ENABLE_SHOOTER_RPM_ARTICULATION = true;
+        ENABLE_SHOOTER_RPM_ARTICULATION = false;
         CALIBRATED_SHOOTER_RPM_ARRAY = new double[][]{ //hood down
                 //Distance (in), RPM
                 {23, 2200},

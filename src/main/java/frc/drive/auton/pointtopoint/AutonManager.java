@@ -150,7 +150,13 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = Robot.turret.resetShooter();
                     break;
                 case AIM_ROBOT_AT_TARGET_PITCH:
-                    specialActionComplete = drivingChild.aimAtTarget();
+                    specialActionComplete = drivingChild.aimAtTargetPitch();
+                    break;
+                case AIM_ROBOT_AT_TARGET_YAW:
+                    specialActionComplete = drivingChild.aimAtTargetYaw();
+                    break;
+                case AIM_ROBOT_AT_TARGET_YAW_OFFSET_RIGHT:
+                    specialActionComplete = drivingChild.aimAtTargetYawOffsetRight();
                     break;
                 case DRIVE_180:
                     specialActionComplete = drivingChild.rotateDegreesRight(180);
@@ -158,8 +164,23 @@ public class AutonManager extends AbstractAutonManager {
                 case DRIVE_40_REVERSE:
                     specialActionComplete = drivingChild.rotateDegreesLeft(40);
                     break;
-                case DRIVE_140_REVERSE:
-                    specialActionComplete = drivingChild.rotateDegreesLeft(140);
+                case DRIVE_137_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(137);
+                    break;
+                case DRIVE_155_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(155);
+                    break;
+                case DRIVE_160_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(160);
+                    break;
+                case DRIVE_180_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(180);
+                    break;
+                case DRIVE_165_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(165);
+                    break;
+                case DRIVE_135_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(135);
                     break;
                 case DRIVE_20_REVERSE:
                     specialActionComplete = drivingChild.rotateDegreesLeft(20);
@@ -167,8 +188,8 @@ public class AutonManager extends AbstractAutonManager {
                 case DRIVE_3_REVERSE:
                     specialActionComplete = drivingChild.rotateDegreesLeft(2.5);
                     break;
-                case DRIVE_160:
-                    specialActionComplete = drivingChild.rotateDegreesRight(160);
+                case DRIVE_155:
+                    specialActionComplete = drivingChild.rotateDegreesRight(155);
                     break;
                 case DRIVE_165:
                     specialActionComplete = drivingChild.rotateDegreesRight(165);
@@ -198,13 +219,16 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = Robot.shooter.fireAmount2022(5, 2300);
                     break;
                 case SHOOT_ALL_2022_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(2.5, 2400);
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2150);
                     break;
                 case SHOOT_ALL_2022_VERY_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 3100);
+                    specialActionComplete = Robot.shooter.fireAmount2022(6, 3150);
                     break;
                 case DRIVE_BACK_TIMED:
-                    specialActionComplete = drivingChild.driveTimed(20*6, false);
+                    specialActionComplete = drivingChild.driveTimed(45, false);
+                    break;
+                case DRIVE_FORWARD_TIMED:
+                    specialActionComplete = drivingChild.driveTimed(20*6, true);
                     break;
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
