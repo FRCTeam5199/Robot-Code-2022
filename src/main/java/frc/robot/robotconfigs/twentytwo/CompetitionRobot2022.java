@@ -11,7 +11,7 @@ import frc.drive.auton.AutonType;
 import frc.misc.PID;
 import frc.robot.robotconfigs.DefaultConfig;
 import frc.telemetry.imu.AbstractIMU;
-import frc.vision.camera.IVision;
+import frc.sensors.camera.IVision;
 
 import static frc.motors.AbstractMotorController.*;
 
@@ -26,7 +26,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
-        ENABLE_INTAKE_RUMBLE = false;
+        ENABLE_INTAKE_RUMBLE_BREAK_BEAM = false;
+        ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH = true;
         ENABLE_PNOOMATICS = true;
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;
@@ -42,6 +43,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_CLIMBER = true;
         ENABLE_CLIMBER_PISTON = true;
         ENABLE_CLIMBER_LOCK = false;
+        LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER = true; //refer to CLIMBER_MOTOR_IDS in CompetitionRobot2022
+        USE_TWO_CLIMBING_STAGES = false;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
@@ -65,7 +68,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
 
         DRIVE_MOTOR_TYPE = SupportedMotors.TALON_FX;
         CLIMBER_MOTOR_TYPE = SupportedMotors.TALON_FX;
-        CLIMBER_STG2_MOTOR_TYPE = SupportedMotors.TALON_FX;
+        //CLIMBER_STG2_MOTOR_TYPE = SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
         AUTO_SPEED = .55;
@@ -150,8 +153,14 @@ public class CompetitionRobot2022 extends DefaultConfig {
         INTAKE_BREAK_BEAM_ID = 5;
 
         //Climber
-        CLIMBER_STG1_MOTOR_ID = 12;
+        /*CLIMBER_STG1_MOTOR_ID = 12;
         CLIMBER_STG2_MOTOR_ID = 62; //talon
+         */
+        CLIMBER_MOTOR_IDS = new int[]{62, 12}; //LEFT, RIGHT. Specific order
+        CLIMBER_BUTTON_LEFT_ID = 3;
+        CLIMBER_BUTTON_RIGHT_ID = 2;
+        INTAKE_RUMBLE_L_ID = 4;
+        INTAKE_RUMBLE_R_ID = 5;
 
         PCM_ID = 33;
         PDP_ID = 50;

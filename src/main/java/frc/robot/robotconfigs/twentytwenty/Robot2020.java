@@ -9,7 +9,7 @@ import frc.drive.auton.AutonType;
 import frc.misc.PID;
 import frc.robot.robotconfigs.DefaultConfig;
 import frc.telemetry.imu.AbstractIMU;
-import frc.vision.camera.IVision;
+import frc.sensors.camera.IVision;
 
 import static frc.motors.AbstractMotorController.SupportedMotors.*;
 

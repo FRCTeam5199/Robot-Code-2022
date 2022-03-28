@@ -13,7 +13,7 @@ import frc.drive.auton.AutonType;
 import frc.drive.auton.pointtopoint.AutonRoutines;
 import frc.misc.PID;
 import frc.motors.AbstractMotorController.SupportedMotors;
-import frc.vision.camera.IVision;
+import frc.sensors.camera.IVision;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,12 +67,15 @@ public abstract class DefaultConfig {
     public boolean ENABLE_CAMERA = false;
     public boolean ENABLE_HOOD_PISTON = false;
     public boolean ENABLE_TOGGLEABLE_RING = false;
-    public boolean ENABLE_INTAKE_RUMBLE = false;
+    public boolean ENABLE_INTAKE_RUMBLE_BREAK_BEAM = false;
+    public boolean ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH = false;
     public boolean ENABLE_ERROR_HANDLING = true;
     public boolean ENABLE_SHOOTER_RPM_ARTICULATION = false;
     public boolean ENABLE_COLOR_SENSOR = false;
     public boolean ENABLE_CLIMBER_PISTON = false;
     public boolean ENABLE_CLIMBER_LOCK = false;
+    public boolean USE_TWO_CLIMBING_STAGES = false;
+    public boolean LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER = false; //refer to CLIMBER_MOTOR_IDS in CompetitionRobot2022 ( {LEFT, RIGHT} )
 
     //Misc
     public boolean ENABLE_VISION = false;
@@ -213,6 +216,8 @@ public abstract class DefaultConfig {
     public int INTAKE_SERVO_L_ID = 0;
     public int INTAKE_SERVO_R_ID = 1;
     public int IMU_ID = 22; //pigeon
+    public int INTAKE_RUMBLE_L_ID;
+    public int INTAKE_RUMBLE_R_ID;
     //leds
     public int LED_STRAND_LENGTH = 60;
     public int LED_STRAND_PORT_ID = 9;
@@ -249,6 +254,8 @@ public abstract class DefaultConfig {
     public int CLIMBER_STG2_MOTOR_ID;
     public int CLIMBER_PISTON_IN_ID;
     public int CLIMBER_PISTON_OUT_ID;
+    public int CLIMBER_BUTTON_LEFT_ID;
+    public int CLIMBER_BUTTON_RIGHT_ID;
 
     //hood
     public int HOOD_ARTICULATOR_IN_ID;

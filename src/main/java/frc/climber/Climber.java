@@ -13,6 +13,7 @@ import frc.motors.SparkMotorController;
 import frc.motors.TalonMotorController;
 import frc.motors.VictorMotorController;
 import frc.robot.Robot;
+import frc.sensors.LimitSwitchSensor;
 
 import java.util.Objects;
 
@@ -30,6 +31,7 @@ public class Climber implements ISubsystem {
     private AbstractMotorController[] climberMotors;
     private AbstractMotorController climberStg1, climberStg2;
     private boolean isLocked = false;
+    private LimitSwitchSensor leftSensor, rightSensor;
 
     public Climber() {
         addToMetaList();
@@ -38,10 +40,15 @@ public class Climber implements ISubsystem {
 
     @Override
     public void init() {
-        if (robotSettings.CLIMBER_CONTROL_STYLE != ClimberControlStyles.OLD_STANDARD_2022 && robotSettings.CLIMBER_CONTROL_STYLE != ClimberControlStyles.STANDARD_2022)
+        if (robotSettings.USE_TWO_CLIMBING_STAGES) {
+            create2StageMotors();
+        } else {
             createMotors();
-        else
-            createCoolerMotors();
+        }
+        if (robotSettings.LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER) {
+            leftSensor = new LimitSwitchSensor(robotSettings.CLIMBER_BUTTON_LEFT_ID);
+            rightSensor = new LimitSwitchSensor(robotSettings.CLIMBER_BUTTON_RIGHT_ID);
+        }
         createControllers();
     }
 
@@ -90,11 +97,31 @@ public class Climber implements ISubsystem {
             }
             break;
             case STANDARD_2022: {
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN && !isLocked) {
-                    climberStg1.moveAtPercent(-0.8);
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN ) {//&& !isLocked) {
+                        for (AbstractMotorController motor : climberMotors) {
+                            motor.moveAtPercent(-0.8);
+                        }
+                    //climberStg1.moveAtPercent(-0.8);
                 } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
-                    climberStg1.moveAtPercent(0.8);
+                    if (!robotSettings.LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER) {
+                        for (AbstractMotorController motor : climberMotors) {
+                            motor.moveAtPercent(0.8);
+                        }
+                    } else {
+                        if (!leftSensor.isTriggered()) {
+                            climberMotors[0].moveAtPercent(0.8);
+                        } else {
+                            climberMotors[0].moveAtPercent(0);
+                        }
+                        if (!rightSensor.isTriggered()) {
+                            climberMotors[1].moveAtPercent(0.8);
+                        } else {
+                            climberMotors[1].moveAtPercent(0);
+                        }
+                    }
+                    //climberStg1.moveAtPercent(0.8);
                 } else {
+                    if (robotSettings.USE_TWO_CLIMBING_STAGES)
                     climberStg1.moveAtPercent(0);
                 }
                 if (joystick.get(ControllerEnums.JoystickButtons.TWELVE) == ButtonStatus.DOWN) {
@@ -140,8 +167,10 @@ public class Climber implements ISubsystem {
 
     @Override
     public void initTest() {
-        climberStg1.setBrake(false);
-        climberStg2.setBrake(false);
+        if (robotSettings.USE_TWO_CLIMBING_STAGES) {
+            climberStg1.setBrake(false);
+            climberStg2.setBrake(false);
+        }
     }
 
     @Override
@@ -160,8 +189,10 @@ public class Climber implements ISubsystem {
 
     @Override
     public void initGeneric() {
-        climberStg1.setBrake(true);
-        climberStg2.setBrake(true);
+        if (robotSettings.USE_TWO_CLIMBING_STAGES) {
+            climberStg1.setBrake(true);
+            climberStg2.setBrake(true);
+        }
     }
 
     @Override
@@ -180,7 +211,7 @@ public class Climber implements ISubsystem {
             Robot.pneumatics.climberPiston.set(deployed ? Value.kForward : Value.kReverse);
     }
 
-    private void createCoolerMotors() {
+    private void create2StageMotors() {
         double s2rfstg1 = 1;
         switch (robotSettings.CLIMBER_MOTOR_TYPE) {
             case TALON_FX: {

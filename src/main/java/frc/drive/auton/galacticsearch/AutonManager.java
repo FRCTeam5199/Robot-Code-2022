@@ -4,8 +4,8 @@ import frc.drive.AbstractDriveManager;
 import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.Point;
 import frc.misc.UserInterface;
-import frc.vision.camera.BallPhoton;
-import frc.vision.camera.IVision;
+import frc.sensors.camera.BallPhoton;
+import frc.sensors.camera.IVision;
 
 import static frc.robot.Robot.robotSettings;
 

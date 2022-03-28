@@ -1,4 +1,4 @@
-package frc.vision.distancesensor;
+package frc.sensors.distancesensor;
 
 import frc.ballstuff.intaking.Hopper2020;
 import frc.ballstuff.intaking.Hopper;

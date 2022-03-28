@@ -1,4 +1,4 @@
-package frc.vision.colorsensor;
+package frc.sensors.colorsensor;
 
 import edu.wpi.first.wpilibj.util.Color;
 import frc.misc.ISubsystem;

@@ -24,7 +24,7 @@ import frc.motors.followers.SparkFollowerMotorsController;
 import frc.motors.followers.TalonFollowerMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.telemetry.RobotTelemetryStandard;
-import frc.vision.camera.IVision;
+import frc.sensors.camera.IVision;
 
 import static frc.robot.Robot.pneumatics;
 import static frc.robot.Robot.robotSettings;
@@ -57,6 +57,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
     private boolean isFirstStageEnergySaverOn = false, isSecondStageEnergySaverOn = false;
     private int energySaverLevel = 0;
     private int ticksElapsed = 0;
+    private boolean rotating180 = false;
+    private double rotate180Goal;
 
     public DriveManagerStandard() throws UnsupportedOperationException, InitializationFailureException {
         super();
@@ -140,7 +142,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                     double neededRot;
                     visionCamera.setLedMode(IVision.VisionLEDMode.ON);
                     if (visionCamera.hasValidTarget()) {
-                        if(robotSettings.IS_LIMELIGHT_PITCH)
+                        if (robotSettings.IS_LIMELIGHT_PITCH)
                             neededRot = adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch()));
                         else
                             neededRot = -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle()));
@@ -562,8 +564,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
     public boolean aimAtTargetPitch() {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
-            double neededRot = adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch()));
-            driveCringe(0, -neededRot);
+            driveCringe(0, -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch())));
             boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 30;
             //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
             if (isAligned) TELEOP_AIMING_PID.reset();
@@ -578,8 +579,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
     public boolean aimAtTargetYaw() {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
-            double neededRot =  1 * -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle()));
-            driveCringe(0, -neededRot);
+            driveCringe(0, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle())));
             boolean isAligned = Math.abs(visionCamera.getAngle()) <= (robotSettings.AUTON_TOLERANCE * 25);
             System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
             if (isAligned) TELEOP_AIMING_PID.reset();
@@ -594,21 +594,15 @@ public class DriveManagerStandard extends AbstractDriveManager {
     public boolean aimAtTargetYawOffsetRight() {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
-            double neededRot =  1 * -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle() + .25));
-            driveCringe(0, -neededRot);
-            boolean isAligned = Math.abs(visionCamera.getAngle()+ 3.5) <= (robotSettings.AUTON_TOLERANCE * 22);
+            driveCringe(0, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle() + .25)));
+            boolean isAligned = Math.abs(visionCamera.getAngle() + 3.5) <= (robotSettings.AUTON_TOLERANCE * 22);
             System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
             if (isAligned) TELEOP_AIMING_PID.reset();
             return isAligned;
         } else {
             return true;
-            //driveCringe(0, .75);
-            //return false;
         }
     }
-
-    private boolean rotating180 = false;
-    private double rotate180Goal;
 
     /**
      * @return true when done rotating

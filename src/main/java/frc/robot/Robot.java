@@ -36,8 +36,9 @@ import frc.robot.robotconfigs.twentytwo.Swerve2022;
 import frc.selfdiagnostics.ISimpleIssue;
 import frc.selfdiagnostics.IssueHandler;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.vision.camera.CameraViewer;
-import frc.vision.camera.IVision;
+import frc.sensors.BreakBeamSensor;
+import frc.sensors.camera.CameraViewer;
+import frc.sensors.camera.IVision;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -71,7 +72,6 @@ public class Robot extends TimedRobot {
     public static CameraViewer cameraViewer;
     public static BuddyClimber buddyClimber;
     public static Flashlight flashlight;
-    public static BreakBeamSensor breakBeam;
     public static AbstractAutonManager autonManager;
     public static boolean SECOND_TRY;
     public static String lastFoundSong = "";
@@ -146,9 +146,6 @@ public class Robot extends TimedRobot {
         }
         if (robotSettings.ENABLE_FLASHLIGHT) {
             flashlight = new Flashlight();
-        }
-        if (robotSettings.ENABLE_BREAK_BEAM) {
-            breakBeam = new BreakBeamSensor();
         }
 
         if (robotSettings.ENABLE_DRIVE && robotSettings.ENABLE_IMU) {

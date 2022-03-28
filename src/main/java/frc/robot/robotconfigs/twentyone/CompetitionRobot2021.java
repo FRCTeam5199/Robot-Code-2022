@@ -9,7 +9,7 @@ import frc.misc.PID;
 import frc.motors.AbstractMotorController;
 import frc.robot.robotconfigs.DefaultConfig;
 import frc.telemetry.imu.AbstractIMU;
-import frc.vision.camera.IVision;
+import frc.sensors.camera.IVision;
 
 public class CompetitionRobot2021 extends DefaultConfig {
     public CompetitionRobot2021() {

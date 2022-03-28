@@ -17,6 +17,8 @@ import frc.motors.TalonMotorController;
 import frc.motors.VictorMotorController;
 import frc.robot.Robot;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
+import frc.sensors.BreakBeamSensor;
+import frc.sensors.LimitSwitchSensor;
 
 import java.util.Objects;
 
@@ -36,6 +38,8 @@ public class Intake implements ISubsystem {
     public BaseController xbox, joystick, buttonpanel;
     public double intakeMult;
     public boolean isIntakeUp = false;
+    public BreakBeamSensor intakeBreakBeam;
+    public LimitSwitchSensor leftSensor, rightSensor;
 
     public Intake() throws InitializationFailureException, IllegalStateException {
         addToMetaList();
@@ -52,6 +56,13 @@ public class Intake implements ISubsystem {
         createControllers();
         createMotors();
         createServos();
+        if (robotSettings.ENABLE_INTAKE_RUMBLE_BREAK_BEAM && robotSettings.ENABLE_BREAK_BEAM) {
+            intakeBreakBeam = new BreakBeamSensor(robotSettings.INTAKE_BREAK_BEAM_ID);
+        }
+        if (robotSettings.ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH) {
+            leftSensor = new LimitSwitchSensor(robotSettings.INTAKE_RUMBLE_L_ID);
+            rightSensor = new LimitSwitchSensor(robotSettings.INTAKE_RUMBLE_R_ID);
+        }
     }
 
     @Override
@@ -81,7 +92,7 @@ public class Intake implements ISubsystem {
             setIntake(robotSettings.autonComplete ? IntakeDirection.OFF : IntakeDirection.IN);
         }
         intakeMotor.moveAtPercent(.65 * intakeMult);
-       // intakeMotor.moveAtPercent(.6 * intakeMult);
+        // intakeMotor.moveAtPercent(.6 * intakeMult);
     }
 
     @Override
@@ -92,7 +103,7 @@ public class Intake implements ISubsystem {
         }
         MotorDisconnectedIssue.handleIssue(this, intakeMotor);
         intakeMotor.moveAtPercent(.65 * intakeMult);
-       // intakeMotor.moveAtPercent(.6 * intakeMult);
+        // intakeMotor.moveAtPercent(.6 * intakeMult);
         if (robotSettings.DEBUG && DEBUG) {
             UserInterface.smartDashboardPutNumber("Intake Speed", intakeMult);
         }
@@ -141,8 +152,11 @@ public class Intake implements ISubsystem {
                 break;
             }
             case ROBOT_2022_COMP:
-                if (robotSettings.ENABLE_BREAK_BEAM && robotSettings.ENABLE_INTAKE_RUMBLE && Robot.breakBeam.getIntakeIsBroken()) {
-                    xbox.rumble(0.5);
+                if (robotSettings.ENABLE_BREAK_BEAM && robotSettings.ENABLE_INTAKE_RUMBLE_BREAK_BEAM) {
+                    xbox.rumble(0.5 * (intakeBreakBeam.isTriggered() ? 1 : 0));
+                } else if (robotSettings.ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH) {
+                    boolean rumble = leftSensor.isTriggered() || rightSensor.isTriggered();
+                    xbox.rumble(0.5 * (rumble ? 1 : 0));
                 }
             case ROBOT_2022_OLD: {
                 if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {

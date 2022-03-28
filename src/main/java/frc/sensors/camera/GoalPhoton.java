@@ -1,4 +1,4 @@
-package frc.vision.camera;
+package frc.sensors.camera;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;

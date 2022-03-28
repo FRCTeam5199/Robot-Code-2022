@@ -58,7 +58,9 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022(shooter -> {
-        double rpm = 2300;
+        double rpm = 2200;
+        //"hood up and tarmack whatever fender is" -Morganne 19:13 3/27/2022
+        //2200 rpm Morganne 19:19 3/27/2022
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;

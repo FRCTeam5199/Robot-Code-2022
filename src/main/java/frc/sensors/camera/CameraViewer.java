@@ -1,4 +1,4 @@
-package frc.vision.camera;
+package frc.sensors.camera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import frc.misc.ISubsystem;

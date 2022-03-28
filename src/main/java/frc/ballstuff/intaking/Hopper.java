@@ -9,15 +9,15 @@ import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.vision.distancesensor.IDistanceSensor;
-import frc.vision.distancesensor.RevDistanceSensor;
+import frc.sensors.BreakBeamSensor;
+import frc.sensors.distancesensor.IDistanceSensor;
+import frc.sensors.distancesensor.RevDistanceSensor;
 
 import java.util.Objects;
 
 import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
 import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
 import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
-import static frc.robot.Robot.breakBeam;
 import static frc.robot.Robot.robotSettings;
 
 /**
@@ -30,6 +30,7 @@ public class Hopper implements ISubsystem {
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
     private BaseController controller, panel;
+    public BreakBeamSensor indexBreakBeam;
 
     public Hopper() {
         addToMetaList();
@@ -91,6 +92,10 @@ public class Hopper implements ISubsystem {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX && !robotSettings.ENABLE_BREAK_BEAM) {
             indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
             System.out.println("Enabling index sensor.");
+        } else {
+            if (robotSettings.ENABLE_BREAK_BEAM && robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                indexBreakBeam = new BreakBeamSensor(robotSettings.INDEXER_BREAK_BEAM_ID);
+            }
         }
         createAndInitMotors();
         initMisc();
@@ -165,7 +170,7 @@ public class Hopper implements ISubsystem {
 
     public boolean isIndexed() {
         if (robotSettings.ENABLE_BREAK_BEAM) {
-            return breakBeam.getIndexerIsBroken();
+            return indexBreakBeam.isTriggered();
         } else {
             return robotSettings.ENABLE_INDEXER_AUTO_INDEX && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE && indexerSensorRange() > 0;
         }
@@ -292,12 +297,13 @@ public class Hopper implements ISubsystem {
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            agitatorTop.moveAtPercent(0.15);
+                            agitatorTop.moveAtPercent(0.25);
                         } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
                             //lol imagine mechanical being bad
                             agitatorTop.moveAtPercent(0);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(!isIndexed() ? 0.1 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.25 : 0);
+                            //"Turn everything 25" -Morganne 3/27/2022 18:12
                         } else {
                             agitatorTop.moveAtPercent(0);
                         }
@@ -311,7 +317,8 @@ public class Hopper implements ISubsystem {
                         agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.1 : 0);
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.25 : 0);
+                        //"I think 45 right now" -Morganne 3/27/2022 18:09
                     }
                 }
                 if (robotSettings.DEBUG && DEBUG) {

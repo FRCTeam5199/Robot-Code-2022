@@ -22,16 +22,12 @@ import frc.motors.SparkMotorController;
 import frc.motors.TalonMotorController;
 import frc.robot.Robot;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.vision.camera.IVision;
-import frc.vision.colorsensor.IColorSensor;
-import frc.vision.colorsensor.RevColorSensor;
-import frc.vision.distancesensor.RevDistanceSensor;
+import frc.sensors.camera.IVision;
+import frc.sensors.colorsensor.IColorSensor;
+import frc.sensors.colorsensor.RevColorSensor;
 
 import java.util.Objects;
 
-import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
-import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
-import static com.revrobotics.Rev2mDistanceSensor.Unit.kInches;
 import static frc.misc.UtilFunctions.weightedAverage;
 import static frc.robot.Robot.*;
 

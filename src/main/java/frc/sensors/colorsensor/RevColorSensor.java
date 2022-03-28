@@ -1,4 +1,4 @@
-package frc.vision.colorsensor;
+package frc.sensors.colorsensor;
 
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
@@ -77,7 +77,6 @@ public class RevColorSensor extends ColorSensorV3 implements IColorSensor {
 
     @Override
     public boolean isColor(Color checkAgainst) {
-        double a = getColor().red;
         return getColor().equals(checkAgainst);
     }
 

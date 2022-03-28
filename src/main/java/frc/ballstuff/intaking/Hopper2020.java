@@ -8,8 +8,8 @@ import frc.motors.SparkMotorController;
 import frc.motors.TalonMotorController;
 import frc.motors.VictorMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.vision.distancesensor.IDistanceSensor;
-import frc.vision.distancesensor.RevDistanceSensor;
+import frc.sensors.distancesensor.IDistanceSensor;
+import frc.sensors.distancesensor.RevDistanceSensor;
 
 import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
 import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;

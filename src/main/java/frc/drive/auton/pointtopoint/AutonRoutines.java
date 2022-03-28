@@ -83,9 +83,9 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(7.84, -1.15), 1.77),
             new AutonWaypoint(DRIVE_BACK_TIMED),
             new AutonWaypoint(DRIVE_135_REVERSE),
-            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_OFFSET_RIGHT),
-            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_OFFSET_RIGHT),
-            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_OFFSET_RIGHT),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
             new AutonWaypoint(SHOOT_ALL_2022_VERY_FAR)
     ),
     /*

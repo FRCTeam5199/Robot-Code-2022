@@ -15,7 +15,7 @@ import frc.motors.TalonMotorController;
 import frc.robot.Robot;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.telemetry.AbstractRobotTelemetry;
-import frc.vision.camera.IVision;
+import frc.sensors.camera.IVision;
 
 import static frc.robot.Robot.*;
 
