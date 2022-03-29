@@ -1,10 +1,6 @@
 package frc.robot.robotconfigs;
 
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.*;
 import frc.ballstuff.intaking.Hopper;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
@@ -76,6 +72,8 @@ public abstract class DefaultConfig {
     public boolean ENABLE_CLIMBER_LOCK = false;
     public boolean USE_TWO_CLIMBING_STAGES = false;
     public boolean LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER = false; //refer to CLIMBER_MOTOR_IDS in CompetitionRobot2022 ( {LEFT, RIGHT} )
+    public boolean ENABLE_INDEXER_BUTTON = false;
+    public boolean USE_TWO_CLIMBER_PISTONS = false;
 
     //Misc
     public boolean ENABLE_VISION = false;
@@ -208,7 +206,7 @@ public abstract class DefaultConfig {
     public int AGITATOR_MOTOR_ID = 10; //victor
     public int AGITATOR_TOPBAR_MOTOR_ID;
     public int INDEXER_MOTOR_ID = 11; //victor
-    public int INDEXER_BREAK_BEAM_ID;
+    public int INDEXER_SENSOR_ID;
     public int INTAKE_BREAK_BEAM_ID;
     public Boolean ENABLE_BREAK_BEAM = false;
     //intake
@@ -254,6 +252,8 @@ public abstract class DefaultConfig {
     public int CLIMBER_STG2_MOTOR_ID;
     public int CLIMBER_PISTON_IN_ID;
     public int CLIMBER_PISTON_OUT_ID;
+    public int CLIMBER_PISTON2_IN_ID;
+    public int CLIMBER_PISTON2_OUT_ID;
     public int CLIMBER_BUTTON_LEFT_ID;
     public int CLIMBER_BUTTON_RIGHT_ID;
 

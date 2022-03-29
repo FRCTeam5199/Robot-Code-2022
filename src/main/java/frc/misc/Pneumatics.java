@@ -20,6 +20,7 @@ public class Pneumatics implements ISubsystem {
     public DoubleSolenoid hoodArticulator;
     public DoubleSolenoid indexerBlocker;
     public DoubleSolenoid climberPiston;
+    public DoubleSolenoid climberPiston2;
     public Compressor compressor;
     public PneumaticHub pneumaticsHub;
     private final NetworkTableEntry
@@ -62,6 +63,9 @@ public class Pneumatics implements ISubsystem {
         }
         if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_CLIMBER_PISTON) {
             climberPiston = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_PISTON_IN_ID, robotSettings.CLIMBER_PISTON_OUT_ID);
+        }
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_CLIMBER_PISTON && robotSettings.USE_TWO_CLIMBER_PISTONS) {
+            climberPiston2 = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_PISTON2_IN_ID, robotSettings.CLIMBER_PISTON2_OUT_ID);
         }
     }
 

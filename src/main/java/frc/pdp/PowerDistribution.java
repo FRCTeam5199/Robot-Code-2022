@@ -1,12 +1,12 @@
 package frc.pdp;
 
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.selfdiagnostics.BrownoutIssue;
 import frc.selfdiagnostics.UndervoltageIssue;
-import edu.wpi.first.wpilibj.PowerDistribution.*;
 
 import static frc.robot.Robot.robotSettings;
 

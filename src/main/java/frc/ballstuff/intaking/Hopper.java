@@ -10,6 +10,8 @@ import frc.misc.UserInterface;
 import frc.motors.AbstractMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.sensors.BreakBeamSensor;
+import frc.sensors.ISensor;
+import frc.sensors.LimitSwitchSensor;
 import frc.sensors.distancesensor.IDistanceSensor;
 import frc.sensors.distancesensor.RevDistanceSensor;
 
@@ -30,7 +32,7 @@ public class Hopper implements ISubsystem {
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
     private BaseController controller, panel;
-    public BreakBeamSensor indexBreakBeam;
+    public ISensor sensor;
 
     public Hopper() {
         addToMetaList();
@@ -89,12 +91,14 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void init() {
-        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX && !robotSettings.ENABLE_BREAK_BEAM) {
+        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX && !robotSettings.ENABLE_BREAK_BEAM && !robotSettings.ENABLE_INDEXER_BUTTON) {
             indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
             System.out.println("Enabling index sensor.");
         } else {
             if (robotSettings.ENABLE_BREAK_BEAM && robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                indexBreakBeam = new BreakBeamSensor(robotSettings.INDEXER_BREAK_BEAM_ID);
+                sensor = new BreakBeamSensor(robotSettings.INDEXER_SENSOR_ID);
+            } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                sensor = new LimitSwitchSensor(robotSettings.INDEXER_SENSOR_ID);
             }
         }
         createAndInitMotors();
@@ -169,8 +173,8 @@ public class Hopper implements ISubsystem {
     }
 
     public boolean isIndexed() {
-        if (robotSettings.ENABLE_BREAK_BEAM) {
-            return indexBreakBeam.isTriggered();
+        if (robotSettings.ENABLE_BREAK_BEAM || robotSettings.ENABLE_INDEXER_BUTTON) {
+            return sensor.isTriggered();
         } else {
             return robotSettings.ENABLE_INDEXER_AUTO_INDEX && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE && indexerSensorRange() > 0;
         }
@@ -277,8 +281,8 @@ public class Hopper implements ISubsystem {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             if (!isIndexed())
                                 indexer.moveAtPercent(0.8);//0.05*3.5);
-                                    //Morganne set to 0.8 "all time" 3/19/22 17:34
-                            //"Can we only do tarmac from now on" -Morganne 3/19/22 16:42
+                                //Morganne set to 0.8 "all time" 3/19/22 17:34
+                                //"Can we only do tarmac from now on" -Morganne 3/19/22 16:42
                             else {
                                 //double rot = indexer.getRotations() / indexer.sensorToRealDistanceFactor;
                                 //indexer.moveAtPosition(rot);

@@ -97,32 +97,37 @@ public class Climber implements ISubsystem {
             }
             break;
             case STANDARD_2022: {
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN ) {//&& !isLocked) {
-                        for (AbstractMotorController motor : climberMotors) {
-                            motor.moveAtPercent(-0.8);
-                        }
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN) {//&& !isLocked) {
+                    for (AbstractMotorController motor : climberMotors) {
+                        motor.moveAtPercent(1);
+                    }
                     //climberStg1.moveAtPercent(-0.8);
                 } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
                     if (!robotSettings.LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER) {
                         for (AbstractMotorController motor : climberMotors) {
-                            motor.moveAtPercent(0.8);
+                            motor.moveAtPercent(-1);
                         }
                     } else {
                         if (!leftSensor.isTriggered()) {
-                            climberMotors[0].moveAtPercent(0.8);
+                            climberMotors[0].moveAtPercent(-1);
                         } else {
                             climberMotors[0].moveAtPercent(0);
                         }
                         if (!rightSensor.isTriggered()) {
-                            climberMotors[1].moveAtPercent(0.8);
+                            climberMotors[1].moveAtPercent(-1);
                         } else {
                             climberMotors[1].moveAtPercent(0);
                         }
                     }
                     //climberStg1.moveAtPercent(0.8);
                 } else {
-                    if (robotSettings.USE_TWO_CLIMBING_STAGES)
-                    climberStg1.moveAtPercent(0);
+                    if (robotSettings.USE_TWO_CLIMBING_STAGES) {
+                        climberStg1.moveAtPercent(0);
+                    } else {
+                        for (AbstractMotorController motor : climberMotors) {
+                            motor.moveAtPercent(0);
+                        }
+                    }
                 }
                 if (joystick.get(ControllerEnums.JoystickButtons.TWELVE) == ButtonStatus.DOWN) {
                     climberPiston(true);
@@ -170,6 +175,10 @@ public class Climber implements ISubsystem {
         if (robotSettings.USE_TWO_CLIMBING_STAGES) {
             climberStg1.setBrake(false);
             climberStg2.setBrake(false);
+        } else {
+            for (AbstractMotorController motor : climberMotors) {
+                motor.setBrake(false);
+            }
         }
     }
 
@@ -192,6 +201,10 @@ public class Climber implements ISubsystem {
         if (robotSettings.USE_TWO_CLIMBING_STAGES) {
             climberStg1.setBrake(true);
             climberStg2.setBrake(true);
+        } else {
+            for (AbstractMotorController motor : climberMotors) {
+                motor.setBrake(true);
+            }
         }
     }
 
@@ -207,8 +220,11 @@ public class Climber implements ISubsystem {
     }
 
     public void climberPiston(boolean deployed) {
-        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_PISTON)
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_PISTON) {
             Robot.pneumatics.climberPiston.set(deployed ? Value.kForward : Value.kReverse);
+            if (robotSettings.USE_TWO_CLIMBER_PISTONS)
+                Robot.pneumatics.climberPiston2.set(deployed ? Value.kForward : Value.kReverse);
+        }
     }
 
     private void create2StageMotors() {

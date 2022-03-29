@@ -1,11 +1,6 @@
 package frc.motors;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.REVLibError;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.*;
 import frc.misc.PID;
 import frc.robot.Robot;
 

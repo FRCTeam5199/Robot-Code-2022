@@ -10,8 +10,8 @@ import frc.drive.auton.AutonType;
 import frc.misc.PID;
 import frc.motors.AbstractMotorController;
 import frc.robot.robotconfigs.DefaultConfig;
-import frc.telemetry.imu.AbstractIMU;
 import frc.sensors.camera.IVision;
+import frc.telemetry.imu.AbstractIMU;
 
 public class Swerve2022 extends DefaultConfig {
     public Swerve2022() {

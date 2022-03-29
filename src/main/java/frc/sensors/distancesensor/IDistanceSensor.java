@@ -1,7 +1,7 @@
 package frc.sensors.distancesensor;
 
-import frc.ballstuff.intaking.Hopper2020;
 import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.intaking.Hopper2020;
 import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
 

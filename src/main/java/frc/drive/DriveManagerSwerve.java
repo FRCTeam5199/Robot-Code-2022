@@ -1,7 +1,6 @@
 package frc.drive;
 
 import com.ctre.phoenix.sensors.CANCoder;
-//import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,7 +19,6 @@ import frc.selfdiagnostics.MotorDisconnectedIssue;
 
 import java.util.Objects;
 
-import static frc.robot.Robot.driver;
 import static frc.robot.Robot.robotSettings;
 
 /*

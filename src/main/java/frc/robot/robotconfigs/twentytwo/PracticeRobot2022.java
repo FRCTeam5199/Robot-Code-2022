@@ -9,8 +9,8 @@ import frc.drive.auton.AutonType;
 import frc.misc.PID;
 import frc.motors.AbstractMotorController;
 import frc.robot.robotconfigs.DefaultConfig;
-import frc.telemetry.imu.AbstractIMU;
 import frc.sensors.camera.IVision;
+import frc.telemetry.imu.AbstractIMU;
 
 public class PracticeRobot2022 extends DefaultConfig {
     //Subsystems
@@ -111,7 +111,7 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         //Hopper
         ENABLE_BREAK_BEAM = true;
-        INDEXER_BREAK_BEAM_ID = 9;
+        INDEXER_SENSOR_ID = 9;
         INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 7;
         AGITATOR_MOTOR_ID = 10;

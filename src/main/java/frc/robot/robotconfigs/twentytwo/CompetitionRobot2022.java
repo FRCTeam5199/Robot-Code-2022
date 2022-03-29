@@ -2,18 +2,18 @@ package frc.robot.robotconfigs.twentytwo;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.ballstuff.intaking.Hopper;
+import frc.ballstuff.intaking.Hopper.HopperControlStyles;
 import frc.ballstuff.intaking.Intake;
-import frc.ballstuff.shooting.Shooter;
-import frc.climber.Climber;
-import frc.drive.AbstractDriveManager;
+import frc.ballstuff.shooting.Shooter.ShootingControlStyles;
+import frc.climber.Climber.ClimberControlStyles;
+import frc.drive.AbstractDriveManager.DriveControlStyles;
 import frc.drive.auton.AutonType;
 import frc.misc.PID;
 import frc.robot.robotconfigs.DefaultConfig;
-import frc.telemetry.imu.AbstractIMU;
 import frc.sensors.camera.IVision;
+import frc.telemetry.imu.AbstractIMU;
 
-import static frc.motors.AbstractMotorController.*;
+import static frc.motors.AbstractMotorController.SupportedMotors;
 
 public class CompetitionRobot2022 extends DefaultConfig {
     public CompetitionRobot2022() {
@@ -45,6 +45,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_CLIMBER_LOCK = false;
         LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER = true; //refer to CLIMBER_MOTOR_IDS in CompetitionRobot2022
         USE_TWO_CLIMBING_STAGES = false;
+        USE_TWO_CLIMBER_PISTONS = true;
+        ENABLE_INDEXER_BUTTON = true;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
         PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
@@ -61,10 +63,10 @@ public class CompetitionRobot2022 extends DefaultConfig {
         USE_PHOTONVISION = false;
 
         //UI Styles
-        DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD_2022;
-        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.COMP_2022;
-        HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.COMP_2022;
-        CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD_2022;
+        DRIVE_STYLE = DriveControlStyles.STANDARD_2022;
+        SHOOTER_CONTROL_STYLE = ShootingControlStyles.COMP_2022;
+        HOPPER_CONTROL_STYLE = HopperControlStyles.COMP_2022;
+        CLIMBER_CONTROL_STYLE = ClimberControlStyles.STANDARD_2022;
 
         DRIVE_MOTOR_TYPE = SupportedMotors.TALON_FX;
         CLIMBER_MOTOR_TYPE = SupportedMotors.TALON_FX;
@@ -134,10 +136,10 @@ public class CompetitionRobot2022 extends DefaultConfig {
         BACKSPIN_INVERTED = true;
         SHOOTER_INVERTED = false;
 
-                //Hopper
-        ENABLE_BREAK_BEAM = true;
+        //Hopper
+        ENABLE_BREAK_BEAM = false;
         BREAK_BEAM_DELAY_20ms = 1;
-        INDEXER_BREAK_BEAM_ID = 7;
+        INDEXER_SENSOR_ID = 6;//7;
         //INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 59;
         AGITATOR_MOTOR_ID = 58; //spark
@@ -175,6 +177,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         //CLIMBER_LOCK_OUT_ID = 0;
         CLIMBER_PISTON_IN_ID = 7;
         CLIMBER_PISTON_OUT_ID = 6;
+        CLIMBER_PISTON2_IN_ID = 8; //todo change this @Vaughn
+        CLIMBER_PISTON2_OUT_ID = 9; //todo change this @Vaughn
         HOOD_ARTICULATOR_IN_ID = 4;
         HOOD_ARTICULATOR_OUT_ID = 5;
 
@@ -185,17 +189,6 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_SHOOTER_RPM_ARTICULATION = false;
         CALIBRATED_SHOOTER_RPM_ARRAY = new double[][]{ //hood down
                 //Distance (in), RPM
-                {23, 2200},
-                {35.89, 2200},
-                {83.63, 2400},
-                {100, 3000},
-        };
+                {23, 2200}, {35.89, 2200}, {83.63, 2400}, {100, 3000},};
     }
 }
-
-/*
-d = 40
-h1 = 27.75
-h2 = 101.5
-a2 = 15.08
- */

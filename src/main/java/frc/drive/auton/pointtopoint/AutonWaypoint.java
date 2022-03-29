@@ -2,7 +2,6 @@ package frc.drive.auton.pointtopoint;
 
 
 import frc.drive.auton.Point;
-import frc.robot.Robot;
 
 import static frc.drive.auton.pointtopoint.AutonSpecialActions.NONE;
 

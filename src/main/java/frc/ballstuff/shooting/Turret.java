@@ -1,7 +1,7 @@
 package frc.ballstuff.shooting;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonPanelButtons;
@@ -14,8 +14,8 @@ import frc.motors.SparkMotorController;
 import frc.motors.TalonMotorController;
 import frc.robot.Robot;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.telemetry.AbstractRobotTelemetry;
 import frc.sensors.camera.IVision;
+import frc.telemetry.AbstractRobotTelemetry;
 
 import static frc.robot.Robot.*;
 

@@ -36,7 +36,6 @@ import frc.robot.robotconfigs.twentytwo.Swerve2022;
 import frc.selfdiagnostics.ISimpleIssue;
 import frc.selfdiagnostics.IssueHandler;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.sensors.BreakBeamSensor;
 import frc.sensors.camera.CameraViewer;
 import frc.sensors.camera.IVision;
 
