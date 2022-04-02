@@ -129,37 +129,10 @@ public class Climber implements ISubsystem {
                         }
                     }
                 }
-                if (joystick.get(ControllerEnums.JoystickButtons.TWELVE) == ButtonStatus.DOWN) {
+                if (joystick.get(ControllerEnums.JoystickButtons.TWELVE) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_UP) == ButtonStatus.DOWN) {
                     climberPiston(true);
-                } else if (joystick.get(ControllerEnums.JoystickButtons.ELEVEN) == ButtonStatus.DOWN) {
+                } else if (joystick.get(ControllerEnums.JoystickButtons.ELEVEN) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_DOWN) == ButtonStatus.DOWN) {
                     climberPiston(false);
-                }
-            }
-            break;
-            case OLD_STANDARD_2022: {
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN && !isLocked) {
-                    climberStg1.moveAtPercent(-0.8);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
-                    climberStg1.moveAtPercent(0.8);
-                } else {
-                    climberStg1.moveAtPercent(0);
-                }
-                /*if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
-                    climberStg2.moveAtPercent(0.8);
-                } else */
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.SECOND_STAGE_CLIMB) == ButtonStatus.DOWN) {
-                    climberStg2.moveAtPercent(-0.8);
-                    //climberLocks(true);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_3) == ButtonStatus.DOWN) {
-                    climberStg2.moveAtPercent(0.8);
-                } else {
-                    climberStg2.moveAtPercent(0);
-                }
-
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_2) == ButtonStatus.DOWN) {
-                    climberLocks(true);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.AUX_1) == ButtonStatus.DOWN) {
-                    climberLocks(false);
                 }
             }
             break;

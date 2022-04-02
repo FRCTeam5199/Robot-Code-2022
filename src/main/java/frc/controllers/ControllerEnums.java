@@ -341,7 +341,7 @@ public class ControllerEnums {
     }
 
     public enum ButtonPanelButtons2022 implements ControllerInterfaces.IDiscreteInput {
-        LOW_SHOT(1), INTAKE_DOWN(3), FAR_SHOT(4), TARMAC_SHOT(6), FENDER_SHOT(7), SECOND_STAGE_CLIMB(8), AUX_3(10), AUX_2(11), FIRST_STAGE_DOWN(12), FIRST_STAGE_UP(13), AUX_1(15), INTAKE_UP(16) ;
+        LOW_SHOT(1), INTAKE_UP(6), INTAKE_DOWN(11), FENDER_SHOT(2), TARMAC_SHOT(7), FAR_SHOT(12), PIVOT_PISTON_UP(10), PIVOT_PISTON_DOWN(9), AUX_3(13), AUX_2(14), AUX_1(15), AUX_4(8), AUX_5(3), FIRST_STAGE_DOWN(4), FIRST_STAGE_UP(5);
 
         public final int AXIS_VALUE;
 

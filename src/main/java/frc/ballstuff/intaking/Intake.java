@@ -149,10 +149,10 @@ public class Intake implements ISubsystem {
             }
             case ROBOT_2022_COMP:
                 if (robotSettings.ENABLE_BREAK_BEAM && robotSettings.ENABLE_INTAKE_RUMBLE_BREAK_BEAM) {
-                    xbox.rumble(0.5 * (intakeBreakBeam.isTriggered() ? 1 : 0));
+                    xbox.rumble(intakeBreakBeam.isTriggered() ? 1 : 0);
                 } else if (robotSettings.ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH) {
                     boolean rumble = leftSensor.isTriggered() || rightSensor.isTriggered();
-                    xbox.rumble(0.5 * (rumble ? 1 : 0));
+                    xbox.rumble(rumble ? 1 : 0);
                 }
             case ROBOT_2022_OLD: {
                 if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
@@ -214,7 +214,7 @@ public class Intake implements ISubsystem {
             case ROBOT_2022_COMP:
                 if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
                     deployIntake(false);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
                     deployIntake(true);
                 }
                 break;
