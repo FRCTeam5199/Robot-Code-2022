@@ -36,7 +36,7 @@ import static frc.robot.Robot.robotSettings;
  * @see RobotTelemetryStandard
  */
 public class DriveManagerStandard extends AbstractDriveManager {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     public final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(robotSettings.DRIVEBASE_DISTANCE_BETWEEN_WHEELS);
     private final NetworkTableEntry
             P = UserInterface.DRIVE_P.getEntry(),
@@ -659,7 +659,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
     }
 
     public void driveCringe(double forward, double rotation) {
-        double FPS = adjustedDrive(forward * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0));
+        double FPS = adjustedDrive(forward * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1));
         double omega = adjustedRotation(rotation);
         ChassisSpeeds cringChassis = new ChassisSpeeds(Units.feetToMeters(FPS), 0, omega);
         DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(cringChassis);

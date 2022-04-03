@@ -18,6 +18,7 @@ import frc.sensors.LimitSwitchSensor;
 import java.util.Objects;
 
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.*;
+import static frc.robot.Robot.intake;
 import static frc.robot.Robot.robotSettings;
 
 
@@ -103,6 +104,9 @@ public class Climber implements ISubsystem {
                     }
                     //climberStg1.moveAtPercent(-0.8);
                 } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
+                    if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INTAKE) {
+                        intake.deployIntake(false);
+                    }
                     if (!robotSettings.LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER) {
                         for (AbstractMotorController motor : climberMotors) {
                             motor.moveAtPercent(-1);
@@ -133,6 +137,9 @@ public class Climber implements ISubsystem {
                     climberPiston(true);
                 } else if (joystick.get(ControllerEnums.JoystickButtons.ELEVEN) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_DOWN) == ButtonStatus.DOWN) {
                     climberPiston(false);
+                    if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INTAKE) {
+                        intake.deployIntake(true);
+                    }
                 }
             }
             break;

@@ -163,7 +163,7 @@ public class Hopper implements ISubsystem {
      */
     public double indexerSensorRange() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            if (!robotSettings.ENABLE_BREAK_BEAM) {
+            if (!robotSettings.ENABLE_BREAK_BEAM && !robotSettings.ENABLE_INDEXER_BUTTON) {
                 return indexSensor.getDistance();
             } else {
                 return -3;
