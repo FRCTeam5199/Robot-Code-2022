@@ -206,6 +206,9 @@ public class AutonManager extends AbstractAutonManager {
                 case DRIVE_150:
                     specialActionComplete = drivingChild.rotateDegreesRight(150);
                     break;
+                case DRIVE_225:
+                    specialActionComplete = drivingChild.rotateDegreesRight(225);
+                    break;
                 case DRIVE_170:
                     specialActionComplete = drivingChild.rotateDegreesRight(170);
                     break;
@@ -221,11 +224,17 @@ public class AutonManager extends AbstractAutonManager {
                 case SHOOT_ALL_2022_FAR:
                     specialActionComplete = Robot.shooter.fireAmount2022(3, 2150);
                     break;
+                case SHOOT_ALL_2022_FAR_FRIAR:
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2350);
+                    break;
                 case SHOOT_ALL_2022_VERY_FAR:
                     specialActionComplete = Robot.shooter.fireAmount2022(6, 3150);
                     break;
                 case DRIVE_BACK_TIMED:
                     specialActionComplete = drivingChild.driveTimed(45, false);
+                    break;
+                case DRIVE_BACK_TIMED_FRIAR:
+                    specialActionComplete = drivingChild.driveTimed(15, false);
                     break;
                 case DRIVE_FORWARD_TIMED:
                     specialActionComplete = drivingChild.driveTimed(20*6, true);
@@ -241,6 +250,7 @@ public class AutonManager extends AbstractAutonManager {
                     setupNextPosition(b);
                     //attackPoint(b, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED);
                     specialActionComplete = false;
+                    ROT_PID.reset();
                 } else {
                     onFinish();
                 }

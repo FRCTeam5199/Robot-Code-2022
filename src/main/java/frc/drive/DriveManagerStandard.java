@@ -57,8 +57,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
     private boolean isFirstStageEnergySaverOn = false, isSecondStageEnergySaverOn = false;
     private int energySaverLevel = 0;
     private int ticksElapsed = 0;
-    private boolean rotating180 = false;
-    private double rotate180Goal;
+    private boolean rotating = false;
+    private double rotationGoal;
 
     public DriveManagerStandard() throws UnsupportedOperationException, InitializationFailureException {
         super();
@@ -607,38 +607,38 @@ public class DriveManagerStandard extends AbstractDriveManager {
     /**
      * @return true when done rotating
      */
-    public boolean rotateDegreesRight(int deg) {
-        if (!rotating180) {
-            rotating180 = true;
-            rotate180Goal = guidance.imu.relativeYaw() + deg;
+    public boolean rotateDegreesRight(double deg) {
+        if (!rotating) {
+            rotating = true;
+            rotationGoal = guidance.imu.relativeYaw() + deg;
         }
         //if not (continue rotating while not yet at our goal) or
         //if (stop rotating when we stop rotating because we reached our goal)
-        if (!(rotating180 = guidance.imu.relativeYaw() < rotate180Goal)) {
+        if (!(rotating = guidance.imu.relativeYaw() < rotationGoal)) {
             driveCringe(0, 0);
             TELEOP_AIMING_PID.reset();
         } else {
             //drivePure(0,1);
-            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((rotate180Goal - guidance.imu.relativeYaw())), 1));
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((rotationGoal - guidance.imu.relativeYaw())), 1));
         }
-        return !(rotating180);
+        return !(rotating);
     }
 
     public boolean rotateDegreesLeft(double deg) {
-        if (!rotating180) {
-            rotating180 = true;
-            rotate180Goal = guidance.imu.relativeYaw() - deg;
+        if (!rotating) {
+            rotating = true;
+            rotationGoal = guidance.imu.relativeYaw() - deg;
         }
         //if not (continue rotating while not yet at our goal) or
         //if (stop rotating when we stop rotating because we reached our goal)
-        if (!(rotating180 = guidance.imu.relativeYaw() > rotate180Goal)) {
+        if (!(rotating = guidance.imu.relativeYaw() > rotationGoal)) {
             driveCringe(0, 0);
             TELEOP_AIMING_PID.reset();
         } else {
             //drivePure(0,1);
-            driveCringe(0, -.5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((guidance.imu.relativeYaw()) - rotate180Goal), 1));
+            driveCringe(0, -.5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((guidance.imu.relativeYaw()) - rotationGoal), 1));
         }
-        return !(rotating180);
+        return !(rotating);
     }
 
     public boolean driveTimed(int ticks, boolean direction) {
@@ -648,7 +648,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 ticksElapsed = 0;
                 return true;
             } else {
-                drivePure(direction ? 1 : -1, 0);
+                driveCringe(direction ? 1 : -1, 0);
                 ticksElapsed++;
                 return false;
             }

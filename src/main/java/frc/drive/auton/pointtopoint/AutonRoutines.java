@@ -88,6 +88,21 @@ public enum AutonRoutines {
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
             new AutonWaypoint(SHOOT_ALL_2022_VERY_FAR)
     ),
+    FOUR_BALL_AUTON_FRIAR(
+            new AutonWaypoint(new Point(0, 0), INTAKE_DOWN),
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(2, 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_165_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(SHOOT_ALL_2022_FAR_FRIAR),
+            new AutonWaypoint(DRIVE_155),
+            new AutonWaypoint(new Point(7.1, -1.8), 1.77), //7.2 -1.35
+            new AutonWaypoint(DRIVE_BACK_TIMED_FRIAR),
+            new AutonWaypoint(DRIVE_135_REVERSE),
+            //new AutonWaypoint(DRIVE_225),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(SHOOT_ALL_2022_VERY_FAR)
+    ),
     /*
     PICKUP_ONE_DRIVE_SHOOT_TWO_DRIVE_2022(
             new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
