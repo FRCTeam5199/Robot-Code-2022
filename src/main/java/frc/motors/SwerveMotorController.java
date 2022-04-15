@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.jetbrains.annotations.Nullable;
 
+import static frc.robot.Robot.robotSettings;
+
 /**
  * A nice wrapper to hold a {@link #driver driving motor} and a {@link #steering steering motor}. Main util method is
  * {@link #getState()} which is used in {@link frc.telemetry.RobotTelemetrySwivel telem}
@@ -26,7 +28,7 @@ public class SwerveMotorController {
                     driver = new VictorMotorController(driverID);
                     break;
                 case TALON_FX:
-                    driver = new TalonMotorController(driverID);
+                    driver = new TalonMotorController(robotSettings.DRIVE_MOTOR_CANBUS, driverID);
                     break;
                 case CAN_SPARK_MAX:
                     driver = new SparkMotorController(driverID);
@@ -38,7 +40,7 @@ public class SwerveMotorController {
                     steering = new VictorMotorController(steeringID);
                     break;
                 case TALON_FX:
-                    steering = new TalonMotorController(steeringID);
+                    steering = new TalonMotorController(robotSettings.DRIVE_MOTOR_CANBUS, steeringID);
                     break;
                 case CAN_SPARK_MAX:
                     steering = new SparkMotorController(steeringID);

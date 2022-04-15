@@ -44,7 +44,7 @@ public class Hopper2020 implements ISubsystem {
                     agitator.setSensorToRealDistanceFactor(1);
                     break;
                 case TALON_FX:
-                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_CANBUS, robotSettings.AGITATOR_MOTOR_ID);
                     agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                     break;
                 case VICTOR:
@@ -61,7 +61,7 @@ public class Hopper2020 implements ISubsystem {
                     indexer.setSensorToRealDistanceFactor(1);
                     break;
                 case TALON_FX:
-                    indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
+                    indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_CANBUS, robotSettings.INDEXER_MOTOR_ID);
                     indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                     break;
                 case VICTOR:

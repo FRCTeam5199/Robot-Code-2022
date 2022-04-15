@@ -116,6 +116,19 @@ public abstract class DefaultConfig {
     public SupportedMotors CLIMBER_MOTOR_TYPE = SupportedMotors.VICTOR;
     public SupportedMotors CLIMBER_STG2_MOTOR_TYPE = SupportedMotors.TALON_FX;
     public SupportedMotors INTAKE_MOTOR_TYPE = SupportedMotors.VICTOR;
+    public String INTAKE_MOTOR_CANBUS = "rio";
+    public String CLIMBER_MOTOR_CANBUS = "rio";
+    public String SHOOTER_MOTOR_CANBUS = "rio";
+    public String SHOOTER_BACKSPIN_MOTOR_CANBUS = "rio";
+    public String TURRET_MOTOR_CANBUS = "rio";
+    public String HOOD_MOTOR_CANBUS = "rio";
+    public String HOPPER_MOTOR_CANBUS = "rio";
+    public String HOPPER_TOP_MOTOR_CANBUS = "rio";
+    public String AGITATOR_MOTOR_CANBUS = "rio";
+    public String DRIVE_MOTOR_CANBUS = "rio";
+    public String INDEXER_MOTOR_CANBUS = "rio";
+    public String IMU_CANBUS = "rio";
+
     public SupportedIMU IMU_TYPE = SupportedIMU.PIGEON;
     public AutonType AUTON_TYPE = AutonType.FOLLOW_PATH;
     public AutonRoutines DEFAULT_ROUTINE = AutonRoutines.DRIVE_OFF_INIT_LINE;

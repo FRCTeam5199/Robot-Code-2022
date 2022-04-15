@@ -211,7 +211,7 @@ public class Climber implements ISubsystem {
         double s2rfstg1 = 1;
         switch (robotSettings.CLIMBER_MOTOR_TYPE) {
             case TALON_FX: {
-                climberStg1 = new TalonMotorController(robotSettings.CLIMBER_STG1_MOTOR_ID);
+                climberStg1 = new TalonMotorController(robotSettings.CLIMBER_MOTOR_CANBUS, robotSettings.CLIMBER_STG1_MOTOR_ID);
                 s2rfstg1 = 600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
             }
             break;
@@ -232,7 +232,7 @@ public class Climber implements ISubsystem {
         double s2rfstg2 = 1;
         switch (robotSettings.CLIMBER_STG2_MOTOR_TYPE) {
             case TALON_FX: {
-                climberStg2 = new TalonMotorController(robotSettings.CLIMBER_STG2_MOTOR_ID);
+                climberStg2 = new TalonMotorController(robotSettings.CLIMBER_MOTOR_CANBUS, robotSettings.CLIMBER_STG2_MOTOR_ID);
                 s2rfstg2 = 600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
             }
             break;
@@ -259,7 +259,7 @@ public class Climber implements ISubsystem {
                     climberMotors[indexer] = new VictorMotorController(robotSettings.CLIMBER_MOTOR_IDS[indexer]);
                     break;
                 case TALON_FX:
-                    climberMotors[indexer] = new TalonMotorController(robotSettings.CLIMBER_MOTOR_IDS[indexer]);
+                    climberMotors[indexer] = new TalonMotorController(robotSettings.CLIMBER_MOTOR_CANBUS, robotSettings.CLIMBER_MOTOR_IDS[indexer]);
                     break;
                 case CAN_SPARK_MAX:
                     climberMotors[indexer] = new SparkMotorController(robotSettings.CLIMBER_MOTOR_IDS[indexer]);

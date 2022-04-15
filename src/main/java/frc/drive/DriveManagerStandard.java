@@ -466,10 +466,10 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 break;
             }
             case TALON_FX: {
-                leaderL = new TalonMotorController(robotSettings.DRIVE_LEADER_L_ID);
-                leaderR = new TalonMotorController(robotSettings.DRIVE_LEADER_R_ID);
-                followerL = new TalonFollowerMotorController(robotSettings.DRIVE_FOLLOWERS_L_IDS);
-                followerR = new TalonFollowerMotorController(robotSettings.DRIVE_FOLLOWERS_R_IDS);
+                leaderL = new TalonMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_LEADER_L_ID);
+                leaderR = new TalonMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_LEADER_R_ID);
+                followerL = new TalonFollowerMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_FOLLOWERS_L_IDS);
+                followerR = new TalonFollowerMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_FOLLOWERS_R_IDS);
                 //Sens units / 100ms <=> rps <=> gearing <=> wheel circumference
                 s2rf = (10.0 / robotSettings.DRIVEBASE_SENSOR_UNITS_PER_ROTATION) * robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI / 12);
                 break;

@@ -472,7 +472,7 @@ public class ArticulatedHood implements ISubsystem {
                 ((SparkMotorController) hoodMotor).setAllowedClosedLoopError(.01);
                 break;
             case TALON_FX:
-                hoodMotor = new TalonMotorController(robotSettings.SHOOTER_HOOD_ID);
+                hoodMotor = new TalonMotorController(robotSettings.HOOD_MOTOR_CANBUS, robotSettings.SHOOTER_HOOD_ID);
                 hoodMotor.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 break;
             default:

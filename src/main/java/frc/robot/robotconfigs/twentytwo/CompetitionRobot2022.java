@@ -190,5 +190,10 @@ public class CompetitionRobot2022 extends DefaultConfig {
         CALIBRATED_SHOOTER_RPM_ARRAY = new double[][]{ //hood down
                 //Distance (in), RPM
                 {23, 2200}, {35.89, 2200}, {83.63, 2400}, {100, 3000},};
+
+        DRIVE_MOTOR_CANBUS = "CANivore 1";
+        SHOOTER_BACKSPIN_MOTOR_CANBUS = "CANivore 1";
+        CLIMBER_MOTOR_CANBUS = "CANivore 1";
+        INTAKE_MOTOR_CANBUS = "CANivore 1";
     }
 }

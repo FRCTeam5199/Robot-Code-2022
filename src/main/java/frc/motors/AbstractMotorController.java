@@ -257,7 +257,7 @@ public abstract class AbstractMotorController {
      */
     public enum SupportedMotors {
         //Spark = Neo 550, Talon = Falcon 500, Victor = 775pros, Servo = whatever servo you put in. I didn't have a better place for this so it's here
-        CAN_SPARK_MAX(11710), TALON_FX(6380), VICTOR(18730), SERVO;
+        CAN_SPARK_MAX(11710), TALON_FX(6380), VICTOR(18730), SERVO, CANIVORE_TALON_FX, CANIVORE_VICTOR;
 
         /**
          * Read the name!
@@ -277,7 +277,9 @@ public abstract class AbstractMotorController {
                 case CAN_SPARK_MAX:
                     return new SparkFollowerMotorsController(followerIDs);
                 case TALON_FX:
-                    return new TalonFollowerMotorController(followerIDs);
+                    return new TalonFollowerMotorController("rio", followerIDs);
+                case CANIVORE_TALON_FX:
+                    return new TalonFollowerMotorController("CANivore 1", followerIDs);
                 case VICTOR:
                 case SERVO:
                 default:
@@ -290,9 +292,11 @@ public abstract class AbstractMotorController {
                 case CAN_SPARK_MAX:
                     return new SparkMotorController(ID);
                 case TALON_FX:
-                    return new TalonMotorController(ID);
+                    return new TalonMotorController("rio", ID);
                 case VICTOR:
                     return new VictorMotorController(ID);
+                case CANIVORE_TALON_FX:
+                    return new TalonMotorController("CANivore 1", ID);
                 case SERVO:
                 default:
                     throw new IllegalArgumentException("I cannot make a motor of type " + name());

@@ -332,7 +332,7 @@ public class Intake implements ISubsystem {
                 s2rf = 1;
                 break;
             case TALON_FX:
-                intakeMotor = new TalonMotorController(robotSettings.INTAKE_MOTOR_ID);
+                intakeMotor = new TalonMotorController(robotSettings.INTAKE_MOTOR_CANBUS, robotSettings.INTAKE_MOTOR_ID);
                 s2rf = 600.0 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
                 break;
             case VICTOR:

@@ -23,9 +23,9 @@ public class TalonMotorController extends AbstractMotorController {
     private final WPI_TalonFX motor;
     public boolean isFollower = false;
 
-    public TalonMotorController(int id) {
+    public TalonMotorController(String bus, int id) {
         super();
-        motor = new WPI_TalonFX(id);
+        motor = new WPI_TalonFX(id, bus);
         Chirp.talonMotorArrayList.add(this);
     }
 

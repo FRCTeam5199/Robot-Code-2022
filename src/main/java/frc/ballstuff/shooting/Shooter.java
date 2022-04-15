@@ -677,13 +677,13 @@ public class Shooter implements ISubsystem {
                 leader.setSensorToRealDistanceFactor(1);
                 break;
             case TALON_FX:
-                leader = new TalonMotorController(robotSettings.SHOOTER_LEADER_ID);
+                leader = new TalonMotorController(robotSettings.SHOOTER_MOTOR_CANBUS, robotSettings.SHOOTER_LEADER_ID);
                 if (robotSettings.SHOOTER_USE_TWO_MOTORS) {
-                    follower = new TalonMotorController(robotSettings.SHOOTER_FOLLOWER_ID);
+                    follower = new TalonMotorController(robotSettings.SHOOTER_MOTOR_CANBUS, robotSettings.SHOOTER_FOLLOWER_ID);
                     follower.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 }
                 if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
-                    backSpin = new TalonMotorController(robotSettings.BACKSPIN_ID);
+                    backSpin = new TalonMotorController(robotSettings.SHOOTER_BACKSPIN_MOTOR_CANBUS, robotSettings.BACKSPIN_ID);
                     backSpin.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 }
                 leader.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
