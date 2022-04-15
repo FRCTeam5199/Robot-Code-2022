@@ -27,7 +27,7 @@ public class CompetitionRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
         ENABLE_INTAKE_RUMBLE_BREAK_BEAM = false;
-        ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH = true;
+        ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH =false;
         ENABLE_PNOOMATICS = true;
         ENABLE_INDEXER_AUTO_INDEX = true;
         ENABLE_IMU = true;

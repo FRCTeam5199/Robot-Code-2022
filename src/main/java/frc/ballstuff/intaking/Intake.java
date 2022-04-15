@@ -104,6 +104,7 @@ public class Intake implements ISubsystem {
             UserInterface.smartDashboardPutNumber("Intake Speed", intakeMult);
         }
         double speed;
+        long RumbleCountdownEnd = 0;
         switch (robotSettings.INTAKE_CONTROL_STYLE) {
             case FLIGHT_STICK:
             case STANDARD:
@@ -152,7 +153,16 @@ public class Intake implements ISubsystem {
                     xbox.rumble(intakeBreakBeam.isTriggered() ? 1 : 0);
                 } else if (robotSettings.ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH) {
                     boolean rumble = leftSensor.isTriggered() || rightSensor.isTriggered();
-                    xbox.rumble(rumble ? 1 : 0);
+                    //xbox.rumble(rumble ? 1 : 0);
+                    if (rumble) {
+                        RumbleCountdownEnd = System.currentTimeMillis() + 500;
+                    }
+                    if (RumbleCountdownEnd >= System.currentTimeMillis()) {
+                        xbox.rumble(1);
+                    } else {
+                        xbox.rumble(0);
+                    }
+
                 }
             case ROBOT_2022_OLD: {
                 if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {

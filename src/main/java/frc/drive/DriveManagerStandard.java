@@ -570,7 +570,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
             if (isAligned) TELEOP_AIMING_PID.reset();
             return isAligned;
         } else {
-            return true;
+            return false;
             //driveCringe(0, .75);
             //return false;
         }
@@ -585,7 +585,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
             if (isAligned) TELEOP_AIMING_PID.reset();
             return isAligned;
         } else {
-            return true;
+            return false;
             //driveCringe(0, .75);
             //return false;
         }
