@@ -31,6 +31,15 @@ public interface IVision extends ISubsystem {
         }
     }
 
+    static IVision manufactureBallCamera(SupportedVision cameraType) {
+        switch (cameraType) {
+            case LIMELIGHT:
+                return GamepieceLimelight.GAMEPIECE_LIME_LIGHT;
+            default:
+                throw new IllegalStateException("You must have a camera type set.");
+        }
+    }
+
     /**
      * Returns the angle between the camera and the object
      *

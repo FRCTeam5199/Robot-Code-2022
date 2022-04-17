@@ -52,7 +52,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
     private BaseController controller;
     private PID lastPID = PID.EMPTY_PID;
     private boolean ballShifterEnabled = false;
-    public IVision visionCamera;
+    public IVision visionCamera, ballCamera;
     private PIDController TELEOP_AIMING_PID, AUTON_AIMING_PID;
     private boolean isFirstStageEnergySaverOn = false, isSecondStageEnergySaverOn = false;
     private int energySaverLevel = 0;
@@ -78,6 +78,8 @@ public class DriveManagerStandard extends AbstractDriveManager {
         createTelem();
         if (robotSettings.ENABLE_VISION) {
             visionCamera = IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE);
+            if (robotSettings.ENABLE_DRIVE_BALL_TRACKING)
+                ballCamera = IVision.manufactureGoalCamera(robotSettings.BALL_CAMERA_TYPE);
         }
     }
 
@@ -150,7 +152,13 @@ public class DriveManagerStandard extends AbstractDriveManager {
                         neededRot = controller.get(XboxAxes.RIGHT_JOY_X);
                     }
                     driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y)), -neededRot * dynamic_gear_R);
-                } else {
+                } else if (robotSettings.ENABLE_VISION && robotSettings.ENABLE_DRIVE_BALL_TRACKING && controller.get(XboxAxes.LEFT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
+                    if (ballCamera.hasValidTarget()) {
+                        double dist = Math.min(1.0, Math.abs(ballCamera.getAngle())) * (ballCamera.getAngle() > 0 ? 1 : -1); //slow on approach, add correct invert
+                        aimAtTargetPitch(dist, ballCamera);
+                    }
+                }
+                else {
                     if (robotSettings.ENABLE_VISION)
                         visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
                     driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
@@ -576,6 +584,19 @@ public class DriveManagerStandard extends AbstractDriveManager {
         }
     }
 
+    public boolean aimAtTargetPitch(double speed, IVision visionCamera) {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            driveCringe(speed, -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch())));
+            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 30;
+            //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) TELEOP_AIMING_PID.reset();
+            return isAligned;
+        } else {
+            return true;
+        }
+    }
+
     public boolean aimAtTargetYaw() {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
@@ -588,6 +609,19 @@ public class DriveManagerStandard extends AbstractDriveManager {
             return false;
             //driveCringe(0, .75);
             //return false;
+        }
+    }
+
+    public boolean aimAtTargetYaw(double speed, IVision visionCamera) {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            driveCringe(speed, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle())));
+            boolean isAligned = Math.abs(visionCamera.getAngle()) <= (robotSettings.AUTON_TOLERANCE * 25);
+            System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) TELEOP_AIMING_PID.reset();
+            return isAligned;
+        } else {
+            return true;
         }
     }
 

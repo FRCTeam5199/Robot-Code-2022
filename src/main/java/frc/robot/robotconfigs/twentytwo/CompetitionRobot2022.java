@@ -18,6 +18,7 @@ import static frc.motors.AbstractMotorController.SupportedMotors;
 public class CompetitionRobot2022 extends DefaultConfig {
     public CompetitionRobot2022() {
         ENABLE_DRIVE = true;
+        ENABLE_DRIVE_BALL_TRACKING = true;
         ENABLE_SHOOTER = true;
         ENABLE_SHOOTER_BACKSPIN = true;
         ENABLE_HOPPER = true;

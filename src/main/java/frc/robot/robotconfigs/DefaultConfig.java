@@ -35,6 +35,7 @@ public abstract class DefaultConfig {
     public boolean autonComplete = false;
     //Subsystems
     public boolean ENABLE_DRIVE = false;
+    public boolean ENABLE_DRIVE_BALL_TRACKING = false;
     public boolean ENABLE_BALL_SHIFTERS = false;
     public boolean ENABLE_INTAKE = false;
     public boolean ENABLE_SHOOTER = false;
@@ -87,6 +88,7 @@ public abstract class DefaultConfig {
     public boolean SHOOTER_INVERTED = true;
     public boolean ENABLE_SHOOTER_BACKSPIN = false;
     public IVision.SupportedVision GOAL_CAMERA_TYPE = IVision.SupportedVision.PHOTON;
+    public IVision.SupportedVision BALL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
 
     //INTAKE
     public boolean ENABLE_INDEXER_AUTO_INDEX = true;

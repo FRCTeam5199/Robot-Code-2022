@@ -344,6 +344,7 @@ public class Intake implements ISubsystem {
         }
         intakeMotor.setSensorToRealDistanceFactor(s2rf);
         intakeMotor.setInverted(robotSettings.INTAKE_INVERT_MOTOR);
+        intakeMotor.setBrake(false);
     }
 
 
