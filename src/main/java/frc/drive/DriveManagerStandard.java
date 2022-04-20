@@ -397,7 +397,6 @@ public class DriveManagerStandard extends AbstractDriveManager {
     public void driveFPS(double leftFPS, double rightFPS) {
         //todo get rid of this
         double gearRatio = 28.6472 * 12;
-        if (/*robotSettings.DEBUG &&*/ DEBUG) {
         if (robotSettings.DEBUG && DEBUG) {
             System.out.println("FPS: " + leftFPS + "  " + rightFPS + " (" + gearRatio + ")");
             UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
@@ -617,7 +616,6 @@ public class DriveManagerStandard extends AbstractDriveManager {
         }
     }
 
-<<<<<<< Updated upstream
     public boolean aimAtTargetYaw(double speed, IVision visionCamera) {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
@@ -629,14 +627,13 @@ public class DriveManagerStandard extends AbstractDriveManager {
         } else {
             return true;
         }
-=======
+
     public static double angleBound(double distanceFromTarget) {
         final double radiusOfTargetIn = 48.0 / 2;
         final double ballSize = 9.5;
         final double distanceSpread = radiusOfTargetIn - (ballSize * 1.5);
         double angleBoundInRadians = Math.atan(distanceSpread / distanceFromTarget);
         return Math.toDegrees(angleBoundInRadians);
->>>>>>> Stashed changes
     }
 
     public boolean aimAtTargetYawOffsetRight() {
