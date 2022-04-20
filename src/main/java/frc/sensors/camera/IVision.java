@@ -89,7 +89,7 @@ public interface IVision extends ISubsystem {
      * @return the distance in inches from the target
      */
     default double getDistanceUsingPitch() {
-        double angleToGoalDegrees = robotSettings.CAMERA_ANGLE + getPitch();
+        double angleToGoalDegrees = robotSettings.CAMERA_ANGLE - getPitch();
         double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
         return (robotSettings.TARGET_HEIGHT - robotSettings.CAMERA_HEIGHT) / Math.tan(angleToGoalRadians);
     }
@@ -101,7 +101,7 @@ public interface IVision extends ISubsystem {
      * @return the distance in inches from the target
      */
     default double getDistanceUsingYaw() {
-        double angleToGoalDegrees = robotSettings.CAMERA_ANGLE + getAngle();
+        double angleToGoalDegrees = (getAngle() + 25) - robotSettings.CAMERA_ANGLE;
         double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
         return (robotSettings.TARGET_HEIGHT - robotSettings.CAMERA_HEIGHT) / Math.tan(angleToGoalRadians);
     }

@@ -58,7 +58,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022(shooter -> {
-        double rpm = 2200;
+        double rpm = 2250;
         //"hood up and tarmack whatever fender is" -Morganne 19:13 3/27/2022
         //2200 rpm Morganne 19:19 3/27/2022
         shooter.setSpeed(rpm, true);
@@ -72,7 +72,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_FAR_2022(shooter -> {
-        double rpm = 2550;
+        double rpm = 2725;
         //change it to 2800 Morganne 3/21/22 23:03
         //now 2700 Morganne/Rick 3/21/22 23:09
         shooter.setSpeed(rpm, true);

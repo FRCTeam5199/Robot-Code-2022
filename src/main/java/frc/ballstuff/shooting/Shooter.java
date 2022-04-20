@@ -66,7 +66,7 @@ public class Shooter implements ISubsystem {
     private PID lastPID = PID.EMPTY_PID;
     private PID backspinLastPID = PID.EMPTY_PID;
     public double backspinMult = 1.625;
-    private double distanceFromGoal = 0;
+    public double distanceFromGoal = 0;
 
     public Shooter() {
         addToMetaList();
@@ -247,7 +247,7 @@ public class Shooter implements ISubsystem {
                     case COMP_2022:
                     case STANDARD_2022:
                     case PRACTICE_2022:
-                        distanceFromGoal = goalCamera.getDistanceUsingYaw();
+                        distanceFromGoal = goalCamera.getDistanceUsingPitch();
                         break;
                     case STANDARD_OFFSEASON_2021:
                         distanceFromGoal = goalCamera.getDistanceUsingPitch();

@@ -84,9 +84,9 @@ public class CompetitionRobot2022 extends DefaultConfig {
         //DRIVEBASE_PID = new PID(0.001, 0, 0, 0.00025); //new PID(0.0025, 0.0, 0.0);
         //HEADING_PID = new PID(0.01, 0, 0); new PID(0.15, 0.000, 0.02);//
         DRIVEBASE_PID = new PID(0.002, 0, 0.005, 0.00025);
-        HEADING_PID = new PID(0.085, 0.000, 0.0015);
-        TELEOP_AIMING_PID = new PID(0.005, 0.00001, 0.0005);
-        AUTON_AIMING_PID = new PID(0.02, 0.000005, 0.0005);
+        HEADING_PID = new PID(0.057, 0.000, 0.001);
+        TELEOP_AIMING_PID = new PID(0.0029, 0.00001, 0.0006);
+        AUTON_AIMING_PID = new PID(0.0043, 0.00001, 0.0005818);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
         CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         DRIVEBASE_DISTANCE_BETWEEN_WHEELS = 0.524891;
@@ -184,13 +184,18 @@ public class CompetitionRobot2022 extends DefaultConfig {
         HOOD_ARTICULATOR_OUT_ID = 5;
 
         //target distance tracking
-        CAMERA_HEIGHT = 27.75; //inches
-        CAMERA_ANGLE = 46.44579639;//48.0; //degrees
-        TARGET_HEIGHT = 101.5; //Our field sucks. COMP: 104.0" (in inches)
+        CAMERA_HEIGHT = 31; //inches
+        CAMERA_ANGLE = 35.9;//48.0; //degrees
+        TARGET_HEIGHT = 104; //Our field sucks. COMP: 104.0" (in inches)
+        ENABLE_SHOOTER_RPM_ARTICULATION = false;
         ENABLE_SHOOTER_RPM_ARTICULATION = false;
         CALIBRATED_SHOOTER_RPM_ARRAY = new double[][]{ //hood down
                 //Distance (in), RPM
-                {23, 2200}, {35.89, 2200}, {83.63, 2400}, {100, 3000},};
+                {23, 2200},
+                {35.89, 2200},
+                {83.63, 2400},
+                {100, 3000}
+        };
 
         DRIVE_MOTOR_CANBUS = "CANivore 1";
         SHOOTER_BACKSPIN_MOTOR_CANBUS = "CANivore 1";

@@ -60,10 +60,10 @@ public class QuoteOfTheDay {
             "Sterling: I love my job! \nBrandon: That's a lie.",
             "Teddy, make your intake lighter.",
             "If in doubt, comment it out",
-            "Laugh less. Bu hao more.",
+            "Sterling: Laugh less. Bu hao more.",
             "I can't connect to the robot if you don't turn it on...",
             "Sterling: Can the name on my hoodie be \"Pro 'grammer\"\nTeddy: I don’t think they can do thinking like ‘",
-            "Where's discipline? I need to teach the freshman a lesson.",
+            "Sterling: Where's discipline? I need to teach the freshman a lesson.",
             "Teddy: Idk they obviously can’t read\nStryker: Bro you're so mean\nTeddy: Nvm he can read",
             "Sterling: Someone fried my RIO ports\nBrandon: Just like someone fried my teensy?",
             "Alex: I don't talk to the press",
@@ -73,8 +73,10 @@ public class QuoteOfTheDay {
             "Rick: Teddy's just tall, that's it",
             "Ali: Try blowing on [the ethernet cable] (to fix it)",
             "Stryker: Considering my age and size I'm pretty bulked",
-            "Here in soviet programmer fun time land, you do not turn robot; robot turns you.",
-            "Ah I'm bleeding, it's probably fine - everyone"
+            "Sterling: Here in soviet programmer fun time land, you do not turn robot; robot turns you.",
+            "Ah I'm bleeding, it's probably fine - everyone",
+            "Sterling: You did it so well that you out human-played yourself.",
+            "Alex: That's brutal"
     };
 
     /**

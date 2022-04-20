@@ -398,6 +398,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         //todo get rid of this
         double gearRatio = 28.6472 * 12;
         if (/*robotSettings.DEBUG &&*/ DEBUG) {
+        if (robotSettings.DEBUG && DEBUG) {
             System.out.println("FPS: " + leftFPS + "  " + rightFPS + " (" + gearRatio + ")");
             UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
             UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
@@ -600,10 +601,14 @@ public class DriveManagerStandard extends AbstractDriveManager {
     public boolean aimAtTargetYaw() {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
-            driveCringe(0, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle())));
-            boolean isAligned = Math.abs(visionCamera.getAngle()) <= (robotSettings.AUTON_TOLERANCE * 25);
-            System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
-            if (isAligned) TELEOP_AIMING_PID.reset();
+            double rotationInRadians = adjustedRotation(AUTON_AIMING_PID.calculate(visionCamera.getAngle()));
+            driveCringe(0, rotationInRadians);
+            double angleOffBound = (robotSettings.TARGET_HEIGHT == 0 ?
+                    (robotSettings.AUTON_TOLERANCE * 20) :
+                    angleBound(shooter.distanceFromGoal));
+            boolean isAligned = Math.abs(visionCamera.getAngle()) <= angleOffBound;  // 25 arctan(distance spread from center in inches / distFromTarget in inches + dia/2 in inches)
+            System.out.println("Am I aligned? " + (isAligned ? "yes, offset = " + visionCamera.getAngle() + " & bound = " + angleOffBound : "no, angle off = " + visionCamera.getAngle() + ", rot = " + rotationInRadians + ", bound = " + angleOffBound));
+            if (isAligned) AUTON_AIMING_PID.reset();
             return isAligned;
         } else {
             return false;
@@ -612,6 +617,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         }
     }
 
+<<<<<<< Updated upstream
     public boolean aimAtTargetYaw(double speed, IVision visionCamera) {
         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
         if (visionCamera.hasValidTarget()) {
@@ -623,6 +629,14 @@ public class DriveManagerStandard extends AbstractDriveManager {
         } else {
             return true;
         }
+=======
+    public static double angleBound(double distanceFromTarget) {
+        final double radiusOfTargetIn = 48.0 / 2;
+        final double ballSize = 9.5;
+        final double distanceSpread = radiusOfTargetIn - (ballSize * 1.5);
+        double angleBoundInRadians = Math.atan(distanceSpread / distanceFromTarget);
+        return Math.toDegrees(angleBoundInRadians);
+>>>>>>> Stashed changes
     }
 
     public boolean aimAtTargetYawOffsetRight() {
@@ -682,7 +696,22 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 ticksElapsed = 0;
                 return true;
             } else {
-                driveCringe(direction ? 1 : -1, 0);
+                driveCringe(direction ? -1 : 1, 0);
+                ticksElapsed++;
+                return false;
+            }
+        } else {
+            ticksElapsed = 1;
+            return false;
+        }
+    }
+
+    public boolean wait(int ticks){
+        if (ticksElapsed > 0) {
+            if (ticksElapsed >= ticks) {
+                ticksElapsed = 0;
+                return true;
+            } else {
                 ticksElapsed++;
                 return false;
             }

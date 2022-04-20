@@ -167,8 +167,8 @@ public class AutonManager extends AbstractAutonManager {
                 case DRIVE_137_REVERSE:
                     specialActionComplete = drivingChild.rotateDegreesLeft(137);
                     break;
-                case DRIVE_155_REVERSE:
-                    specialActionComplete = drivingChild.rotateDegreesLeft(155);
+                case DRIVE_165_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(165);
                     break;
                 case DRIVE_160_REVERSE:
                     specialActionComplete = drivingChild.rotateDegreesLeft(160);
@@ -176,8 +176,8 @@ public class AutonManager extends AbstractAutonManager {
                 case DRIVE_180_REVERSE:
                     specialActionComplete = drivingChild.rotateDegreesLeft(180);
                     break;
-                case DRIVE_165_REVERSE:
-                    specialActionComplete = drivingChild.rotateDegreesLeft(165);
+                case DRIVE_130_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(130);
                     break;
                 case DRIVE_135_REVERSE:
                     specialActionComplete = drivingChild.rotateDegreesLeft(135);
@@ -203,8 +203,8 @@ public class AutonManager extends AbstractAutonManager {
                 case DRIVE_10:
                     specialActionComplete = drivingChild.rotateDegreesRight(10);
                     break;
-                case DRIVE_150:
-                    specialActionComplete = drivingChild.rotateDegreesRight(150);
+                case DRIVE_70:
+                    specialActionComplete = drivingChild.rotateDegreesRight(70);
                     break;
                 case DRIVE_225:
                     specialActionComplete = drivingChild.rotateDegreesRight(225);
@@ -216,28 +216,34 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = drivingChild.rotateDegreesRight(174);
                     break;
                 case SHOOT_ALL_2022_FURTHER:
-                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2450);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2400);
                     break;
                 case SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE:
-                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2300);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2100);
                     break;
                 case SHOOT_ALL_2022_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(2.2, 2350);
+                    specialActionComplete = Robot.shooter.fireAmount2022(2.0, 2275);
                     break;
                 case SHOOT_ALL_2022_FAR_FRIAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2350);
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2300);
                     break;
                 case SHOOT_ALL_2022_VERY_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(6, 3450);
+                    specialActionComplete = Robot.shooter.fireAmount2022(6, 3157);
+                    break;
+                case SHOOT_ALL_2022_NOT_FAR_ENOUGH:
+                    specialActionComplete = Robot.shooter.fireAmount2022(6, 2800);
                     break;
                 case DRIVE_BACK_TIMED:
-                    specialActionComplete = drivingChild.driveTimed(47, false);
+                    specialActionComplete = drivingChild.driveTimed(100, false);
+                    break;
+                case WAIT_ONE:
+                    specialActionComplete = drivingChild.wait(50);
                     break;
                 case DRIVE_BACK_TIMED_FRIAR:
                     specialActionComplete = drivingChild.driveTimed(15, false);
                     break;
                 case DRIVE_FORWARD_TIMED:
-                    specialActionComplete = drivingChild.driveTimed(20*6, true);
+                    specialActionComplete = drivingChild.driveTimed(75, true);
                     break;
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
@@ -289,6 +295,7 @@ public class AutonManager extends AbstractAutonManager {
             drivingChild.drivePure(robotSettings.AUTO_SPEED * speed /* (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0)*/, ROT_PID.calculate(targetHeading) * -robotSettings.AUTO_ROTATION_SPEED);
         } else {
             drivingChild.drivePure(0, 0);
+            if (robotSettings.DEBUG)
             System.out.println("In tolerance.");
             //System.out.println("Driving FPS " + 0);
         }
