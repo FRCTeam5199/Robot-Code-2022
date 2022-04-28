@@ -58,7 +58,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022(shooter -> {
-        double rpm = 2250;
+        double rpm = 2225;
         //"hood up and tarmack whatever fender is" -Morganne 19:13 3/27/2022
         //2200 rpm Morganne 19:19 3/27/2022
         shooter.setSpeed(rpm, true);
@@ -72,7 +72,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_FAR_2022(shooter -> {
-        double rpm = 2725;
+        double rpm = 2650;
         //change it to 2800 Morganne 3/21/22 23:03
         //now 2700 Morganne/Rick 3/21/22 23:09
         shooter.setSpeed(rpm, true);
@@ -335,7 +335,30 @@ public enum ShootingEnums {
                 hopper.setAll(false);
             }
         }
-    }), FIRE_TIMED(shooter -> {
+    }),
+    FIRE_TIMED_2022_SPIN(shooter -> {
+        if (robotSettings.SHOOTER_CONTROL_STYLE == Shooter.ShootingControlStyles.BACKSPIN_SHOOT_2022 || robotSettings.SHOOTER_CONTROL_STYLE == Shooter.ShootingControlStyles.COMP_2022) {
+            shooter.setSpeed(shooter.speed, shooter.speed * 1);
+        } else {
+            shooter.setSpeed(shooter.speed);
+        }
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_HOOD_PISTON)
+            pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
+        if (shooter.getSpeed() >= (shooter.speed * 0.95)) {
+            shooter.timerTicks++;
+            if(shooter.timerTicks >= 20)
+                hopper.setAll(true);
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK && (shooter.timerTicks >= 30))
+                pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kReverse);
+            if (shooter.timerTicks >= shooter.goalTicks) {
+                shooter.multiShot = false;
+                if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                    pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
+                hopper.setAll(false);
+            }
+        }
+    }),
+    FIRE_TIMED(shooter -> {
         shooter.setSpeed(4200);
         if (Shooter.DEBUG) {
             System.out.println("Balls shot: " + shooter.ballsShot);

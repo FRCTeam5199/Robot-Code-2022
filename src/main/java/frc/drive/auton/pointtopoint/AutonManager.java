@@ -23,6 +23,7 @@ public class AutonManager extends AbstractAutonManager {
     public boolean specialActionComplete = false;
     public double yawBeforeTurn = 0, rotationOffset = 0.01;
     private boolean isInTolerance = false;
+    private boolean isAiming = false;
 
     public AutonManager(AutonRoutines routine, AbstractDriveManager driveManager) {
         super(driveManager);
@@ -87,6 +88,9 @@ public class AutonManager extends AbstractAutonManager {
         if (autonPath.currentWaypoint >= autonPath.WAYPOINTS.size())
             return;
         updateGeneric();
+        if (isAiming){
+            drivingChild.aimAtTargetYaw();
+        }
         System.out.println("Home is: " + autonPath.WAYPOINTS.get(0).LOCATION + " and im going to " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION));
         Point point = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION);
         if (attackPoint(point, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED) || isInTolerance) {
@@ -153,7 +157,12 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = drivingChild.aimAtTargetPitch();
                     break;
                 case AIM_ROBOT_AT_TARGET_YAW:
-                    specialActionComplete = drivingChild.aimAtTargetYaw();
+                    isAiming = true;
+                    specialActionComplete = true;
+                    break;
+                case AIM_ROBOT_AT_TARGET_YAW_STOP:
+                    isAiming = false;
+                    specialActionComplete = true;
                     break;
                 case AIM_ROBOT_AT_TARGET_YAW_OFFSET_RIGHT:
                     specialActionComplete = drivingChild.aimAtTargetYawOffsetRight();
@@ -216,19 +225,19 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = drivingChild.rotateDegreesRight(174);
                     break;
                 case SHOOT_ALL_2022_FURTHER:
-                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2400);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2350);
                     break;
                 case SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE:
-                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2100);
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2250);
                     break;
                 case SHOOT_ALL_2022_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(2.0, 2275);
+                    specialActionComplete = Robot.shooter.fireAmount2022(2.0, 2300);
                     break;
                 case SHOOT_ALL_2022_FAR_FRIAR:
                     specialActionComplete = Robot.shooter.fireAmount2022(3, 2300);
                     break;
                 case SHOOT_ALL_2022_VERY_FAR:
-                    specialActionComplete = Robot.shooter.fireAmount2022(6, 3157);
+                    specialActionComplete = Robot.shooter.fireAmount2022Spin(6, 3900);
                     break;
                 case SHOOT_ALL_2022_NOT_FAR_ENOUGH:
                     specialActionComplete = Robot.shooter.fireAmount2022(6, 2800);
@@ -238,6 +247,9 @@ public class AutonManager extends AbstractAutonManager {
                     break;
                 case WAIT_ONE:
                     specialActionComplete = drivingChild.wait(50);
+                    break;
+                case WAIT_HALF:
+                    specialActionComplete = drivingChild.wait(25);
                     break;
                 case DRIVE_BACK_TIMED_FRIAR:
                     specialActionComplete = drivingChild.driveTimed(15, false);

@@ -401,62 +401,56 @@ public class DriveManagerStandard extends AbstractDriveManager {
             System.out.println("FPS: " + leftFPS + "  " + rightFPS + " (" + gearRatio + ")");
             UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
             UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
-            if (/*robotSettings.DEBUG &&*/ DEBUG) {
-                if (robotSettings.DEBUG && DEBUG) {
-                    System.out.println("FPS: " + leftFPS + "  " + rightFPS + " (" + gearRatio + ")");
-                    UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
-                    UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
-                }
-                UserInterface.smartDashboardPutNumber("leftFPS feedy BOI", (leftFPS));
-                UserInterface.smartDashboardPutNumber("leftFPS magic number", (leftFPS) * gearRatio * robotSettings.DRIVE_SCALE);
-                leaderL.moveAtVelocity((leftFPS) * gearRatio * robotSettings.DRIVE_SCALE);
-                leaderR.moveAtVelocity((rightFPS) * gearRatio * robotSettings.DRIVE_SCALE);
-            }
         }
+        UserInterface.smartDashboardPutNumber("leftFPS feedy BOI", (leftFPS));
+        UserInterface.smartDashboardPutNumber("leftFPS magic number", (leftFPS) * gearRatio * robotSettings.DRIVE_SCALE);
+        leaderL.moveAtVelocity((leftFPS) * gearRatio * robotSettings.DRIVE_SCALE);
+        leaderR.moveAtVelocity((rightFPS) * gearRatio * robotSettings.DRIVE_SCALE);
     }
-        /**
-         * drives the robot based on -1 / 1 inputs (ie 100% forward and 100% turning)
-         *
-         * @param forward  the percentage of max forward to do
-         * @param rotation the percentage of max turn speed to do
-         */
-        public void drive ( double forward, double rotation){
-            drivePure(adjustedDrive(forward * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0)), adjustedRotation(rotation));
-        }
 
-        public void drivePercent ( double leftPercent, double rightPercent){
-            leaderL.moveAtPercent(leftPercent);
-            leaderR.moveAtPercent(rightPercent);
-        }
+    /**
+     * drives the robot based on -1 / 1 inputs (ie 100% forward and 100% turning)
+     *
+     * @param forward  the percentage of max forward to do
+     * @param rotation the percentage of max turn speed to do
+     */
+    public void drive(double forward, double rotation) {
+        drivePure(adjustedDrive(forward * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0)), adjustedRotation(rotation));
+    }
 
-        /**
-         * This takes a speed in feet per second, a requested turn speed in radians/sec
-         *
-         * @param FPS   Speed in Feet per Second
-         * @param omega Rotation in Radians per Second
-         */
-        public void drivePure ( double FPS, double omega){
-            driveWithChassisSpeeds(new ChassisSpeeds(Units.feetToMeters(FPS), 0, omega));
-        }
+    public void drivePercent(double leftPercent, double rightPercent) {
+        leaderL.moveAtPercent(leftPercent);
+        leaderR.moveAtPercent(rightPercent);
+    }
 
-        /**
-         * Drives the bot based on the requested left and right speed
-         *
-         * @param leftMPS  Left drivetrain speed in meters per second
-         * @param rightMPS Right drivetrain speed in meters per second
-         */
-        public void driveMPS ( double leftMPS, double rightMPS){
-            driveFPS(Units.metersToFeet(leftMPS), Units.metersToFeet(rightMPS));
-        }
+    /**
+     * This takes a speed in feet per second, a requested turn speed in radians/sec
+     *
+     * @param FPS   Speed in Feet per Second
+     * @param omega Rotation in Radians per Second
+     */
+    public void drivePure(double FPS, double omega) {
+        driveWithChassisSpeeds(new ChassisSpeeds(Units.feetToMeters(FPS), 0, omega));
+    }
 
-        /**
-         * Creates the drive motors
-         *
-         * @throws InitializationFailureException When follower drive motors fail to link to leaders or when leader
-         *                                        drivetrain motors fail to invert
-         */
-        private void createDriveMotors () throws InitializationFailureException {
-            double s2rf;
+    /**
+     * Drives the bot based on the requested left and right speed
+     *
+     * @param leftMPS  Left drivetrain speed in meters per second
+     * @param rightMPS Right drivetrain speed in meters per second
+     */
+    public void driveMPS(double leftMPS, double rightMPS) {
+        driveFPS(Units.metersToFeet(leftMPS), Units.metersToFeet(rightMPS));
+    }
+
+    /**
+     * Creates the drive motors
+     *
+     * @throws InitializationFailureException When follower drive motors fail to link to leaders or when leader
+     *                                        drivetrain motors fail to invert
+     */
+    private void createDriveMotors() throws InitializationFailureException {
+        double s2rf;
         /*
         leaderL = robotSettings.DRIVE_MOTOR_TYPE.createMotorOfType(robotSettings.DRIVE_LEADER_L_ID);
         leaderR = robotSettings.DRIVE_MOTOR_TYPE.createMotorOfType(robotSettings.DRIVE_LEADER_R_ID);
@@ -467,288 +461,283 @@ public class DriveManagerStandard extends AbstractDriveManager {
         leaderL.setSensorToRealDistanceFactor(robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI));
         leaderR.setSensorToRealDistanceFactor(robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI));
 */
-            //this is what it used to be. in case of emergency, rollback changes
-            // todo remove this
-            switch (robotSettings.DRIVE_MOTOR_TYPE) {
-                case CAN_SPARK_MAX: {
-                    leaderL = new SparkMotorController(robotSettings.DRIVE_LEADER_L_ID);
-                    leaderR = new SparkMotorController(robotSettings.DRIVE_LEADER_R_ID);
-                    followerL = new SparkFollowerMotorsController(robotSettings.DRIVE_FOLLOWERS_L_IDS);
-                    followerR = new SparkFollowerMotorsController(robotSettings.DRIVE_FOLLOWERS_R_IDS);
-                    //rpm <=> rps <=> gearing <=> wheel circumference
-                    s2rf = robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI);
-                    break;
-                }
-                case TALON_FX: {
-                    leaderL = new TalonMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_LEADER_L_ID);
-                    leaderR = new TalonMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_LEADER_R_ID);
-                    followerL = new TalonFollowerMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_FOLLOWERS_L_IDS);
-                    followerR = new TalonFollowerMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_FOLLOWERS_R_IDS);
-                    //Sens units / 100ms <=> rps <=> gearing <=> wheel circumference
-                    s2rf = (10.0 / robotSettings.DRIVEBASE_SENSOR_UNITS_PER_ROTATION) * robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI / 12);
-                    break;
-                }
-                default:
-                    throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
+        //this is what it used to be. in case of emergency, rollback changes
+        // todo remove this
+        switch (robotSettings.DRIVE_MOTOR_TYPE) {
+            case CAN_SPARK_MAX: {
+                leaderL = new SparkMotorController(robotSettings.DRIVE_LEADER_L_ID);
+                leaderR = new SparkMotorController(robotSettings.DRIVE_LEADER_R_ID);
+                followerL = new SparkFollowerMotorsController(robotSettings.DRIVE_FOLLOWERS_L_IDS);
+                followerR = new SparkFollowerMotorsController(robotSettings.DRIVE_FOLLOWERS_R_IDS);
+                //rpm <=> rps <=> gearing <=> wheel circumference
+                s2rf = robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI);
+                break;
             }
-            leaderL.setSensorToRealDistanceFactor(s2rf);
-            leaderR.setSensorToRealDistanceFactor(s2rf);
-            System.out.println(s2rf + " !!!!!!!!!!!! ");
-            followerL.follow(leaderL);
-            followerR.follow(leaderR);
-
-            leaderL.setInverted(robotSettings.DRIVE_INVERT_LEFT).resetEncoder();
-            leaderR.setInverted(robotSettings.DRIVE_INVERT_RIGHT).resetEncoder();
-
-            setAllMotorCurrentLimits(35);
-
-            followerL.invert(robotSettings.DRIVE_INVERT_LEFT);
-            followerR.invert(robotSettings.DRIVE_INVERT_RIGHT);
-        }
-
-        /**
-         * Initialize the PID for the motor controllers.
-         */
-        private void initPID () {
-            setPID(robotSettings.DRIVEBASE_PID);
-            TELEOP_AIMING_PID = new PIDController(robotSettings.TELEOP_AIMING_PID.getP(), robotSettings.TELEOP_AIMING_PID.getI(), robotSettings.TELEOP_AIMING_PID.getD());//new PIDController(0.005, 0.00001, 0.0005);
-            AUTON_AIMING_PID = new PIDController(robotSettings.AUTON_AIMING_PID.getP(), robotSettings.AUTON_AIMING_PID.getI(), robotSettings.AUTON_AIMING_PID.getD());
-
-        }
-
-        /**
-         * Creates xbox controller n stuff
-         *
-         * @throws UnsupportedOperationException when there is no configuration for {@link frc.robot.robotconfigs.DefaultConfig#DRIVE_STYLE}
-         */
-        private void initMisc () throws UnsupportedOperationException {
-            System.out.println("THE XBOX CONTROLLER IS ON " + robotSettings.XBOX_CONTROLLER_USB_SLOT);
-            switch (robotSettings.DRIVE_STYLE) {
-                case EXPERIMENTAL:
-                case BALL_SHIFTING_STANDARD:
-                case OPENLOOP_BALL_SHIFTING_STANDARD:
-                case STANDARD_2022:
-                case STANDARD:
-                    controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
-                    break;
-                case FLIGHT_STICK:
-                    controller = BaseController.createOrGet(1, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                    break;
-                case MARIO_KART:
-                    controller = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
-                    break;
-                case GUITAR:
-                    controller = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
-                    break;
-                case DRUM_TIME:
-                    controller = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
-                    break;
-                case BOP_IT:
-                    controller = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
-                    break;
-                default:
-                    throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.DRIVE_STYLE.name() + " to control the drivetrain. Please implement me");
+            case TALON_FX: {
+                leaderL = new TalonMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_LEADER_L_ID);
+                leaderR = new TalonMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_LEADER_R_ID);
+                followerL = new TalonFollowerMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_FOLLOWERS_L_IDS);
+                followerR = new TalonFollowerMotorController(robotSettings.DRIVE_MOTOR_CANBUS, robotSettings.DRIVE_FOLLOWERS_R_IDS);
+                //Sens units / 100ms <=> rps <=> gearing <=> wheel circumference
+                s2rf = (10.0 / robotSettings.DRIVEBASE_SENSOR_UNITS_PER_ROTATION) * robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI / 12);
+                break;
             }
-            if (robotSettings.DEBUG && DEBUG)
-                System.out.println("Created a " + controller.toString());
+            default:
+                throw new InitializationFailureException("DriveManager does not have a suitible constructor for " + robotSettings.DRIVE_MOTOR_TYPE.name(), "Add an implementation in the init for drive manager");
         }
+        leaderL.setSensorToRealDistanceFactor(s2rf);
+        leaderR.setSensorToRealDistanceFactor(s2rf);
+        System.out.println(s2rf + " !!!!!!!!!!!! ");
+        followerL.follow(leaderL);
+        followerR.follow(leaderR);
 
-        /**
-         * Set all motor current limits
-         *
-         * @param limit Current limit in amps
-         */
-        public void setAllMotorCurrentLimits ( int limit){
-            leaderL.setCurrentLimit(limit);
-            leaderR.setCurrentLimit(limit);
-            followerL.setCurrentLimit(limit);
-            followerR.setCurrentLimit(limit);
+        leaderL.setInverted(robotSettings.DRIVE_INVERT_LEFT).resetEncoder();
+        leaderR.setInverted(robotSettings.DRIVE_INVERT_RIGHT).resetEncoder();
+
+        setAllMotorCurrentLimits(35);
+
+        followerL.invert(robotSettings.DRIVE_INVERT_LEFT);
+        followerR.invert(robotSettings.DRIVE_INVERT_RIGHT);
+    }
+
+    /**
+     * Initialize the PID for the motor controllers.
+     */
+    private void initPID() {
+        setPID(robotSettings.DRIVEBASE_PID);
+        TELEOP_AIMING_PID = new PIDController(robotSettings.TELEOP_AIMING_PID.getP(), robotSettings.TELEOP_AIMING_PID.getI(), robotSettings.TELEOP_AIMING_PID.getD());//new PIDController(0.005, 0.00001, 0.0005);
+        AUTON_AIMING_PID = new PIDController(robotSettings.AUTON_AIMING_PID.getP(), robotSettings.AUTON_AIMING_PID.getI(), robotSettings.AUTON_AIMING_PID.getD());
+
+    }
+
+    /**
+     * Creates xbox controller n stuff
+     *
+     * @throws UnsupportedOperationException when there is no configuration for {@link frc.robot.robotconfigs.DefaultConfig#DRIVE_STYLE}
+     */
+    private void initMisc() throws UnsupportedOperationException {
+        System.out.println("THE XBOX CONTROLLER IS ON " + robotSettings.XBOX_CONTROLLER_USB_SLOT);
+        switch (robotSettings.DRIVE_STYLE) {
+            case EXPERIMENTAL:
+            case BALL_SHIFTING_STANDARD:
+            case OPENLOOP_BALL_SHIFTING_STANDARD:
+            case STANDARD_2022:
+            case STANDARD:
+                controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
+            case FLIGHT_STICK:
+                controller = BaseController.createOrGet(1, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                break;
+            case MARIO_KART:
+                controller = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
+                break;
+            case GUITAR:
+                controller = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
+                break;
+            case DRUM_TIME:
+                controller = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
+                break;
+            case BOP_IT:
+                controller = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
+                break;
+            default:
+                throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.DRIVE_STYLE.name() + " to control the drivetrain. Please implement me");
         }
+        if (robotSettings.DEBUG && DEBUG)
+            System.out.println("Created a " + controller.toString());
+    }
 
-        /**
-         * Sets the pid for all the motors that need pid setting
-         *
-         * @param pid the {@link PID} object that contains pertinent pidf data
-         */
-        private void setPID (PID pid){
-            leaderL.setPid(pid);
-            leaderR.setPid(pid);
-        }
+    /**
+     * Set all motor current limits
+     *
+     * @param limit Current limit in amps
+     */
+    public void setAllMotorCurrentLimits(int limit) {
+        leaderL.setCurrentLimit(limit);
+        leaderR.setCurrentLimit(limit);
+        followerL.setCurrentLimit(limit);
+        followerR.setCurrentLimit(limit);
+    }
 
-        public boolean aimAtTargetPitch () {
-            visionCamera.setLedMode(IVision.VisionLEDMode.ON);
-            if (visionCamera.hasValidTarget()) {
-                driveCringe(0, -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch())));
-                boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 30;
-                //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
-                if (isAligned) TELEOP_AIMING_PID.reset();
-                return isAligned;
-            } else {
-                return false;
-                //driveCringe(0, .75);
-                //return false;
-            }
-        }
+    /**
+     * Sets the pid for all the motors that need pid setting
+     *
+     * @param pid the {@link PID} object that contains pertinent pidf data
+     */
+    private void setPID(PID pid) {
+        leaderL.setPid(pid);
+        leaderR.setPid(pid);
+    }
 
-        public boolean aimAtTargetPitch ( double speed, IVision visionCamera){
-            visionCamera.setLedMode(IVision.VisionLEDMode.ON);
-            if (visionCamera.hasValidTarget()) {
-                driveCringe(speed, -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch())));
-                boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 30;
-                //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
-                if (isAligned) TELEOP_AIMING_PID.reset();
-                return isAligned;
-            } else {
-                return true;
-            }
-        }
-
-        public boolean aimAtTargetYaw () {
-            visionCamera.setLedMode(IVision.VisionLEDMode.ON);
-            if (visionCamera.hasValidTarget()) {
-                double rotationInRadians = adjustedRotation(AUTON_AIMING_PID.calculate(visionCamera.getAngle()));
-                driveCringe(0, rotationInRadians);
-                double angleOffBound = (robotSettings.AUTON_TOLERANCE * 20);
-                boolean isAligned = Math.abs(visionCamera.getAngle()) <= angleOffBound;  // 25 arctan(distance spread from center in inches / distFromTarget in inches + dia/2 in inches)
-                System.out.println("Am I aligned? " + (isAligned ? "yes, offset = " + visionCamera.getAngle() + " & bound = " + angleOffBound : "no, angle off = " + visionCamera.getAngle() + ", rot = " + rotationInRadians + ", bound = " + angleOffBound));
-                if (isAligned) AUTON_AIMING_PID.reset();
-                return isAligned;
-            } else {
-                return false;
-                //driveCringe(0, .75);
-                //return false;
-                //return false;
-            }
-        }
-
-        public boolean aimAtTargetYaw ( double speed, IVision visionCamera){
-            visionCamera.setLedMode(IVision.VisionLEDMode.ON);
-            if (visionCamera.hasValidTarget()) {
-                driveCringe(speed, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle())));
-                boolean isAligned = Math.abs(visionCamera.getAngle()) <= (robotSettings.AUTON_TOLERANCE * 25);
-                System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
-                if (isAligned) TELEOP_AIMING_PID.reset();
-                return isAligned;
-            } else {
-                return true;
-            }
-        }
-        public static double angleBound ( double distanceFromTarget){
-            final double radiusOfTargetIn = 48.0 / 2;
-            final double ballSize = 9.5;
-            final double distanceSpread = radiusOfTargetIn - (ballSize * 1.5);
-            double angleBoundInRadians = Math.atan(distanceSpread / distanceFromTarget);
-            return Math.toDegrees(angleBoundInRadians);
-        }
-
-        public boolean aimAtTargetYawOffsetRight () {
-            visionCamera.setLedMode(IVision.VisionLEDMode.ON);
-            if (visionCamera.hasValidTarget()) {
-                driveCringe(0, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle() + .25)));
-                boolean isAligned = Math.abs(visionCamera.getAngle() + 3.5) <= (robotSettings.AUTON_TOLERANCE * 22);
-                System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
-                if (isAligned) TELEOP_AIMING_PID.reset();
-                return isAligned;
-            } else {
-                return true;
-            }
-        }
-
-        /**
-         * @return true when done rotating
-         */
-        public boolean rotateDegreesRight ( double deg){
-            if (!rotating) {
-                rotating = true;
-                rotationGoal = guidance.imu.relativeYaw() + deg;
-            }
-            //if not (continue rotating while not yet at our goal) or
-            //if (stop rotating when we stop rotating because we reached our goal)
-            if (!(rotating = guidance.imu.relativeYaw() < rotationGoal)) {
-                driveCringe(0, 0);
-                TELEOP_AIMING_PID.reset();
-            } else {
-                //drivePure(0,1);
-                driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((rotationGoal - guidance.imu.relativeYaw())), 1));
-            }
-            return !(rotating);
-        }
-
-        public boolean rotateDegreesLeft ( double deg){
-            if (!rotating) {
-                rotating = true;
-                rotationGoal = guidance.imu.relativeYaw() - deg;
-            }
-            //if not (continue rotating while not yet at our goal) or
-            //if (stop rotating when we stop rotating because we reached our goal)
-            if (!(rotating = guidance.imu.relativeYaw() > rotationGoal)) {
-                driveCringe(0, 0);
-                TELEOP_AIMING_PID.reset();
-            } else {
-                //drivePure(0,1);
-                driveCringe(0, -.5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((guidance.imu.relativeYaw()) - rotationGoal), 1));
-            }
-            return !(rotating);
-        }
-
-        public boolean driveTimed ( int ticks, boolean direction){
-            if (ticksElapsed > 0) {
-                if (ticksElapsed >= ticks) {
-                    driveCringe(0, 0);
-                    ticksElapsed = 0;
-                    return true;
-                } else {
-                    driveCringe(direction ? -1 : 1, 0);
-                    ticksElapsed++;
-                    return false;
-                }
-            } else {
-                ticksElapsed = 1;
-                return false;
-            }
-        }
-
-        public boolean wait ( int ticks){
-            if (ticksElapsed > 0) {
-                if (ticksElapsed >= ticks) {
-                    ticksElapsed = 0;
-                    return true;
-                } else {
-                    ticksElapsed++;
-                    return false;
-                }
-            } else {
-                ticksElapsed = 1;
-                return false;
-            }
-        }
-
-        public void driveCringe ( double forward, double rotation){
-            double FPS = adjustedDrive(forward * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1));
-            double omega = adjustedRotation(rotation);
-            ChassisSpeeds cringChassis = new ChassisSpeeds(Units.feetToMeters(FPS), 0, omega);
-            DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(cringChassis);
-            double leftFPS = Units.metersToFeet(wheelSpeeds.leftMetersPerSecond);
-            double rightFPS = Units.metersToFeet(wheelSpeeds.rightMetersPerSecond);
-
-            double leftRPMWheel = (leftFPS / (Math.PI * (robotSettings.WHEEL_DIAMETER / 12))) * 60;
-            double rightRPMWheel = (rightFPS / (Math.PI * (robotSettings.WHEEL_DIAMETER / 12))) * 60;
-            double leftRPM = leftRPMWheel / robotSettings.DRIVE_GEARING;
-            double rightRPM = rightRPMWheel / robotSettings.DRIVE_GEARING;
-
-            if (DEBUG && robotSettings.DEBUG)
-                System.out.println("WANTED FPS: " + leftFPS + "  " + rightFPS);//+ " (" + FPSToRPM + ")");
-            UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
-            UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
-            //I like to call this one driveCringe
-
-            leaderL.moveAtVoltage(adjustedDriveVoltage(leftRPM * robotSettings.DRIVE_SCALE, robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER));
-            leaderR.moveAtVoltage(adjustedDriveVoltage(rightRPM * robotSettings.DRIVE_SCALE, robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER));
-            if (DEBUG && robotSettings.DEBUG) {
-                System.out.println("ACTUAL FPS: " + (leaderL.getSpeed() / leaderL.sensorToRealDistanceFactor) + " " + (leaderR.getSpeed() / leaderR.sensorToRealDistanceFactor));
-                System.out.println("WANTED RPM - L: " + leftRPM + " R: " + rightRPM);
-                System.out.println("VOLTAGE: " + leaderL.getVoltage() + " at mult " + robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER);
-                System.out.println("VELOCITY: " + (leaderL.getSpeed() / leaderL.sensorToRealDistanceFactor));
-            }
+    public boolean aimAtTargetPitch() {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            driveCringe(0, -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch())));
+            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 30;
+            //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) TELEOP_AIMING_PID.reset();
+            return isAligned;
+        } else {
+            return false;
+            //driveCringe(0, .75);
+            //return false;
         }
     }
+
+    public boolean aimAtTargetPitch(double speed, IVision visionCamera) {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            driveCringe(speed, -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getPitch())));
+            boolean isAligned = Math.abs(visionCamera.getPitch()) <= robotSettings.AUTON_TOLERANCE * 30;
+            //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) TELEOP_AIMING_PID.reset();
+            return isAligned;
+        } else {
+            return true;
+        }
+    }
+
+    public void aimAtTargetYaw() {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            double rotationInRadians = 1.15 * adjustedRotation(AUTON_AIMING_PID.calculate(visionCamera.getAngle()));
+            driveCringe(0, rotationInRadians);
+            double angleOffBound = (robotSettings.AUTON_TOLERANCE * 20);
+            boolean isAligned = Math.abs(visionCamera.getAngle()) <= angleOffBound;  // 25 arctan(distance spread from center in inches / distFromTarget in inches + dia/2 in inches)
+            System.out.println("Am I aligned? " + (isAligned ? "yes, offset = " + visionCamera.getAngle() + " & bound = " + angleOffBound : "no, angle off = " + visionCamera.getAngle() + ", rot = " + rotationInRadians + ", bound = " + angleOffBound));
+            if (isAligned) AUTON_AIMING_PID.reset();
+        }
+    }
+
+    public boolean aimAtTargetYaw(double speed, IVision visionCamera) {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            driveCringe(speed, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle())));
+            boolean isAligned = Math.abs(visionCamera.getAngle()) <= (robotSettings.AUTON_TOLERANCE * 25);
+            System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) TELEOP_AIMING_PID.reset();
+            return isAligned;
+        } else {
+            return true;
+        }
+    }
+
+    public static double angleBound(double distanceFromTarget) {
+        final double radiusOfTargetIn = 48.0 / 2;
+        final double ballSize = 9.5;
+        final double distanceSpread = radiusOfTargetIn - (ballSize * 1.5);
+        double angleBoundInRadians = Math.atan(distanceSpread / distanceFromTarget);
+        return Math.toDegrees(angleBoundInRadians);
+    }
+
+    public boolean aimAtTargetYawOffsetRight() {
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        if (visionCamera.hasValidTarget()) {
+            driveCringe(0, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle() + .25)));
+            boolean isAligned = Math.abs(visionCamera.getAngle() + 3.5) <= (robotSettings.AUTON_TOLERANCE * 22);
+            System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            if (isAligned) TELEOP_AIMING_PID.reset();
+            return isAligned;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * @return true when done rotating
+     */
+    public boolean rotateDegreesRight(double deg) {
+        if (!rotating) {
+            rotating = true;
+            rotationGoal = guidance.imu.relativeYaw() + deg;
+        }
+        //if not (continue rotating while not yet at our goal) or
+        //if (stop rotating when we stop rotating because we reached our goal)
+        if (!(rotating = guidance.imu.relativeYaw() < rotationGoal)) {
+            driveCringe(0, 0);
+            TELEOP_AIMING_PID.reset();
+        } else {
+            //drivePure(0,1);
+            driveCringe(0, .5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((rotationGoal - guidance.imu.relativeYaw())), 1));
+        }
+        return !(rotating);
+    }
+
+    public boolean rotateDegreesLeft(double deg) {
+        if (!rotating) {
+            rotating = true;
+            rotationGoal = guidance.imu.relativeYaw() - deg;
+        }
+        //if not (continue rotating while not yet at our goal) or
+        //if (stop rotating when we stop rotating because we reached our goal)
+        if (!(rotating = guidance.imu.relativeYaw() > rotationGoal)) {
+            driveCringe(0, 0);
+            TELEOP_AIMING_PID.reset();
+        } else {
+            //drivePure(0,1);
+            driveCringe(0, -.5 * robotSettings.AUTO_ROTATION_SPEED * 25 * Math.min(Math.abs((guidance.imu.relativeYaw()) - rotationGoal), 1));
+        }
+        return !(rotating);
+    }
+
+    public boolean driveTimed(int ticks, boolean direction) {
+        if (ticksElapsed > 0) {
+            if (ticksElapsed >= ticks) {
+                driveCringe(0, 0);
+                ticksElapsed = 0;
+                return true;
+            } else {
+                driveCringe(direction ? -1 : 1, 0);
+                ticksElapsed++;
+                return false;
+            }
+        } else {
+            ticksElapsed = 1;
+            return false;
+        }
+    }
+
+    public boolean wait(int ticks) {
+        if (ticksElapsed > 0) {
+            if (ticksElapsed >= ticks) {
+                ticksElapsed = 0;
+                return true;
+            } else {
+                ticksElapsed++;
+                return false;
+            }
+        } else {
+            ticksElapsed = 1;
+            return false;
+        }
+    }
+
+    public void driveCringe(double forward, double rotation) {
+        double FPS = adjustedDrive(forward * (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 1));
+        double omega = adjustedRotation(rotation);
+        ChassisSpeeds cringChassis = new ChassisSpeeds(Units.feetToMeters(FPS), 0, omega);
+        DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(cringChassis);
+        double leftFPS = Units.metersToFeet(wheelSpeeds.leftMetersPerSecond);
+        double rightFPS = Units.metersToFeet(wheelSpeeds.rightMetersPerSecond);
+
+        double leftRPMWheel = (leftFPS / (Math.PI * (robotSettings.WHEEL_DIAMETER / 12))) * 60;
+        double rightRPMWheel = (rightFPS / (Math.PI * (robotSettings.WHEEL_DIAMETER / 12))) * 60;
+        double leftRPM = leftRPMWheel / robotSettings.DRIVE_GEARING;
+        double rightRPM = rightRPMWheel / robotSettings.DRIVE_GEARING;
+
+        if (DEBUG && robotSettings.DEBUG)
+            System.out.println("WANTED FPS: " + leftFPS + "  " + rightFPS);//+ " (" + FPSToRPM + ")");
+        UserInterface.smartDashboardPutNumber("Left Wheel RPM", leaderL.getSpeed());
+        UserInterface.smartDashboardPutNumber("Left Wheel Voltage", leaderL.getVoltage());
+        //I like to call this one driveCringe
+
+        leaderL.moveAtVoltage(adjustedDriveVoltage(leftRPM * robotSettings.DRIVE_SCALE, robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER));
+        leaderR.moveAtVoltage(adjustedDriveVoltage(rightRPM * robotSettings.DRIVE_SCALE, robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER));
+        if (DEBUG && robotSettings.DEBUG) {
+            System.out.println("ACTUAL FPS: " + (leaderL.getSpeed() / leaderL.sensorToRealDistanceFactor) + " " + (leaderR.getSpeed() / leaderR.sensorToRealDistanceFactor));
+            System.out.println("WANTED RPM - L: " + leftRPM + " R: " + rightRPM);
+            System.out.println("VOLTAGE: " + leaderL.getVoltage() + " at mult " + robotSettings.DRIVEBASE_VOLTAGE_MULTIPLIER);
+            System.out.println("VELOCITY: " + (leaderL.getSpeed() / leaderL.sensorToRealDistanceFactor));
+        }
+    }
+}

@@ -30,10 +30,13 @@ public enum AutonRoutines {
 
     ),
     ONE_BALL_AUTON(
-            new AutonWaypoint(new Point(0, 0)),
-            new AutonWaypoint(new Point(0, 0), 0, AIM_ROBOT_AT_TARGET_YAW),
-            new AutonWaypoint(new Point(0, 0), 0, SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE),
-            new AutonWaypoint(new Point(0, 0), 0, DRIVE_BACK_TIMED)
+            new AutonWaypoint(new Point(0,0), 1),
+            new AutonWaypoint(new Point(1.4 , 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_165_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(WAIT_ONE),
+            new AutonWaypoint(SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_STOP)
     ),
     SHOOT_WHILE_STILL_2022(
             new AutonWaypoint(new Point(0, 0), SHOOT_ALL_2022_FURTHER)
@@ -77,9 +80,8 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(2, 0), 1), //(1.7741787849766635, 0.01580735327687336)
             new AutonWaypoint(DRIVE_160_REVERSE),
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
-            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
-            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
-            new AutonWaypoint(SHOOT_ALL_2022_FURTHER)
+            new AutonWaypoint(SHOOT_ALL_2022_FURTHER),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_STOP)
             ),
     FOUR_BALL_AUTON(
             new AutonWaypoint(new Point(0, 0), INTAKE_DOWN ),
@@ -88,12 +90,15 @@ public enum AutonRoutines {
             new AutonWaypoint(DRIVE_130_REVERSE),
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
             new AutonWaypoint(SHOOT_ALL_2022_FAR),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_STOP),
             new AutonWaypoint(DRIVE_60),
-            new AutonWaypoint(new Point(7.3, -1.6), 1.55),
+            new AutonWaypoint(new Point(7.05, -1.6), 1.55),
             new AutonWaypoint(WAIT_ONE),
-            new AutonWaypoint(DRIVE_160_REVERSE),
+            new AutonWaypoint(DRIVE_180_REVERSE),
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
-            new AutonWaypoint(SHOOT_ALL_2022_VERY_FAR)
+            new AutonWaypoint(WAIT_ONE),
+            new AutonWaypoint(SHOOT_ALL_2022_VERY_FAR),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_STOP)
     ),
     FOUR_BALL_AUTON_UGH(
             new AutonWaypoint(new Point(0, 0), INTAKE_DOWN ),
@@ -103,8 +108,8 @@ public enum AutonRoutines {
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
             new AutonWaypoint(SHOOT_ALL_2022_FAR),
             new AutonWaypoint(DRIVE_60),
-            new AutonWaypoint(new Point(7.24, -1.6), 1.55),
-            new AutonWaypoint(DRIVE_160_REVERSE),
+            new AutonWaypoint(new Point(7.2, -1.6), 1.55),
+            new AutonWaypoint(DRIVE_180_REVERSE),
             new AutonWaypoint(DRIVE_FORWARD_TIMED),
             new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
             new AutonWaypoint(SHOOT_ALL_2022_NOT_FAR_ENOUGH)

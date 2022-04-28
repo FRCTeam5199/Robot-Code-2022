@@ -866,6 +866,20 @@ public class Shooter implements ISubsystem {
         return !multiShot;
     }
 
+
+    public boolean fireAmountSpin(int shots) {
+        ballsToShoot = shots;
+        multiShot = true;
+        ShootingEnums.FIRE_MULTIPLE_SHOTS.shoot(this);
+        isConstSpeed = !multiShot;
+        updateShuffleboard();
+        if (!multiShot) {
+            shooting = false;
+            setPercentSpeed(0);
+            hopper2020.setAll(false);
+        }
+        return !multiShot;
+    }
     /**
      * Fires multiple balls without caring if it sees the target. Good for autonomous and the discord/slaque bot
      * Used for the 2022 ball shooter
@@ -883,6 +897,25 @@ public class Shooter implements ISubsystem {
             multiShot = true;
         }
         ShootingEnums.FIRE_TIMED_2022.shoot(this);
+        updateShuffleboard();
+        if (!multiShot) {
+            shooting = false;
+            setPercentSpeed(0, 0);
+            hopper.setAll(false);
+            shooter.timerTicks = 0;
+        }
+        return !multiShot;
+    }
+
+    public boolean fireAmount2022Spin(double seconds, int rpm) {
+        speed = rpm;
+        goalTicks = seconds * 50; //tick = 20ms. 50 ticks in a second.
+        if (!shooting) {
+            ticksPassed = 0;
+            shooting = true;
+            multiShot = true;
+        }
+        ShootingEnums.FIRE_TIMED_2022_SPIN.shoot(this);
         updateShuffleboard();
         if (!multiShot) {
             shooting = false;

@@ -85,8 +85,8 @@ public class CompetitionRobot2022 extends DefaultConfig {
         //HEADING_PID = new PID(0.01, 0, 0); new PID(0.15, 0.000, 0.02);//
         DRIVEBASE_PID = new PID(0.002, 0, 0.005, 0.00025);
         HEADING_PID = new PID(0.057, 0.000, 0.001);
-        TELEOP_AIMING_PID = new PID(0.0029, 0.00001, 0.0006);
-        AUTON_AIMING_PID = new PID(0.0043, 0.00001, 0.0005818);
+        TELEOP_AIMING_PID = new PID(0.004, 0.00001, 0.0005818);
+        AUTON_AIMING_PID = new PID(0.00419, 0.00001, 0.0005818);
         DRIVEBASE_SENSOR_UNITS_PER_ROTATION = 2048;//4096 if MagEncoder, built in 2048
         CTRE_SENSOR_UNITS_PER_ROTATION = 2048;
         DRIVEBASE_DISTANCE_BETWEEN_WHEELS = 0.524891;
