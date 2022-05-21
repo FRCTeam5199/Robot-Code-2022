@@ -2,17 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.discordslackbot.DiscordBot;
-import frc.discordslackbot.ListeningSpy;
-import frc.discordslackbot.MessageHandler;
-import frc.discordslackbot.SlackBot;
+import frc.discordslackbot.*;
 import frc.discordslackbot.commands.AbstractCommand;
-import frc.gpws.Alarms;
-import frc.gpws.Sound;
-import frc.gpws.SoundManager;
-import frc.misc.ClientSide;
-import frc.misc.ServerSide;
-import frc.misc.UtilFunctions;
+import frc.gpws.*;
+import frc.misc.*;
 
 import java.io.*;
 import java.util.Objects;

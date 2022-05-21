@@ -3,9 +3,7 @@ package frc.drive.auton.pointtopoint;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.drive.auton.Point;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 import static frc.drive.auton.pointtopoint.AutonSpecialActions.*;
 

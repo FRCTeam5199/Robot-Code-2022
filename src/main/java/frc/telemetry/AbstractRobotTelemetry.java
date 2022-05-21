@@ -1,18 +1,10 @@
 package frc.telemetry;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import frc.drive.AbstractDriveManager;
-import frc.drive.DriveManagerStandard;
-import frc.drive.DriveManagerSwerve;
-import frc.drive.OldDriveManagerSwerve;
+import frc.drive.*;
 import frc.drive.auton.Point;
-import frc.misc.ISubsystem;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
-import frc.misc.UtilFunctions;
+import frc.misc.*;
 import frc.telemetry.imu.AbstractIMU;
 
 import static frc.robot.Robot.robotSettings;

@@ -4,13 +4,8 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.controllers.BaseController;
-import frc.misc.ISubsystem;
-import frc.misc.PID;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
-import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
+import frc.misc.*;
+import frc.motors.*;
 import frc.robot.Robot;
 
 import static frc.controllers.ControllerEnums.*;

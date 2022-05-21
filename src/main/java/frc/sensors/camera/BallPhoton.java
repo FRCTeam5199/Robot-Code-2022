@@ -2,9 +2,7 @@ package frc.sensors.camera;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.misc.SubsystemStatus;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPipelineResult;
-import org.photonvision.PhotonTrackedTarget;
+import org.photonvision.*;
 
 import java.util.List;
 

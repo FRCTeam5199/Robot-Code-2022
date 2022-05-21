@@ -1,9 +1,7 @@
 package frc.discordslackbot.commands;
 
 import com.slack.api.bolt.App;
-import frc.discordslackbot.DiscordBot;
-import frc.discordslackbot.MessageHandler;
-import frc.discordslackbot.SlackBot;
+import frc.discordslackbot.*;
 import frc.misc.ServerSide;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;

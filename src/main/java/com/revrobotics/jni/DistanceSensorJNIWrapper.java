@@ -28,9 +28,9 @@
 
 package com.revrobotics.jni;
 
-import java.io.IOException;
-
 import edu.wpi.first.util.RuntimeLoader;
+
+import java.io.IOException;
 
 public class DistanceSensorJNIWrapper  {
   static boolean libraryLoaded = false;

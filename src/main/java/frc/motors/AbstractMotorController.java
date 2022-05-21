@@ -3,9 +3,7 @@ package frc.motors;
 import frc.gpws.Alarms;
 import frc.misc.PID;
 import frc.misc.UserInterface;
-import frc.motors.followers.AbstractFollowerMotorController;
-import frc.motors.followers.SparkFollowerMotorsController;
-import frc.motors.followers.TalonFollowerMotorController;
+import frc.motors.followers.*;
 import frc.robot.Main;
 import frc.robot.Robot;
 

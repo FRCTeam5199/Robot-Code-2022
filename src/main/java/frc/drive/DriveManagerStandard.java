@@ -1,27 +1,18 @@
 package frc.drive;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
-import frc.controllers.ControllerEnums.ButtonStatus;
-import frc.controllers.ControllerEnums.XBoxButtons;
-import frc.controllers.ControllerEnums.XboxAxes;
-import frc.misc.InitializationFailureException;
-import frc.misc.PID;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
-import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
-import frc.motors.followers.AbstractFollowerMotorController;
-import frc.motors.followers.SparkFollowerMotorsController;
-import frc.motors.followers.TalonFollowerMotorController;
+import frc.controllers.ControllerEnums.*;
+import frc.misc.*;
+import frc.motors.*;
+import frc.motors.followers.*;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.sensors.camera.IVision;
 import frc.telemetry.RobotTelemetryStandard;
@@ -80,7 +71,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (robotSettings.ENABLE_VISION) {
             visionCamera = IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE);
             if (robotSettings.ENABLE_DRIVE_BALL_TRACKING)
-                ballCamera = IVision.manufactureGoalCamera(robotSettings.BALL_CAMERA_TYPE);
+                ballCamera = IVision.manufactureBallCamera(robotSettings.BALL_CAMERA_TYPE);
         }
     }
 
@@ -274,6 +265,17 @@ public class DriveManagerStandard extends AbstractDriveManager {
     @Override
     public void initGeneric() {
         setBrake(true);
+        if (robotSettings.ENABLE_VISION && robotSettings.ENABLE_DRIVE_BALL_TRACKING) {
+            Alliance a = DriverStation.getAlliance();
+            if (a == Alliance.Blue) {
+                ballCamera.setPipeline(2);
+            } else if (a == Alliance.Red) {
+                ballCamera.setPipeline(1);
+            } else {
+                ballCamera.setPipeline(0);
+                DriverStation.reportError("No alliance detected, big problem..", false);
+            }
+        }
     }
 
     @Override

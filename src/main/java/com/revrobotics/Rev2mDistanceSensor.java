@@ -28,13 +28,12 @@
 
 package com.revrobotics;
 
+import com.revrobotics.jni.VL53L0XJNI;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.revrobotics.jni.VL53L0XJNI;
-
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Rev2mDistanceSensor class.

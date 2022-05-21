@@ -1,22 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import frc.ballstuff.intaking.Hopper;
-import frc.ballstuff.intaking.Hopper2020;
-import frc.ballstuff.intaking.Intake;
-import frc.ballstuff.shooting.ArticulatedHood;
-import frc.ballstuff.shooting.Shooter;
-import frc.ballstuff.shooting.Turret;
+import frc.ballstuff.intaking.*;
+import frc.ballstuff.shooting.*;
 import frc.climber.BuddyClimber;
 import frc.climber.Climber;
 import frc.discordslackbot.MessageHandler;
-import frc.drive.AbstractDriveManager;
-import frc.drive.DriveManagerStandard;
-import frc.drive.DriveManagerSwerve;
+import frc.drive.*;
 import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.AutonType;
 import frc.drive.auton.followtrajectory.Trajectories;
@@ -26,16 +17,10 @@ import frc.misc.*;
 import frc.motors.AbstractMotorController;
 import frc.pdp.PowerDistribution;
 import frc.robot.robotconfigs.DefaultConfig;
-import frc.robot.robotconfigs.twentyone.CompetitionRobot2021;
-import frc.robot.robotconfigs.twentyone.PracticeRobot2021;
-import frc.robot.robotconfigs.twentyone.Swerve2021;
+import frc.robot.robotconfigs.twentyone.*;
 import frc.robot.robotconfigs.twentytwenty.Robot2020;
-import frc.robot.robotconfigs.twentytwo.CompetitionRobot2022;
-import frc.robot.robotconfigs.twentytwo.PracticeRobot2022;
-import frc.robot.robotconfigs.twentytwo.Swerve2022;
-import frc.selfdiagnostics.ISimpleIssue;
-import frc.selfdiagnostics.IssueHandler;
-import frc.selfdiagnostics.MotorDisconnectedIssue;
+import frc.robot.robotconfigs.twentytwo.*;
+import frc.selfdiagnostics.*;
 import frc.sensors.camera.CameraViewer;
 import frc.sensors.camera.IVision;
 
@@ -77,6 +62,75 @@ public class Robot extends TimedRobot {
     private static long lastDisable = 0;
 
     /**
+     * Reads from the preferences what the last boot time is. Depending on current system time, sets the {@link
+     * #SECOND_TRY} flag to either restart on error or to persist as best as possible. If you leave the robot on for
+     * half a century then it might not work right so please refrain from that
+     */
+    private static void getRestartProximity() {
+        if (robotSettings.ENABLE_ERROR_HANDLING) {
+            long lastBoot = Long.parseLong(Preferences.getString("lastboot", "0"));
+            long currentBoot = System.currentTimeMillis();
+            Preferences.setString("lastboot", "0" + currentBoot);
+            if (lastBoot > currentBoot) {
+                SECOND_TRY = false;
+            } else if (lastBoot > 1614461266977L) {
+                SECOND_TRY = currentBoot - lastBoot < 30000;
+            } else if (lastBoot < 1614461266977L && currentBoot < 1614461266977L) {
+                SECOND_TRY = currentBoot - lastBoot < 30000;
+            } else {
+                SECOND_TRY = false;
+            }
+        } else SECOND_TRY = true;
+    }
+
+    /**
+     * Loads settings based on the id of the robot.
+     *
+     * @return the settings for this robot based on the preferences
+     * @see DefaultConfig
+     */
+    private static DefaultConfig getSettings() {
+        String hostName = Preferences.getString("hostname", "ERR_NOT_FOUND");
+        System.out.println("[Preferences] I am " + hostName);
+        setBackup(hostName);
+        switch (hostName) {
+            case "2020-Comp":
+                return new Robot2020();
+            case "2021-Prac":
+                return new PracticeRobot2021();
+            case "2021-Comp":
+                return new CompetitionRobot2021();
+            case "2021-Swivel":
+                return new Swerve2021();
+            case "2022-Prac":
+                return new PracticeRobot2022();
+            case "2022-Swivel":
+                return new Swerve2022();
+            case "2022-Comp":
+                return new CompetitionRobot2022();
+            case "ERR_NOT_FOUND":
+                return new CompetitionRobot2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
+            //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
+            default:
+                throw new InitializationFailureException(String.format("Invalid ID %s for robot.", hostName), "In the SmartDashboard, set the key \"hostname\" to a correct value (ex: \"202#-(Comp/Prac)\")");
+        }
+    }
+
+    private static void setBackup(String hostName) {
+        if (!hostName.equals("ERR_NOT_FOUND")) {
+            File backupFile = new File("/home/lvuser/backup.env");
+            try {
+                backupFile.createNewFile();
+                FileWriter myWriter = new FileWriter(backupFile);
+                myWriter.write(hostName);
+                myWriter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * Init everything
      */
     @Override
@@ -87,8 +141,7 @@ public class Robot extends TimedRobot {
         robotSettings.printNumbers();
         getRestartProximity();
         UserInterface.initRobot();
-        if (DriverStation.isFMSAttached())
-            robotSettings.DEBUG = false;
+        if (DriverStation.isFMSAttached()) robotSettings.DEBUG = false;
 
         if (robotSettings.ENABLE_MEMES) {
             Main.pipeline = ClientServerPipeline.getClient();
@@ -113,8 +166,7 @@ public class Robot extends TimedRobot {
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020 = new Hopper2020();
         }
-        if (robotSettings.ENABLE_HOPPER)
-            hopper = new Hopper();
+        if (robotSettings.ENABLE_HOPPER) hopper = new Hopper();
 
         if (robotSettings.ENABLE_SHOOTER) {
             shooter = new Shooter();
@@ -178,76 +230,6 @@ public class Robot extends TimedRobot {
         UserInterface.smartDashboardPutString("Quote", quote);
         if (robotSettings.ENABLE_VISION)
             IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE).setLedMode(IVision.VisionLEDMode.OFF);
-    }
-
-    /**
-     * Reads from the preferences what the last boot time is. Depending on current system time, sets the {@link
-     * #SECOND_TRY} flag to either restart on error or to persist as best as possible. If you leave the robot on for
-     * half a century then it might not work right so please refrain from that
-     */
-    private static void getRestartProximity() {
-        if (robotSettings.ENABLE_ERROR_HANDLING) {
-            long lastBoot = Long.parseLong(Preferences.getString("lastboot", "0"));
-            long currentBoot = System.currentTimeMillis();
-            Preferences.setString("lastboot", "0" + currentBoot);
-            if (lastBoot > currentBoot) {
-                SECOND_TRY = false;
-            } else if (lastBoot > 1614461266977L) {
-                SECOND_TRY = currentBoot - lastBoot < 30000;
-            } else if (lastBoot < 1614461266977L && currentBoot < 1614461266977L) {
-                SECOND_TRY = currentBoot - lastBoot < 30000;
-            } else {
-                SECOND_TRY = false;
-            }
-        } else
-            SECOND_TRY = true;
-    }
-
-    /**
-     * Loads settings based on the id of the robot.
-     *
-     * @return the settings for this robot based on the preferences
-     * @see DefaultConfig
-     */
-    private static DefaultConfig getSettings() {
-        String hostName = Preferences.getString("hostname", "ERR_NOT_FOUND");
-        System.out.println("[Preferences] I am " + hostName);
-        setBackup(hostName);
-        switch (hostName) {
-            case "2020-Comp":
-                return new Robot2020();
-            case "2021-Prac":
-                return new PracticeRobot2021();
-            case "2021-Comp":
-                return new CompetitionRobot2021();
-            case "2021-Swivel":
-                return new Swerve2021();
-            case "2022-Prac":
-                return new PracticeRobot2022();
-            case "2022-Swivel":
-                return new Swerve2022();
-            case "2022-Comp":
-                return new CompetitionRobot2022();
-            case "ERR_NOT_FOUND":
-                return new CompetitionRobot2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
-            //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
-            default:
-                throw new InitializationFailureException(String.format("Invalid ID %s for robot.", hostName), "In the SmartDashboard, set the key \"hostname\" to a correct value (ex: \"202#-(Comp/Prac)\")");
-        }
-    }
-
-    private static void setBackup(String hostName) {
-        if (!hostName.equals("ERR_NOT_FOUND")) {
-            File backupFile = new File("/home/lvuser/backup.env");
-            try {
-                backupFile.createNewFile();
-                FileWriter myWriter = new FileWriter(backupFile);
-                myWriter.write(hostName);
-                myWriter.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -342,8 +324,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         if (System.currentTimeMillis() > lastDisable + 2000) {
-            if (robotSettings.ENABLE_DRIVE)
-                driver.setBrake(false);
+            if (robotSettings.ENABLE_DRIVE) driver.setBrake(false);
             if (robotSettings.ENABLE_HOOD_ARTICULATION && !robotSettings.ENABLE_HOOD_PISTON)
                 articulatedHood.hoodMotor.setBrake(false);
         }

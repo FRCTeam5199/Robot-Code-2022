@@ -1,9 +1,7 @@
 package frc.sensors.camera;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.*;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
 import frc.robot.Robot;
@@ -151,6 +149,13 @@ public class GamepieceLimelight implements IVision {
 
         if (robotSettings.ENABLE_TOGGLEABLE_RING && robotSettings.ENABLE_PDP) {
            Robot.pdp.setToggleable(setTo == 3 || setTo == 2);
+        }
+    }
+
+    @Override
+    public void setPipeline(int pipeline) {
+        if (pipeline >= 0 && pipeline <= 9) {
+            limelight.getEntry("pipeline").setNumber(pipeline);
         }
     }
 

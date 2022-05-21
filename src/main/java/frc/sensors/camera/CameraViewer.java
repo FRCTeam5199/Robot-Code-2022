@@ -1,9 +1,8 @@
 package frc.sensors.camera;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import frc.misc.ISubsystem;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
+import frc.misc.*;
 
 public class CameraViewer implements ISubsystem {
     UsbCamera camera;

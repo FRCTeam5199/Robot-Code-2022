@@ -4,14 +4,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.ballstuff.shooting.Shooter;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
-import frc.misc.ISubsystem;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
+import frc.misc.*;
 import frc.motors.AbstractMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.sensors.BreakBeamSensor;
-import frc.sensors.ISensor;
-import frc.sensors.LimitSwitchSensor;
+import frc.sensors.*;
 import frc.sensors.distancesensor.IDistanceSensor;
 import frc.sensors.distancesensor.RevDistanceSensor;
 

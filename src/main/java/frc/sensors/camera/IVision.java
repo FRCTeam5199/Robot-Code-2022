@@ -20,6 +20,8 @@ public interface IVision extends ISubsystem {
      */
     void setLedMode(VisionLEDMode ledMode);
 
+    void setPipeline(int pipeline);
+
     static IVision manufactureGoalCamera(SupportedVision cameraType) {
         switch (cameraType) {
             case LIMELIGHT:
@@ -27,7 +29,7 @@ public interface IVision extends ISubsystem {
             case PHOTON:
                 return GoalPhoton.GOAL_PHOTON;
             default:
-                throw new IllegalStateException("You must have a camera type set.");
+                throw new IllegalStateException("You must have a valid camera type set.");
         }
     }
 
@@ -36,7 +38,7 @@ public interface IVision extends ISubsystem {
             case LIMELIGHT:
                 return GamepieceLimelight.GAMEPIECE_LIME_LIGHT;
             default:
-                throw new IllegalStateException("You must have a camera type set.");
+                throw new IllegalStateException("You must have a valid camera type set.");
         }
     }
 
