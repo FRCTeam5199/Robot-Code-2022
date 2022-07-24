@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.*;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
 import frc.drive.auton.followtrajectory.Trajectories;
-import frc.drive.auton.galacticsearch.GalacticSearchPaths;
 import frc.misc.ISubsystem;
 import frc.misc.SubsystemStatus;
 import frc.robot.Robot;
@@ -25,7 +24,6 @@ import static frc.robot.Robot.robotSettings;
  *
  * @see ISubsystem
  * @see frc.drive.auton.followtrajectory.AutonManager
- * @see frc.drive.auton.galacticsearch.AutonManager
  * @see frc.drive.auton.galacticsearchtest.AutonManager
  */
 public abstract class AbstractAutonManager implements ISubsystem {
@@ -38,13 +36,6 @@ public abstract class AbstractAutonManager implements ISubsystem {
     static {
         paths = new HashMap<>();
         //TODO add barrel racing/other auton paths here
-        for (GalacticSearchPaths path : GalacticSearchPaths.values()) {
-            try {
-                paths.put(path, TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve("paths/" + path.getDeployLocation() + ".wpilib.json")));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
         for (Trajectories path : Trajectories.values()) {
             try {

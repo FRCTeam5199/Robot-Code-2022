@@ -2,7 +2,7 @@ package frc.drive.auton.galacticsearchtest;
 
 import frc.drive.AbstractDriveManager;
 import frc.drive.auton.AbstractAutonManager;
-import frc.drive.auton.galacticsearch.GalacticSearchPaths;
+
 
 /**
  * This is for running a preselected galactic search path
@@ -14,7 +14,7 @@ public class AutonManager extends AbstractAutonManager {
 
     @Override
     public void init() {
-        autonPath = GalacticSearchPaths.PATH_B_BLUE;
+
     }
 
     @Override

@@ -68,12 +68,12 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     @Override
     public void updateTest() {
         updateGeneric();
-        if (robotSettings.DEBUG && DEBUG) {
+        if (true /*robotSettings.DEBUG && DEBUG*/) {
             System.out.println(FRcoder.getAbsolutePosition() + " FR " + driverFR.steering.getRotations());
-            System.out.println(FLcoder.getAbsolutePosition() + " FL " + driverFL.steering.getRotations());
-            System.out.println(BRcoder.getAbsolutePosition() + " BR " + driverBR.steering.getRotations());
-            System.out.println(BLcoder.getAbsolutePosition() + " BL " + driverBL.steering.getRotations());
-            System.out.println();
+            //System.out.println(FLcoder.getAbsolutePosition() + " FL " + driverFL.steering.getRotations());
+            //System.out.println(BRcoder.getAbsolutePosition() + " BR " + driverBR.steering.getRotations());
+            //System.out.println(BLcoder.getAbsolutePosition() + " BL " + driverBL.steering.getRotations());
+            //System.out.println();
             System.out.println(guidance.imu.relativeYaw());
         }
     }
@@ -156,12 +156,14 @@ public class DriveManagerSwerve extends AbstractDriveManager {
      */
     private void setSteeringContinuous(double FL, double FR, double BL, double BR) {
         double FLoffset = -1, FRoffset = -1, BLoffset = 2, BRoffset = 2;
-
+        // try removing off set
+        // try forcing Fl,FR,BL,BR 0
         FLpid.setSetpoint(FL + FLoffset);
         FRpid.setSetpoint(FR + FRoffset);
         BRpid.setSetpoint(BR + BRoffset);
         BLpid.setSetpoint(BL + BLoffset);
-
+        System.out.println("Absolute Position/ current positiion: " + FLcoder.getAbsolutePosition());
+        System.out.println("turning speed/pid should be: " + FLpid.calculate(FLcoder.getAbsolutePosition()));
         driverFL.steering.moveAtPercent(FLpid.calculate(FLcoder.getAbsolutePosition()));
         driverFR.steering.moveAtPercent(FRpid.calculate(FRcoder.getAbsolutePosition()));
         driverBL.steering.moveAtPercent(BLpid.calculate(BLcoder.getAbsolutePosition()));
@@ -197,7 +199,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
         double gearRatio = 1;//robotSettings.SWERVE_SDS_DRIVE_BASE.getDriveReduction() * robotSettings.SWERVE_SDS_DRIVE_BASE.getWheelDiameter();
         double voltageMult = 70 / 371.0; // 127.4/371.0 is full speed
-        System.out.println(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
+        //System.out.println(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverBR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_BR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
@@ -233,7 +235,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     @Override
-    public void driveMPS(double xMeters, double yMeters, double rotation) {
+    public void driveMPS(double xMeters, double yMeters, double rotation) { // after here
         ChassisSpeeds speeds;
 
         //x+ m/s forwards, y+ m/s left, omega+ rad/sec ccw
@@ -252,7 +254,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     public void driveWithChassisSpeeds(ChassisSpeeds speeds) {
         moduleStates = kinematics.toSwerveModuleStates(speeds);
 
-        if (xbox.get(ControllerEnums.XBoxButtons.RIGHT_BUMPER) == ControllerEnums.ButtonStatus.DOWN) {
+        if (xbox.get(ControllerEnums.XBoxButtons.RIGHT_BUMPER) == ControllerEnums.ButtonStatus.DOWN) { // ignore for now
             moduleStates = kinematics.toSwerveModuleStates(speeds, frontRightLocation);
         } else if (dorifto()) {
             double driftOffset = 3;
@@ -266,11 +268,11 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         SwerveModuleState frontLeft = moduleStates[0], frontRight = moduleStates[1], backLeft = moduleStates[2], backRight = moduleStates[3];
 
         //try continuous here
-        setSteeringContinuous(frontLeft.angle.getDegrees(), frontRight.angle.getDegrees(), backLeft.angle.getDegrees(), backRight.angle.getDegrees());
+        setSteeringContinuous(frontLeft.angle.getDegrees(), frontRight.angle.getDegrees(), backLeft.angle.getDegrees(), backRight.angle.getDegrees()); // <-- maybe here
         if (DEBUG && robotSettings.DEBUG) {
             System.out.printf("%4f %4f %4f %4f \n", frontLeft.speedMetersPerSecond, frontRight.speedMetersPerSecond, backLeft.speedMetersPerSecond, backRight.speedMetersPerSecond);
         }
-        setDrive(frontLeft.speedMetersPerSecond, frontRight.speedMetersPerSecond, backLeft.speedMetersPerSecond, backRight.speedMetersPerSecond);
+        setDrive(frontLeft.speedMetersPerSecond, frontRight.speedMetersPerSecond, backLeft.speedMetersPerSecond, backRight.speedMetersPerSecond); // before here
     }
 
     @Override
@@ -378,8 +380,8 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
     public void setCANCoder() {
         FRcoder = new CANCoder(11);
-        BRcoder = new CANCoder(12);
-        FLcoder = new CANCoder(13);
+        BRcoder = new CANCoder(13);
+        FLcoder = new CANCoder(12);
         BLcoder = new CANCoder(14);
     }
 

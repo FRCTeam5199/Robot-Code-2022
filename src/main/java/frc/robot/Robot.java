@@ -107,7 +107,7 @@ public class Robot extends TimedRobot {
             case "2022-Swivel":
                 return new Swerve2022();
             case "2022-Comp":
-                return new CompetitionRobot2022();
+                return new Swerve2022(); //CompetitionRobot2022();
             case "ERR_NOT_FOUND":
                 return new CompetitionRobot2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
             //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
@@ -201,9 +201,6 @@ public class Robot extends TimedRobot {
 
         if (robotSettings.ENABLE_DRIVE && robotSettings.ENABLE_IMU) {
             switch (robotSettings.AUTON_TYPE) {
-                case GALACTIC_SEARCH:
-                    autonManager = new frc.drive.auton.galacticsearch.AutonManager(driver);
-                    break;
                 case FOLLOW_PATH:
                     autonManager = new frc.drive.auton.followtrajectory.AutonManager(Trajectories.TEST_SWERVE, driver);//Trajectories.TEST_PATH, driver);
                     break;
@@ -242,10 +239,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        /*
         AbstractMotorController.resetAllMotors();
         for (ISubsystem system : subsystems) {
             system.initAuton();
         }
+         */
     }
 
     @Override

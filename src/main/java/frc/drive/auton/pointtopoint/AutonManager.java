@@ -30,8 +30,8 @@ public class AutonManager extends AbstractAutonManager {
         addToMetaList();
         if (driveManager instanceof DriveManagerStandard)
             drivingChild = (DriveManagerStandard) driveManager;
-        else
-            throw new IllegalStateException("hi wpilib");
+        //else
+            //throw new IllegalStateException("hi wpilib");
         autonPath = routine;
         ROT_PID = new PIDController(robotSettings.HEADING_PID.P, robotSettings.HEADING_PID.I, robotSettings.HEADING_PID.D);
         init();
