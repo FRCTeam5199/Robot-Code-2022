@@ -23,6 +23,7 @@ public class Swerve2022 extends DefaultConfig {
         ENABLE_2020_AGITATOR = false;
         ENABLE_2020_INDEXER = false;
         ENABLE_MUSIC = false;
+        ENABLE_PDP = true;
 
         //LEDS
         ENABLE_LEDS = false;
@@ -116,16 +117,16 @@ public class Swerve2022 extends DefaultConfig {
         SWERVE_TURN_BL = 5;
 
         //Shooter Motors
-        SHOOTER_LEADER_ID = 7; //talon
-        SHOOTER_FOLLOWER_ID = 8; //talon
+        SHOOTER_LEADER_ID = 9; //talon
+        SHOOTER_FOLLOWER_ID = 10; //talon
         SHOOTER_HOOD_ID = 32;
 
         //turret
         TURRET_YAW_ID = 33; //550
         //hopper2020
-        AGITATOR_MOTOR_ID = 10; //victor
-        INDEXER_MOTOR_ID = 11; //victor
+        AGITATOR_MOTOR_ID = 11; //victor
+        INDEXER_MOTOR_ID = 12; //victor
         //intake
-        INTAKE_MOTOR_ID = 12; //victor
+        INTAKE_MOTOR_ID = 13; //victor
     }
 }

@@ -28,8 +28,8 @@ max speed 3.6 m/s
 public class DriveManagerSwerve extends AbstractDriveManager {
     private static final boolean DEBUG = false;
     private final Translation2d driftOffset = new Translation2d(-0.6, 0);
-    private final double trackWidth = 13.25;
-    private final double trackLength = 21.5;
+    private final double trackWidth = 21;
+    private final double trackLength = 24.5;
     public SwerveModuleState[] moduleStates;
     public SwerveMotorController driverFR, driverBR, driverBL, driverFL;
     private Translation2d frontLeftLocation = new Translation2d(-trackLength / 2 / 39.3701, trackWidth / 2 / 39.3701);
@@ -51,7 +51,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     @Override
     public void init() {
         xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
-        createPIDControllers(new PID(0.0035, 0.000001, 0));
+        createPIDControllers(new PID(0.0035, 0.000001, 0.0));
         createDriveMotors();
         setDrivingPIDS(new PID(0.001, 0, 0.0001));
         setCANCoder();
@@ -134,6 +134,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         double forwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_Y) * (-1);
         double leftwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_X) * (1);
         double rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1);
+        System.out.println(forwards);
 
         driveMPS(adjustedDrive(forwards), adjustedDrive(leftwards), adjustedRotation(rotation));
     }
@@ -162,8 +163,9 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         FRpid.setSetpoint(FR + FRoffset);
         BRpid.setSetpoint(BR + BRoffset);
         BLpid.setSetpoint(BL + BLoffset);
-        System.out.println("Absolute Position/ current positiion: " + FLcoder.getAbsolutePosition());
-        System.out.println("turning speed/pid should be: " + FLpid.calculate(FLcoder.getAbsolutePosition()));
+       // System.out.println("setpoint no offset: " + FR);
+       // System.out.println("Absolute Position/ current positiion: " + FLcoder.getAbsolutePosition());
+       // System.out.println("turning speed/pid should be: " + FLpid.calculate(FLcoder.getAbsolutePosition()));
         driverFL.steering.moveAtPercent(FLpid.calculate(FLcoder.getAbsolutePosition()));
         driverFR.steering.moveAtPercent(FRpid.calculate(FRcoder.getAbsolutePosition()));
         driverBL.steering.moveAtPercent(BLpid.calculate(BLcoder.getAbsolutePosition()));
@@ -198,7 +200,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
          */
 
         double gearRatio = 1;//robotSettings.SWERVE_SDS_DRIVE_BASE.getDriveReduction() * robotSettings.SWERVE_SDS_DRIVE_BASE.getWheelDiameter();
-        double voltageMult = 70 / 371.0; // 127.4/371.0 is full speed
+        double voltageMult = 1; //70 / 371.0; // 127.4/371.0 is full speed
         //System.out.println(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
@@ -269,7 +271,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
         //try continuous here
         setSteeringContinuous(frontLeft.angle.getDegrees(), frontRight.angle.getDegrees(), backLeft.angle.getDegrees(), backRight.angle.getDegrees()); // <-- maybe here
-        if (DEBUG && robotSettings.DEBUG) {
+        if (true) {
             System.out.printf("%4f %4f %4f %4f \n", frontLeft.speedMetersPerSecond, frontRight.speedMetersPerSecond, backLeft.speedMetersPerSecond, backRight.speedMetersPerSecond);
         }
         setDrive(frontLeft.speedMetersPerSecond, frontRight.speedMetersPerSecond, backLeft.speedMetersPerSecond, backRight.speedMetersPerSecond); // before here
@@ -379,10 +381,10 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     public void setCANCoder() {
-        FRcoder = new CANCoder(11);
-        BRcoder = new CANCoder(13);
-        FLcoder = new CANCoder(12);
-        BLcoder = new CANCoder(14);
+        FRcoder = new CANCoder(13);
+        BRcoder = new CANCoder(11);
+        FLcoder = new CANCoder(14);
+        BLcoder = new CANCoder(12);
     }
 
     public void createPIDControllers(PID steeringPID) {

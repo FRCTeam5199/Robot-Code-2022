@@ -2,6 +2,7 @@ package frc.motors;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import org.jetbrains.annotations.Nullable;
 
 import static frc.robot.Robot.robotSettings;
@@ -55,7 +56,7 @@ public class SwerveMotorController {
      */
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                driver.getRotations(),
+                Units.inchesToMeters(driver.getSpeed()),
                 Rotation2d.fromDegrees(steering.getRotations()));
     }
 }
