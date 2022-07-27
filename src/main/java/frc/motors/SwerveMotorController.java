@@ -56,7 +56,7 @@ public class SwerveMotorController {
      */
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                Units.inchesToMeters(driver.getSpeed()),
+                (driver.getSpeed()),
                 Rotation2d.fromDegrees(steering.getRotations()));
     }
 }

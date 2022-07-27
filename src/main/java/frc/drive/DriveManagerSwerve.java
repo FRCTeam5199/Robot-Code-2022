@@ -51,7 +51,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     @Override
     public void init() {
         xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
-        createPIDControllers(new PID(0.0035, 0.000001, 0.0));
+        createPIDControllers(new PID(0.0035, 0.00000, 0.0));
         createDriveMotors();
         setDrivingPIDS(new PID(0.001, 0, 0.0001));
         setCANCoder();
@@ -140,7 +140,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     private boolean useFieldOriented() {
-        return xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) < 0.1;
+        return false;//xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) < 0.1;
     }
 
     private boolean dorifto() {
@@ -156,20 +156,24 @@ public class DriveManagerSwerve extends AbstractDriveManager {
      * @param BR Back right translation requested. units?
      */
     private void setSteeringContinuous(double FL, double FR, double BL, double BR) {
-        double FLoffset = -1, FRoffset = -1, BLoffset = 2, BRoffset = 2;
+        double FLoffset = -93, FRoffset = 10, BLoffset = -25, BRoffset = 90;
         // try removing off set
         // try forcing Fl,FR,BL,BR 0
         FLpid.setSetpoint(FL + FLoffset);
-        FRpid.setSetpoint(FR + FRoffset);
+        FRpid.setSetpoint(-FR + FRoffset);
         BRpid.setSetpoint(BR + BRoffset);
-        BLpid.setSetpoint(BL + BLoffset);
-       // System.out.println("setpoint no offset: " + FR);
-       // System.out.println("Absolute Position/ current positiion: " + FLcoder.getAbsolutePosition());
-       // System.out.println("turning speed/pid should be: " + FLpid.calculate(FLcoder.getAbsolutePosition()));
-        driverFL.steering.moveAtPercent(FLpid.calculate(FLcoder.getAbsolutePosition()));
-        driverFR.steering.moveAtPercent(FRpid.calculate(FRcoder.getAbsolutePosition()));
-        driverBL.steering.moveAtPercent(BLpid.calculate(BLcoder.getAbsolutePosition()));
-        driverBR.steering.moveAtPercent(BRpid.calculate(BRcoder.getAbsolutePosition()));
+        BLpid.setSetpoint(-BL + BLoffset);
+        System.out.println(driverFL.steering.getRotations());
+        // System.out.println("setpoint no offset: " + FR);
+        //System.out.println("Absolute Position/F current positiion FL: " + FLcoder.getAbsolutePosition());
+        //System.out.println("Absolute Position/ current positiion FR: " + FRcoder.getAbsolutePosition());
+        //System.out.println("Absolute Position/ current positiion BL: " + BLcoder.getAbsolutePosition());
+        //System.out.println("Absolute Position/ current positiion BR: " + BRcoder.getAbsolutePosition());
+        // System.out.println("turning speed/pid should be: " + FLpid.calculate(FLcoder.getAbsolutePosition()));
+         driverFL.steering.moveAtPercent(FLpid.calculate(FLcoder.getAbsolutePosition()));
+         driverFR.steering.moveAtPercent(-FRpid.calculate(FRcoder.getAbsolutePosition()));
+         driverBL.steering.moveAtPercent(-BLpid.calculate(BLcoder.getAbsolutePosition()));
+         driverBR.steering.moveAtPercent(BRpid.calculate(BRcoder.getAbsolutePosition()));
     }
 
     /**
@@ -200,7 +204,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
          */
 
         double gearRatio = 1;//robotSettings.SWERVE_SDS_DRIVE_BASE.getDriveReduction() * robotSettings.SWERVE_SDS_DRIVE_BASE.getWheelDiameter();
-        double voltageMult = 1; //70 / 371.0; // 127.4/371.0 is full speed
+        double voltageMult = 70 / 371.0; // 127.4/371.0 is full speed
         //System.out.println(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
@@ -242,7 +246,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
         //x+ m/s forwards, y+ m/s left, omega+ rad/sec ccw
         if (useFieldOriented() && !dorifto()) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMeters, yMeters, rotation, Rotation2d.fromDegrees(-guidance.imu.relativeYaw()));
+            speeds = new ChassisSpeeds(xMeters, yMeters, rotation);//speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMeters, yMeters, rotation, Rotation2d.fromDegrees(-guidance.imu.relativeYaw()));
         } else if (dorifto()) {
             speeds = new ChassisSpeeds(xMeters, 0, rotation);
         } else {
@@ -369,7 +373,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         driverBR.driver.setSensorToRealDistanceFactor(s2rf);
         driverBL.driver.setSensorToRealDistanceFactor(s2rf);
 
-        driverFR.driver.setBrake(true);
+        driverFR.driver.setInverted(false).setBrake(true);
         driverFL.driver.setInverted(true).setBrake(true);
         driverBR.driver.setBrake(true);
         driverBL.driver.setInverted(true).setBrake(true);

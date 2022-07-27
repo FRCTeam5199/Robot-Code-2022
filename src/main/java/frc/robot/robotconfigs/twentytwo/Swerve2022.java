@@ -117,16 +117,16 @@ public class Swerve2022 extends DefaultConfig {
         SWERVE_TURN_BL = 5;
 
         //Shooter Motors
-        SHOOTER_LEADER_ID = 9; //talon
-        SHOOTER_FOLLOWER_ID = 10; //talon
+        SHOOTER_LEADER_ID = 18; //talon
+        SHOOTER_FOLLOWER_ID = 19; //talon
         SHOOTER_HOOD_ID = 32;
 
         //turret
         TURRET_YAW_ID = 33; //550
         //hopper2020
-        AGITATOR_MOTOR_ID = 11; //victor
-        INDEXER_MOTOR_ID = 12; //victor
+        AGITATOR_MOTOR_ID = 15; //victor
+        INDEXER_MOTOR_ID = 16; //victor
         //intake
-        INTAKE_MOTOR_ID = 13; //victor
+        INTAKE_MOTOR_ID = 17; //victor
     }
 }
