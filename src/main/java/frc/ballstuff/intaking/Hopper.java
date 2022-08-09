@@ -237,11 +237,11 @@ public class Hopper implements ISubsystem {
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_IN) == ControllerEnums.ButtonStatus.DOWN) {
-                            agitatorTop.moveAtPercent(0.5);
+                            agitatorTop.moveAtPercent(0.25);
                         } else if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_OUT) == ControllerEnums.ButtonStatus.DOWN) {
-                            agitatorTop.moveAtPercent(-0.5);
+                            agitatorTop.moveAtPercent(-0.25);
                         } else if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            agitatorTop.moveAtPercent(0.5);
+                            agitatorTop.moveAtPercent(0.25);
                         } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
                             //lol imagine mechanical being bad
                             agitatorTop.moveAtPercent(0);
@@ -289,20 +289,20 @@ public class Hopper implements ISubsystem {
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
-                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitator.moveAtPercent(!isIndexed() ? 0.6 : 0);
-                        } else {
+                        if (!isIndexed())
+                            agitator.moveAtPercent(0.6);
+                        else {
                             agitator.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            agitatorTop.moveAtPercent(0.25);
+                            agitatorTop.moveAtPercent(0.50);
                         } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
                             //lol imagine mechanical being bad
                             agitatorTop.moveAtPercent(0);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(!isIndexed() ? 0.25 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.50 : 0);
                             //"Turn everything 25" -Morganne 3/27/2022 18:12
                         } else {
                             agitatorTop.moveAtPercent(0);

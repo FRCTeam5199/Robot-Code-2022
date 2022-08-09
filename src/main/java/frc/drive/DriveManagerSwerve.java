@@ -12,6 +12,7 @@ import frc.misc.*;
 import frc.motors.AbstractMotorController;
 import frc.motors.SwerveMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
+import frc.sensors.camera.IVision;
 
 import java.util.Objects;
 
@@ -40,7 +41,8 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     private PIDController FRpid, BRpid, BLpid, FLpid;
     private BaseController xbox;
     private CANCoder FRcoder, BRcoder, BLcoder, FLcoder;
-
+    double rotation;
+    public IVision visionCamera;
     //<Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
     public static double MAX_VELOCITY_METERS_PER_SECOND;
 
@@ -56,6 +58,9 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         setDrivingPIDS(new PID(0.001, 0, 0.0001));
         setCANCoder();
         setupSteeringEncoders();
+        if (robotSettings.ENABLE_VISION) {
+            visionCamera = IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE);
+        }
     }
 
     @Override
@@ -68,7 +73,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     @Override
     public void updateTest() {
         updateGeneric();
-        if (true /*robotSettings.DEBUG && DEBUG*/) {
+        if (robotSettings.DEBUG && DEBUG) {
             System.out.println(FRcoder.getAbsolutePosition() + " FR " + driverFR.steering.getRotations());
             //System.out.println(FLcoder.getAbsolutePosition() + " FL " + driverFL.steering.getRotations());
             //System.out.println(BRcoder.getAbsolutePosition() + " BR " + driverBR.steering.getRotations());
@@ -133,14 +138,20 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     private void driveSwerve() {
         double forwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_Y) * (-1);
         double leftwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_X) * (1);
-        double rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1);
-        System.out.println(forwards);
+        if ((xbox.get(ControllerEnums.XBoxButtons.A_CROSS) == ControllerEnums.ButtonStatus.DOWN) && visionCamera.hasValidTarget()){
+            visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+            rotation = visionCamera.getAngle()/54;
+        }else {
+            visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
+            rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1);
+        }
+        //System.out.println(forwards);
 
         driveMPS(adjustedDrive(forwards), adjustedDrive(leftwards), adjustedRotation(rotation));
     }
 
     private boolean useFieldOriented() {
-        return false;//xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) < 0.1;
+        return xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) < 0.1;
     }
 
     private boolean dorifto() {
@@ -163,7 +174,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         FRpid.setSetpoint(-FR + FRoffset);
         BRpid.setSetpoint(BR + BRoffset);
         BLpid.setSetpoint(-BL + BLoffset);
-        System.out.println(driverFL.steering.getRotations());
+        //System.out.println(driverFL.steering.getRotations());
         // System.out.println("setpoint no offset: " + FR);
         //System.out.println("Absolute Position/F current positiion FL: " + FLcoder.getAbsolutePosition());
         //System.out.println("Absolute Position/ current positiion FR: " + FRcoder.getAbsolutePosition());
@@ -246,11 +257,11 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
         //x+ m/s forwards, y+ m/s left, omega+ rad/sec ccw
         if (useFieldOriented() && !dorifto()) {
-            speeds = new ChassisSpeeds(xMeters, yMeters, rotation);//speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMeters, yMeters, rotation, Rotation2d.fromDegrees(-guidance.imu.relativeYaw()));
+            speeds = new ChassisSpeeds(xMeters, yMeters, rotation);
         } else if (dorifto()) {
             speeds = new ChassisSpeeds(xMeters, 0, rotation);
         } else {
-            speeds = new ChassisSpeeds(xMeters, yMeters, rotation);
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMeters, yMeters, rotation, Rotation2d.fromDegrees(-guidance.imu.relativeYaw()));
         }
 
         driveWithChassisSpeeds(speeds);
@@ -275,8 +286,8 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
         //try continuous here
         setSteeringContinuous(frontLeft.angle.getDegrees(), frontRight.angle.getDegrees(), backLeft.angle.getDegrees(), backRight.angle.getDegrees()); // <-- maybe here
-        if (true) {
-            System.out.printf("%4f %4f %4f %4f \n", frontLeft.speedMetersPerSecond, frontRight.speedMetersPerSecond, backLeft.speedMetersPerSecond, backRight.speedMetersPerSecond);
+        if (DEBUG) {
+            //System.out.printf("%4f %4f %4f %4f \n", frontLeft.speedMetersPerSecond, frontRight.speedMetersPerSecond, backLeft.speedMetersPerSecond, backRight.speedMetersPerSecond);
         }
         setDrive(frontLeft.speedMetersPerSecond, frontRight.speedMetersPerSecond, backLeft.speedMetersPerSecond, backRight.speedMetersPerSecond); // before here
     }

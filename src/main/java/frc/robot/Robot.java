@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
             case "2022-Comp":
                 return new Swerve2022(); //CompetitionRobot2022();
             case "ERR_NOT_FOUND":
-                return new CompetitionRobot2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
+                return new Swerve2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
             //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
             default:
                 throw new InitializationFailureException(String.format("Invalid ID %s for robot.", hostName), "In the SmartDashboard, set the key \"hostname\" to a correct value (ex: \"202#-(Comp/Prac)\")");

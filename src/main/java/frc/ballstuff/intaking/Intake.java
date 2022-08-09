@@ -97,8 +97,9 @@ public class Intake implements ISubsystem {
         MotorDisconnectedIssue.handleIssue(this, intakeMotor);
         intakeMotor.moveAtPercent(.65 * intakeMult);
         // intakeMotor.moveAtPercent(.6 * intakeMult);
-        if (robotSettings.DEBUG && DEBUG) {
+        if (/*robotSettings.DEBUG && DEBUG*/ true) {
             UserInterface.smartDashboardPutNumber("Intake Speed", intakeMult);
+           // System.out.println(intakeMult + "intake mult");
         }
         double speed;
         long RumbleCountdownEnd = 0;
@@ -151,7 +152,7 @@ public class Intake implements ISubsystem {
                 } else if (robotSettings.ENABLE_INTAKE_RUMBLE_LIMIT_SWITCH) {
                     boolean rumble = leftSensor.isTriggered() || rightSensor.isTriggered();
                     //xbox.rumble(rumble ? 1 : 0);
-                    if (rumble) {
+                    if(rumble) {
                         RumbleCountdownEnd = System.currentTimeMillis() + 500;
                     }
                     if (RumbleCountdownEnd >= System.currentTimeMillis()) {

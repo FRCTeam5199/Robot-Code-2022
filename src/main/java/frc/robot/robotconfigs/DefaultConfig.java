@@ -93,7 +93,7 @@ public abstract class DefaultConfig {
     //INTAKE
     public boolean ENABLE_INDEXER_AUTO_INDEX = true;
     public double INDEXER_DETECTION_CUTOFF_DISTANCE = -2;
-    public boolean ENABLE_INDEXER_PISTON_BLOCK = false;
+    public boolean ENABLE_INDEXER_PISTON_BLOCK = true;
 
     /**
      * The delay ticks that should be waited before breaking the beam

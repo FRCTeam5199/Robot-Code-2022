@@ -198,7 +198,6 @@ public class CompetitionRobot2022 extends DefaultConfig {
         CAMERA_ANGLE = 35.9;//48.0; //degrees
         TARGET_HEIGHT = 104; //Our field sucks. COMP: 104.0" (in inches)
         ENABLE_SHOOTER_RPM_ARTICULATION = false;
-        ENABLE_SHOOTER_RPM_ARTICULATION = false;
         CALIBRATED_SHOOTER_RPM_ARRAY = new double[][]{ //hood down
                 //Distance (in), RPM
                 {23, 2200},
