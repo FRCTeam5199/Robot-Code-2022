@@ -28,7 +28,7 @@ public enum ShootingEnums {
     FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
         //shooter.setPercentSpeed(shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));//.46);
         //shooter.setPercentSpeed(.3);
-        shooter.setSpeed(1500 + (2500 - 1500) * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));
+        shooter.setSpeed(3500 + (1000) * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));
         if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }
@@ -72,7 +72,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_FAR_2022(shooter -> {
-        double rpm = 2650;
+        double rpm = 2550;
         //change it to 2800 Morganne 3/21/22 23:03
         //now 2700 Morganne/Rick 3/21/22 23:09
         shooter.setSpeed(rpm, true);

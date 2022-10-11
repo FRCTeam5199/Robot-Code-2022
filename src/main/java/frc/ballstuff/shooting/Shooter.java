@@ -567,15 +567,15 @@ public class Shooter implements ISubsystem {
                 }
                 if (robotSettings.ENABLE_COLOR_SENSOR && !colorSensor.isColor(DriverStation.getAlliance() == DriverStation.Alliance.Red ? Color.kRed : Color.kBlue) && panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
                     ShootingEnums.WHAT_ARE_YOU_DOING_HERE_SHOO.shoot(this);
-                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN) {
+                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN)|| (joystickController.get(JoystickButtons.SEVEN) == ButtonStatus.DOWN)){
                     if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
                         ShootingEnums.FIRE_FROM_RPM_ARTICULATION_2022.shoot(this);
                     } else {
                         ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022.shoot(this);
                     }
-                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN) {
+                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN)|| (joystickController.get(JoystickButtons.TEN) == ButtonStatus.DOWN)) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022.shoot(this);
-                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN) {
+                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN)|| (joystickController.get(JoystickButtons.NINE) == ButtonStatus.DOWN)) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_FAR_2022.shoot(this);
                 } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
                     if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
@@ -638,7 +638,7 @@ public class Shooter implements ISubsystem {
         isConstSpeed = false;
         singleShot = false;
         if (robotSettings.SHOOTER_CONTROL_STYLE == ShootingControlStyles.SPEED_2021) {
-            leader.setPid(new PID(0.0025, 0.0000007, 0.03, 0));
+            leader.setPid(new PID(0.0032, 0.0000007, 0.03, 0));
         } else {
             leader.setPid(robotSettings.SHOOTER_PID);
             if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {

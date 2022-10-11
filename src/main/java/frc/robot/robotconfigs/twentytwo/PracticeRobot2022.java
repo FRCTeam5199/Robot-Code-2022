@@ -16,15 +16,15 @@ public class PracticeRobot2022 extends DefaultConfig {
     //Subsystems
     public PracticeRobot2022() {
         ENABLE_DRIVE = true;
-        ENABLE_SHOOTER = false;
-        ENABLE_HOPPER = false;
-        ENABLE_INDEXER = false;
-        ENABLE_AGITATOR = false;
-        ENABLE_AGITATOR_TOP = false;
-        ENABLE_INTAKE = false;
+        ENABLE_SHOOTER = true;
+        ENABLE_HOPPER = true;
+        ENABLE_INDEXER = true;
+        ENABLE_AGITATOR = true;
+        ENABLE_AGITATOR_TOP = true;
+        ENABLE_INTAKE = true;
         ENABLE_PNOOMATICS = false;
         ENABLE_INDEXER_AUTO_INDEX = true;
-        ENABLE_IMU = false;
+        ENABLE_IMU = true;
         ENABLE_CAMERA = false;
         ENABLE_CLIMBER_LOCK = false;
 
@@ -97,33 +97,34 @@ public class PracticeRobot2022 extends DefaultConfig {
         DRIVE_LEADER_R_ID = 3; //talon
         DRIVE_FOLLOWERS_R_IDS = new int[]{4}; //talon
 
-        IMU_ID = 22; //pigeon
+        IMU_ID = 18; //pigeon
 
         //Shooter
         SHOOTER_LEADER_ID = 5; //talon
         SHOOTER_FOLLOWER_ID = 6; //talon
         SHOOTER_USE_TWO_MOTORS = true;
         SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        SHOOTER_PID = new PID(1.9, .0001, 70, 0.0851136);
+        SHOOTER_PID = new PID(.08, 0.000, .02, 0.0);
         SHOOTER_CONST_SPEED_PID = new PID(1.9, .0001, 70, 0.0851136);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
         SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
+        SHOOTER_INVERTED = false;
 
         //Hopper
         ENABLE_BREAK_BEAM = true;
-        INDEXER_SENSOR_ID = 9;
+        INDEXER_SENSOR_ID = 0;
         INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
-        INDEXER_MOTOR_ID = 7;
-        AGITATOR_MOTOR_ID = 10;
-        AGITATOR_TOPBAR_MOTOR_ID = 9;
+        INDEXER_MOTOR_ID = 23;
+        AGITATOR_MOTOR_ID = 20;
+        AGITATOR_TOPBAR_MOTOR_ID =22;
         AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
 
         //Intake
-        INTAKE_MOTOR_ID = 32;
+        INTAKE_MOTOR_ID = 21;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_OLD;
-        INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INTAKE_IN_ID = 0;
         INTAKE_OUT_ID = 1;
 

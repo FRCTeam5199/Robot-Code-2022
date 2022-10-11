@@ -49,6 +49,7 @@ public class Hopper implements ISubsystem {
             case STANDARD:
             case STANDARD_2022:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
             case PRACTICE_2022:
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
@@ -76,6 +77,7 @@ public class Hopper implements ISubsystem {
             case STANDARD:
             case STANDARD_2022:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
             case PRACTICE_2022:
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
@@ -221,7 +223,10 @@ public class Hopper implements ISubsystem {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             indexer.moveAtPercent(!isIndexed() ? 0.05 : 0);
                         } else {
-                            indexer.moveAtPercent(0);
+                            if(controller.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN){
+                                indexer.moveAtPercent(0.5);
+                            }else
+                                indexer.moveAtPercent(0);
                         }
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
@@ -297,7 +302,7 @@ public class Hopper implements ISubsystem {
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
                         if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
-                            agitatorTop.moveAtPercent(0.50);
+                            agitatorTop.moveAtPercent(0.75);
                         } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
                             //lol imagine mechanical being bad
                             agitatorTop.moveAtPercent(0);
@@ -317,7 +322,7 @@ public class Hopper implements ISubsystem {
                         agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.25 : 0);
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.50 : 0);
                         //"I think 45 right now" -Morganne 3/27/2022 18:09
                     }
                 }
