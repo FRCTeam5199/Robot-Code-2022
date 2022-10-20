@@ -7,5 +7,5 @@ package frc.drive.auton;
  * @see frc.robot.robotconfigs.DefaultConfig
  */
 public enum AutonType {
-    GALACTIC_SEARCH, FOLLOW_PATH, GALACTIC_SCAM, POINT_TO_POINT
+    GALACTIC_SEARCH, FOLLOW_PATH, GALACTIC_SCAM, POINT_TO_POINT, SWERVE_P2P
 }
