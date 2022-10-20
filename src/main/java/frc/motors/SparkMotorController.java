@@ -93,7 +93,7 @@ public class SparkMotorController extends AbstractMotorController {
 
     @Override
     public double getRotations() {
-        return encoder.getPosition() * sensorToRealDistanceFactor;
+        return encoder.getPosition();
     }
 
     @Override

@@ -34,7 +34,7 @@ public class Swerve2022 extends DefaultConfig {
         ENABLE_INDEXER = true;
         ENABLE_INDEXER_PISTON_BLOCK = true;
         ENABLE_AGITATOR = true;
-        ENABLE_AGITATOR_TOP = false;
+        ENABLE_AGITATOR_TOP = true;
         ENABLE_PNOOMATICS = true;
 
         DRIVE_INVERT_LEFT = false;
@@ -63,7 +63,7 @@ public class Swerve2022 extends DefaultConfig {
         CLIMBER_CONTROL_STYLE = ClimberControlStyles.STANDARD_2022;
         //SWERVE_SDS_DRIVE_BASE = SdsModuleConfigurations.MK3_STANDARD;
 
-        AUTON_TYPE = AutonType.FOLLOW_PATH;
+        AUTON_TYPE = AutonType.SWERVE_P2P;
 
         DRIVEBASE_PID = new PID(0.0000001, 0, 0.0001);
         TURRET_PID = new PID(0.006, 0.00001, 0.001);
@@ -76,7 +76,7 @@ public class Swerve2022 extends DefaultConfig {
         WHEEL_DIAMETER = 4; //update: now it's used once
         TURN_SCALE = 0.7;
         DRIVE_SCALE = 1;
-        DRIVE_GEARING = 10 / 60.0;
+        DRIVE_GEARING = 1/6.86;
 
         //shooter
         SHOOTER_LEADER_ID = 42; //talon
@@ -113,6 +113,7 @@ public class Swerve2022 extends DefaultConfig {
         AUTO_SPEED = 3;
         AUTO_ROTATION_SPEED = 1;
         XBOX_CONTROLLER_USB_SLOT = 0;
+        XBOX_CONTROLLER_USB_SLOT2 = 3;
         FLIGHT_STICK_USB_SLOT = 1;
         BUTTON_PANEL_USB_SLOT = 2;
 
@@ -152,16 +153,16 @@ public class Swerve2022 extends DefaultConfig {
         //hopper
         ENABLE_BREAK_BEAM = true;
         BREAK_BEAM_DELAY_20ms = 1;
-        INDEXER_SENSOR_ID = 6;//7;
+        INDEXER_SENSOR_ID = 4;//7;
         //INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 59;
         AGITATOR_MOTOR_ID = 58; //spark
         AGITATOR_TOPBAR_MOTOR_ID = 57;
-        AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
-        INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+        INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
 
-        HOPPER_TOP_INVERT_MOTOR = true;
+        HOPPER_TOP_INVERT_MOTOR = false;
         HOPPER_AGITATOR_INVERT_MOTOR = true;
         HOPPER_INDEXER_INVERT_MOTOR = true;
 

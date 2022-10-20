@@ -34,6 +34,7 @@ public class SwerveMotorController {
                 case CAN_SPARK_MAX:
                     driver = new SparkMotorController(driverID);
             }
+            driver.setCurrentLimit(30);
         }
         if (steeringMotorType != null) {
             switch (steeringMotorType) {
@@ -46,6 +47,7 @@ public class SwerveMotorController {
                 case CAN_SPARK_MAX:
                     steering = new SparkMotorController(steeringID);
             }
+            steering.setCurrentLimit(30);
         }
     }
 

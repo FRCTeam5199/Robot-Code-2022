@@ -27,7 +27,7 @@ max speed 3.6 m/s
 
  */
 public class DriveManagerSwerve extends AbstractDriveManager {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private final Translation2d driftOffset = new Translation2d(-0.6, 0);
     private final double trackWidth = 21;
     private final double trackLength = 24.5;
@@ -41,7 +41,14 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     private PIDController FRpid, BRpid, BLpid, FLpid;
     private BaseController xbox;
     private CANCoder FRcoder, BRcoder, BLcoder, FLcoder;
+    boolean useLocalOrientation = false;
+    double startHeading = 0;
     double rotation;
+    double forwards;
+    double orgDeg = 0;
+    double leftwards;
+    double motorRot =0;
+    double currentMotorRot = 0;
     public IVision visionCamera;
     //<Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
     public static double MAX_VELOCITY_METERS_PER_SECOND;
@@ -89,6 +96,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         driveSwerve();
         if (xbox.get(ControllerEnums.XBoxButtons.LEFT_BUMPER) == ControllerEnums.ButtonStatus.DOWN) {
             guidance.imu.resetOdometry();
+            startHeading = guidance.imu.relativeYaw();
         }
     }
 
@@ -108,6 +116,8 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     public void initTeleop() {
         setupSteeringEncoders();
         resetSteeringEncoders();
+        useLocalOrientation = false;
+        guidance.imu.resetOdometry();
     }
 
     @Override
@@ -117,7 +127,6 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
     @Override
     public void initDisabled() {
-
     }
 
     @Override
@@ -136,22 +145,27 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     private void driveSwerve() {
-        double forwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_Y) * (-1);
-        double leftwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_X) * (1);
-        if ((xbox.get(ControllerEnums.XBoxButtons.A_CROSS) == ControllerEnums.ButtonStatus.DOWN) && visionCamera.hasValidTarget()){
-            visionCamera.setLedMode(IVision.VisionLEDMode.ON);
-            rotation = visionCamera.getAngle()/54;
-        }else {
-            visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
-            rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1);
-        }
-        //System.out.println(forwards);
-
+            forwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_Y) * (-1);
+            leftwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_X) * (1);
+            if ((xbox.get(ControllerEnums.XBoxButtons.A_CROSS) == ControllerEnums.ButtonStatus.DOWN) && visionCamera.hasValidTarget()) {
+                visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+                rotation = -(visionCamera.getAngle() / 15);
+                startHeading = guidance.imu.relativeYaw();
+            } else {
+                visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
+                if (Math.abs(xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X)) >= .2) {
+                    rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1.5);
+                    startHeading = guidance.imu.relativeYaw();
+                } else {
+                    rotation = (guidance.imu.relativeYaw() - startHeading) * -.05;
+                }
+            }
+            //System.out.println(forwards);
         driveMPS(adjustedDrive(forwards), adjustedDrive(leftwards), adjustedRotation(rotation));
     }
 
-    private boolean useFieldOriented() {
-        return xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) < 0.1;
+    private boolean useLocalOrientation() {
+        return (xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) > 0.1 || useLocalOrientation );
     }
 
     private boolean dorifto() {
@@ -166,8 +180,9 @@ public class DriveManagerSwerve extends AbstractDriveManager {
      * @param BL Back left translation requested. units?
      * @param BR Back right translation requested. units?
      */
-    private void setSteeringContinuous(double FL, double FR, double BL, double BR) {
-        double FLoffset = -93, FRoffset = 10, BLoffset = -25, BRoffset = 90;
+    private void
+    setSteeringContinuous(double FL, double FR, double BL, double BR) {
+        double FLoffset = -93, FRoffset = 10, BLoffset = -35, BRoffset = 90;
         // try removing off set
         // try forcing Fl,FR,BL,BR 0
         FLpid.setSetpoint(FL + FLoffset);
@@ -207,15 +222,15 @@ public class DriveManagerSwerve extends AbstractDriveManager {
             System.out.println("BL: " + BL);
             System.out.println("BR: " + BR);
         }
-        /*
-        driverFR.driver.moveAtVelocity(FPS_FR);
+
+        /*driverFR.driver.moveAtVelocity(FPS_FR);
         driverBR.driver.moveAtVelocity(FPS_BR);
         driverFL.driver.moveAtVelocity(FPS_FL);
-        driverBL.driver.moveAtVelocity(FPS_BL);
-         */
+        driverBL.driver.moveAtVelocity(FPS_BL);*/
+
 
         double gearRatio = 1;//robotSettings.SWERVE_SDS_DRIVE_BASE.getDriveReduction() * robotSettings.SWERVE_SDS_DRIVE_BASE.getWheelDiameter();
-        double voltageMult = 70 / 371.0; // 127.4/371.0 is full speed
+        double voltageMult = 95/ 371.0; // 127.4/371.0 is full speed
         //System.out.println(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
@@ -251,12 +266,19 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         driverBR.driver.setBrake(brake);
     }
 
+    public void setBrakeTurngin(boolean brake) {
+        driverFR.steering.setBrake(brake);
+        driverFL.steering.setBrake(brake);
+        driverBL.steering.setBrake(brake);
+        driverBR.steering.setBrake(brake);
+    }
+
     @Override
     public void driveMPS(double xMeters, double yMeters, double rotation) { // after here
         ChassisSpeeds speeds;
 
         //x+ m/s forwards, y+ m/s left, omega+ rad/sec ccw
-        if (useFieldOriented() && !dorifto()) {
+        if (useLocalOrientation() && !dorifto()) {
             speeds = new ChassisSpeeds(xMeters, yMeters, rotation);
         } else if (dorifto()) {
             speeds = new ChassisSpeeds(xMeters, 0, rotation);
@@ -265,6 +287,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         }
 
         driveWithChassisSpeeds(speeds);
+
     }
 
     @Override
@@ -277,7 +300,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
             double driftOffset = 3;
             double offset = trackLength / 2 / 39.3701;
             offset -= speeds.vxMetersPerSecond / driftOffset;
-            System.out.println("forwards: " + speeds.vxMetersPerSecond);
+            //System.out.println("forwards: " + speeds.vxMetersPerSecond);
             moduleStates = kinematics.toSwerveModuleStates(speeds, new Translation2d(offset, 0));
         }
 
@@ -359,7 +382,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
                 driverBL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_BL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_BL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
                 driverFL = new SwerveMotorController(robotSettings.SWERVE_DRIVE_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, robotSettings.SWERVE_TURN_FL, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
                 //rpm <=> rps <=> gearing <=> wheel circumference
-                s2rf = robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI);
+                s2rf = (1 / 60.0) * robotSettings.DRIVE_GEARING * (robotSettings.WHEEL_DIAMETER * Math.PI / 12);
                 freeSpeed = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX.MAX_SPEED_RPM;
                 break;
             }
@@ -407,9 +430,62 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         FRpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
         BLpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
         BRpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
+        BRpid = new PIDController(steeringPID.P, steeringPID.I, steeringPID.D);
         FLpid.enableContinuousInput(-180, 180);
         FRpid.enableContinuousInput(-180, 180);
         BLpid.enableContinuousInput(-180, 180);
         BRpid.enableContinuousInput(-180, 180);
+    }
+
+    public boolean driveWheetRot(double move) {
+        useLocalOrientation = true;
+        if (motorRot == 0) {
+            motorRot = Math.abs(move);
+            currentMotorRot = driverFR.driver.getRotations();
+        }
+
+        System.out.println("original motor rotation: " + currentMotorRot + "motorRot = " + motorRot + "how far motor has moved: " + driverFR.driver.getRotations());
+        if ((driverFR.driver.getRotations() > currentMotorRot - motorRot)&& move > 0) {
+            driverFR.driver.moveAtVelocity(-2);
+            driverFL.driver.moveAtVelocity(-2);
+            driverBR.driver.moveAtVelocity(-2);
+            driverBL.driver.moveAtVelocity(-2);
+            return false;
+        } else if ((driverFR.driver.getRotations() < currentMotorRot + motorRot) && move < 0) {
+            driverFR.driver.moveAtVelocity(2);
+            driverFL.driver.moveAtVelocity(2);
+            driverBR.driver.moveAtVelocity(2);
+            driverBL.driver.moveAtVelocity(2);
+            return false;
+        } else {
+            driverFR.driver.moveAtPercent(0);
+            driverFL.driver.moveAtPercent(0);
+            driverBR.driver.moveAtPercent(0);
+            driverBL.driver.moveAtPercent(0);
+            System.out.println("we are all done in here");
+            return true;
+        }
+    }
+
+    public boolean turnDegree(int degrees){
+        if(orgDeg == 0)
+            orgDeg = guidance.imu.relativeYaw();
+        if(orgDeg + degrees >= guidance.imu.relativeYaw()){
+
+            driverFR.driver.moveAtVelocity(-2);
+            driverFL.driver.moveAtVelocity(2);
+            driverBR.driver.moveAtVelocity(-2);
+            driverBL.driver.moveAtVelocity(2);
+            System.out.println("The original degree was: " + orgDeg + "The Current Degree was: " + guidance.imu.relativeYaw());
+            return false;
+        }else {
+            driverFR.driver.moveAtPercent(0);
+            driverFL.driver.moveAtPercent(0);
+            driverBR.driver.moveAtPercent(0);
+            driverBL.driver.moveAtPercent(0);
+            orgDeg = 0;
+            System.out.println("finished turning");
+            return true;
+        }
     }
 }

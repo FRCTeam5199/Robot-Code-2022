@@ -35,7 +35,7 @@ public class QuoteOfTheDay {
             "I'll start up Windows PowerShell because it is the best since Microsoft is the best and anything they make is the best.",
             "I understand what your saying... from a voodoo point of view.",
             "The bot started up without erroring, and I don't know why.",
-            "Uh its not supposed to do that",
+            "Uh its not supposed to do that", // its a feature not a bug
             "im in a call with a psychopath \nthis is heinous \nits not slander if its true",
             "Why isn't it working? Oh wait, I'm not on the wifi.",
             "Why cant i connect? would help if the bot was on :/",
@@ -46,7 +46,7 @@ public class QuoteOfTheDay {
             "Boy, have I got the solution for you. I call it Accidental Dental.",
             "It shooby dooby do be like that.",
             "Why is it being criiiiinge???",
-            "You said you would install it at the beginning of class. It's almost the end and it's still not on there.",
+            "You said you would install it at the beginning of class. It's almost the end and it's still not on there.", // probably refrencing me
             "If you want someone to blame, talk to Teddy.",
             "Yo, Bougie Arouji",
             "Only 00:12? The night is still young.",
@@ -76,11 +76,11 @@ public class QuoteOfTheDay {
             "Sterling: Here in soviet programmer fun time land, you do not turn robot; robot turns you.",
             "Ah I'm bleeding, it's probably fine - everyone",
             "Sterling: You did it so well that you out human-played yourself.",
-            "Alex: That's brutal"
+            "Alex: That's brutal"// that is brutal
     };
 
     /**
-     * Uh its not supposed to do that
+
      *
      * @return a baller quote
      */
