@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
                 return new Swerve2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
             //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
             default:
-                throw new InitializationFailureException(String.format("Invalid ID %s for robot.", hostName), "In the SmartDashboard, set the key \"hostname\" to a correct value (ex: \"202#-(Comp/Prac)\")");
+                return new PracticeRobot2022();//throw new InitializationFailureException(String.format("Invalid ID %s for robot.", hostName), "In the SmartDashboard, set the key \"hostname\" to a correct value (ex: \"202#-(Comp/Prac)\")");
         }
     }
 
@@ -209,6 +209,10 @@ public class Robot extends TimedRobot {
                     break;
                 case POINT_TO_POINT:
                     autonManager = new frc.drive.auton.pointtopoint.AutonManager(robotSettings.DEFAULT_ROUTINE, driver);
+                    break;
+                case SWERVE_P2P:
+                    autonManager = new frc.drive.auton.SwerveAuton.AutonManager(driver);
+                    break;
             }
         }
         if (robotSettings.ENABLE_PDP) {

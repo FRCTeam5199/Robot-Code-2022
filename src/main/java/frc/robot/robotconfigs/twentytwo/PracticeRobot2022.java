@@ -22,14 +22,15 @@ public class PracticeRobot2022 extends DefaultConfig {
         ENABLE_AGITATOR = true;
         ENABLE_AGITATOR_TOP = true;
         ENABLE_INTAKE = true;
-        ENABLE_PNOOMATICS = false;
-        ENABLE_INDEXER_AUTO_INDEX = true;
+        ENABLE_PNOOMATICS = true;
+        ENABLE_INDEXER_AUTO_INDEX = false;
         ENABLE_IMU = true;
         ENABLE_CAMERA = false;
         ENABLE_CLIMBER_LOCK = false;
+        ENABLE_INDEXER_PISTON_BLOCK = false;
+        ENABLE_CLIMBER =true;
 
         ENABLE_VISION = false;
-        ENABLE_CLIMBER = false;
 
         IMU_TYPE = AbstractIMU.SupportedIMU.PIGEON;
 
@@ -42,12 +43,12 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD_2022;
-        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD_2022;
+        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.COMP_2022;
         HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD_2022;
         CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD_2022;
 
         DRIVE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+        CLIMBER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
         CLIMBER_STG2_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
 
         AUTON_TYPE = AutonType.POINT_TO_POINT;
@@ -81,6 +82,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         AUTO_SPEED = 3;
         AUTO_ROTATION_SPEED = 1;
         XBOX_CONTROLLER_USB_SLOT = 0;
+        XBOX_CONTROLLER_USB_SLOT2 = 0;
         FLIGHT_STICK_USB_SLOT = 1;
         BUTTON_PANEL_USB_SLOT = 2;
 
@@ -104,15 +106,23 @@ public class PracticeRobot2022 extends DefaultConfig {
         SHOOTER_FOLLOWER_ID = 6; //talon
         SHOOTER_USE_TWO_MOTORS = true;
         SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
-        SHOOTER_PID = new PID(.08, 0.000, .02, 0.0);
+        SHOOTER_PID = new PID(.09, 0.000, .02, 0.0);
+        SHOOTER_PID = new PID(.09, 0.000, .02, 0.0);
         SHOOTER_CONST_SPEED_PID = new PID(1.9, .0001, 70, 0.0851136);
         SHOOTER_RECOVERY_PID = SHOOTER_PID;
         SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER = 0.68852459016393442622950819672129;
         SHOOTER_INVERTED = false;
+        ENABLE_HOOD_ARTICULATION = true;
+        ENABLE_HOOD_PISTON = true;
+        HOOD_ARTICULATOR_IN_ID = 0;
+        HOOD_ARTICULATOR_OUT_ID = 7;
+        BACKSPIN_ID = 7;
+        ENABLE_SHOOTER_BACKSPIN = true;
+        BACKSPIN_MULTIPLIER = 1.625;
+        BACKSPIN_PID = new PID(0.2046, 0, 0, 0.0478708469817501169864295741694);//BACKSPIN_PID = new PID(0.1, 0, 0, 0.05);//PID(.132, 0.0, 10, 0.0461851);
 
         //Hopper
         ENABLE_BREAK_BEAM = true;
-        INDEXER_SENSOR_ID = 0;
         INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
         INDEXER_MOTOR_ID = 23;
         AGITATOR_MOTOR_ID = 20;
@@ -120,19 +130,29 @@ public class PracticeRobot2022 extends DefaultConfig {
         AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
+        INDEXER_SENSOR_ID = 0;
+        ENABLE_INDEXER_BUTTON = true;
 
         //Intake
         INTAKE_MOTOR_ID = 21;
-        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_OLD;
+        INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_COMP;
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-        INTAKE_IN_ID = 0;
-        INTAKE_OUT_ID = 1;
+        INTAKE_IN_ID = 4;
+        INTAKE_OUT_ID = 3;
 
         //Climber
-        CLIMBER_STG1_MOTOR_ID = 11;
-        CLIMBER_STG2_MOTOR_ID = 12;
-        CLIMBER_LOCK_IN_ID = 2;
-        CLIMBER_LOCK_OUT_ID = 3;
+        CLIMBER_STG1_MOTOR_ID = 12;
+        CLIMBER_STG2_MOTOR_ID = 43;
+        CLIMBER_PISTON_IN_ID = 5;
+        CLIMBER_PISTON_OUT_ID = 2;
+        CLIMBER_PISTON2_IN_ID = 6;
+        CLIMBER_PISTON2_OUT_ID = 1;
+        ENABLE_CLIMBER_PISTON = true;
+        LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER = true;
+        USE_TWO_CLIMBER_PISTONS = true;
+        CLIMBER_BUTTON_LEFT_ID = 2;
+        CLIMBER_BUTTON_RIGHT_ID = 1;
+        CLIMBER_MOTOR_IDS = new int[]{43, 12};
 
         PCM_ID = 32;
     }

@@ -320,13 +320,11 @@ public enum ShootingEnums {
         } else {
             shooter.setSpeed(shooter.speed);
         }
-        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_HOOD_PISTON)
-            pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
         if (shooter.getSpeed() >= (shooter.speed * 0.95)) {
             shooter.timerTicks++;
             if(shooter.timerTicks >= 20)
                 hopper.setAll(true);
-            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK && (shooter.timerTicks >= 30))
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK && (shooter.timerTicks >= 40))
                 pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kReverse);
             if (shooter.timerTicks >= shooter.goalTicks) {
                 shooter.multiShot = false;

@@ -1,6 +1,9 @@
 package frc.telemetry.imu;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.PigeonIMU;
+
+import javax.swing.*;
 
 import static frc.robot.Robot.robotSettings;
 

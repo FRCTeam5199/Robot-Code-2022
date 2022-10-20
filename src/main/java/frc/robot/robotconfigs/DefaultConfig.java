@@ -238,6 +238,7 @@ public abstract class DefaultConfig {
     public int PDP_ID = 0;
 
     public int XBOX_CONTROLLER_USB_SLOT = 0;
+    public int XBOX_CONTROLLER_USB_SLOT2 = 3;
     public int FLIGHT_STICK_USB_SLOT = 1;
     public int BUTTON_PANEL_USB_SLOT = 2;
 

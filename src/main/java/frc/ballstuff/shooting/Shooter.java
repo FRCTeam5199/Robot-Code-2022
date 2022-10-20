@@ -27,7 +27,7 @@ import static frc.robot.Robot.*;
  * fast things)
  */
 public class Shooter implements ISubsystem {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     private final NetworkTableEntry P = UserInterface.SHOOTER_P.getEntry(),
             I = UserInterface.SHOOTER_I.getEntry(),
             D = UserInterface.SHOOTER_D.getEntry(),
@@ -71,7 +71,7 @@ public class Shooter implements ISubsystem {
     public void init() throws IllegalStateException {
         if (robotSettings.ENABLE_COLOR_SENSOR) {
             colorSensor = new RevColorSensor(I2C.Port.kOnboard);
-            System.out.println("Enabling color sensor.");
+            //System.out.println("Enabling color sensor.");
         }
 
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
@@ -725,16 +725,16 @@ public class Shooter implements ISubsystem {
 
     public double getSpeedToShoot() {
         if (distanceFromGoal >= robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][0]) { //high bound
-            System.out.println("A " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1]);
+            //System.out.println("A " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1]);
             return robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1];
         }
         if (distanceFromGoal <= robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][0]) { //low bound
-            System.out.println("B " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1]);
+           // System.out.println("B " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1]);
             return robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1];
         }
         for (int i = 1; i < robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length; i++) {
             if (distanceFromGoal < robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i][0]) {
-                System.out.println("C " + weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1]));
+               // System.out.println("C " + weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1]));
                 return weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1]);
             }
         }
@@ -887,6 +887,32 @@ public class Shooter implements ISubsystem {
             shooting = true;
             multiShot = true;
         }
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_HOOD_PISTON)
+            pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
+        ShootingEnums.FIRE_TIMED_2022.shoot(this);
+        updateShuffleboard();
+        if (!multiShot) {
+            shooting = false;
+            setPercentSpeed(0, 0);
+            hopper.setAll(false);
+            shooter.timerTicks = 0;
+        }
+        return !multiShot;
+    }
+    public boolean fireAmount2022(double seconds, int rpm, boolean hood) {
+        speed = rpm;
+        goalTicks = seconds * 50; //tick = 20ms. 50 ticks in a second.
+        if (!shooting) {
+            ticksPassed = 0;
+            shooting = true;
+            multiShot = true;
+        }
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_HOOD_PISTON)
+            if(hood) {
+                pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
+            }else {
+                pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kReverse);
+            }
         ShootingEnums.FIRE_TIMED_2022.shoot(this);
         updateShuffleboard();
         if (!multiShot) {

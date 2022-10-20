@@ -71,12 +71,13 @@ public class SparkMotorController extends AbstractMotorController {
     @Override
     public void moveAtVelocity(double velocityRPM) {
         //System.out.println("VelocityRPM " + velocityRPM);
-        myPid.setReference(velocityRPM, kVelocity, 0);
+        //System.out.println(this.sensorToRealDistanceFactor);
+        myPid.setReference(velocityRPM / this.sensorToRealDistanceFactor, kVelocity, 0);
     }
 
     @Override
     public void moveAtPosition(double pos) {
-        myPid.setReference(pos / sensorToRealDistanceFactor, kPosition, 0);
+        myPid.setReference(pos * sensorToRealDistanceFactor, kPosition, 0);
     }
 
     @Override

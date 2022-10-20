@@ -23,7 +23,7 @@ import static frc.robot.Robot.robotSettings;
  * @author Smaltin
  */
 public class Climber implements ISubsystem {
-    public BaseController joystick, buttonpanel;
+    public BaseController joystick, buttonpanel, xbox;
     private AbstractMotorController[] climberMotors;
     private AbstractMotorController climberStg1, climberStg2;
     private boolean isLocked = false;
@@ -93,12 +93,12 @@ public class Climber implements ISubsystem {
             }
             break;
             case STANDARD_2022: {
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN) {//&& !isLocked) {
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN || xbox.get(ControllerEnums.XBoxButtons.A_CROSS) == ButtonStatus.DOWN) {//&& !isLocked) {
                     for (AbstractMotorController motor : climberMotors) {
                         motor.moveAtPercent(1);
                     }
                     //climberStg1.moveAtPercent(-0.8);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN|| xbox.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
                     if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INTAKE) {
                         intake.deployIntake(false);
                     }
@@ -276,6 +276,7 @@ public class Climber implements ISubsystem {
             case STANDARD_2022:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT2, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
             case OLD_STANDARD_2022:
             case STANDARD:

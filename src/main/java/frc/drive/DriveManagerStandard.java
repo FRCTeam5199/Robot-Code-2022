@@ -28,7 +28,7 @@ import static frc.robot.Robot.robotSettings;
  * @see RobotTelemetryStandard
  */
 public class DriveManagerStandard extends AbstractDriveManager {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     public final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(robotSettings.DRIVEBASE_DISTANCE_BETWEEN_WHEELS);
     private final NetworkTableEntry
             P = UserInterface.DRIVE_P.getEntry(),
@@ -489,7 +489,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         }
         leaderL.setSensorToRealDistanceFactor(s2rf);
         leaderR.setSensorToRealDistanceFactor(s2rf);
-        System.out.println(s2rf + " !!!!!!!!!!!! ");
+       // System.out.println(s2rf + " !!!!!!!!!!!! ");
         followerL.follow(leaderL);
         followerR.follow(leaderR);
 
@@ -518,7 +518,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
      * @throws UnsupportedOperationException when there is no configuration for {@link frc.robot.robotconfigs.DefaultConfig#DRIVE_STYLE}
      */
     private void initMisc() throws UnsupportedOperationException {
-        System.out.println("THE XBOX CONTROLLER IS ON " + robotSettings.XBOX_CONTROLLER_USB_SLOT);
+       // System.out.println("THE XBOX CONTROLLER IS ON " + robotSettings.XBOX_CONTROLLER_USB_SLOT);
         switch (robotSettings.DRIVE_STYLE) {
             case EXPERIMENTAL:
             case BALL_SHIFTING_STANDARD:
@@ -606,7 +606,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
             driveCringe(0, rotationInRadians);
             double angleOffBound = (robotSettings.AUTON_TOLERANCE * 20);
             boolean isAligned = Math.abs(visionCamera.getAngle()) <= angleOffBound;  // 25 arctan(distance spread from center in inches / distFromTarget in inches + dia/2 in inches)
-            System.out.println("Am I aligned? " + (isAligned ? "yes, offset = " + visionCamera.getAngle() + " & bound = " + angleOffBound : "no, angle off = " + visionCamera.getAngle() + ", rot = " + rotationInRadians + ", bound = " + angleOffBound));
+           // System.out.println("Am I aligned? " + (isAligned ? "yes, offset = " + visionCamera.getAngle() + " & bound = " + angleOffBound : "no, angle off = " + visionCamera.getAngle() + ", rot = " + rotationInRadians + ", bound = " + angleOffBound));
             if (isAligned) AUTON_AIMING_PID.reset();
         }
     }
@@ -616,7 +616,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (visionCamera.hasValidTarget()) {
             driveCringe(speed, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle())));
             boolean isAligned = Math.abs(visionCamera.getAngle()) <= (robotSettings.AUTON_TOLERANCE * 25);
-            System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+           // System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
             if (isAligned) TELEOP_AIMING_PID.reset();
             return isAligned;
         } else {
@@ -637,7 +637,7 @@ public class DriveManagerStandard extends AbstractDriveManager {
         if (visionCamera.hasValidTarget()) {
             driveCringe(0, adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle() + .25)));
             boolean isAligned = Math.abs(visionCamera.getAngle() + 3.5) <= (robotSettings.AUTON_TOLERANCE * 22);
-            System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
+            //System.out.println("Am I aligned? " + (isAligned ? "yes" : "no"));
             if (isAligned) TELEOP_AIMING_PID.reset();
             return isAligned;
         } else {

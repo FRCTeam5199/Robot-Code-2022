@@ -90,6 +90,12 @@ public class PracticeRobot2021 extends DefaultConfig {
         GOAL_CAM_NAME = "GoalCamera";
         BALL_CAM_NAME = "BallCamera";
 
+        //pnoomatics Id
+        //HOOD_ARTICULATOR_IN_ID = 0;
+        //HOOD_ARTICULATOR_OUT_ID = 0;
+        //INTAKE_IN_ID = 0;
+        //INTAKE_OUT_ID = 0;
+
         //PowerDistribution
         PDP_ID = 0;
 
@@ -101,9 +107,10 @@ public class PracticeRobot2021 extends DefaultConfig {
         DRIVE_FOLLOWERS_R_IDS = new int[]{4}; //talon
 
         //Shooter Motors
-        SHOOTER_LEADER_ID = 7; //talon
-        SHOOTER_FOLLOWER_ID = 8; //talon
+        SHOOTER_LEADER_ID = 5; //talon
+        SHOOTER_FOLLOWER_ID = 6; //talon
         SHOOTER_HOOD_ID = 32;
+        BACKSPIN_ID = 7;
 
         //turret
         TURRET_YAW_ID = 33;
