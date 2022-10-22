@@ -91,11 +91,11 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         //Drive Motors
         DRIVE_LEADER_L_ID = 1; //talon
-        DRIVE_FOLLOWERS_L_IDS = new int[]{2}; //talon
+        DRIVE_FOLLOWERS_L_IDS = new int[]{8}; //talon
         DRIVE_LEADER_R_ID = 3; //talon
         DRIVE_FOLLOWERS_R_IDS = new int[]{4}; //talon
 
-        IMU_ID = 22; //pigeon
+        IMU_ID = 18; //pigeon
 
         //Shooter
         SHOOTER_LEADER_ID = 5; //talon
@@ -109,26 +109,26 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         //Hopper
         INDEXER_DETECTION_CUTOFF_DISTANCE = 4.15;
-        INDEXER_MOTOR_ID = 7;
-        AGITATOR_MOTOR_ID = 10;
-        AGITATOR_TOPBAR_MOTOR_ID = 9;
+        INDEXER_MOTOR_ID = 23;
+        AGITATOR_MOTOR_ID = 20;
+        AGITATOR_TOPBAR_MOTOR_ID = 22;
         AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
 
         //Intake
-        INTAKE_MOTOR_ID = 32;
+        INTAKE_MOTOR_ID = 21;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022;
         INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
         INTAKE_IN_ID = 0;
         INTAKE_OUT_ID = 1;
 
         //Climber
-        CLIMBER_STG1_MOTOR_ID = 11;
-        CLIMBER_STG2_MOTOR_ID = 12;
+        CLIMBER_STG1_MOTOR_ID = 12;
+        CLIMBER_STG2_MOTOR_ID = 43;
         CLIMBER_IN_ID = 2;
         CLIMBER_OUT_ID = 3;
 
-        PCM_ID = 33;
+        PCM_ID = 32;
     }
 }
