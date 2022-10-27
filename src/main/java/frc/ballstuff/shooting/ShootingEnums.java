@@ -46,7 +46,7 @@ public enum ShootingEnums {
             hopper.setAll(criteria);
         }
     }), FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter -> {
-        double rpm = 1950;
+        double rpm = 2750;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;

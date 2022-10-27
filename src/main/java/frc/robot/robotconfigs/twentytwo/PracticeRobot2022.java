@@ -154,6 +154,14 @@ public class PracticeRobot2022 extends DefaultConfig {
         CLIMBER_BUTTON_RIGHT_ID = 1;
         CLIMBER_MOTOR_IDS = new int[]{43, 12};
 
+        //limelight
+        ENABLE_VISION = true;
+        ENABLE_CAMERA = true;
+        GOAL_CAM_NAME = "GoalCamera";
+        BALL_CAM_NAME = "BallCamera";
+        GOAL_CAMERA_TYPE = IVision.SupportedVision.LIMELIGHT;
+        IS_LIMELIGHT_PITCH = false;
+
         PCM_ID = 32;
     }
 }

@@ -70,9 +70,10 @@ public class ArticulatedHood implements ISubsystem {
             case BACKSPIN_SHOOT_2022:
             case PRACTICE_2022:
             case STANDARD_2022:
+            case COMP_2022:
                 break;
             default:
-                createAndInitMotors();
+               // createAndInitMotors();
         }
     }
 
@@ -251,7 +252,7 @@ public class ArticulatedHood implements ISubsystem {
                 UserInterface.smartDashboardPutNumber("ArticulatedHoodAngle", interpolateBetweenTwoPositions(lastSeenCameraArea));
                 break;
             default:
-                throw new IllegalStateException("You can't articulate the hood without the panel.");
+            //    throw new IllegalStateException("You can't articulate the hood without the panel.");
         }
         if (DEBUG && robotSettings.DEBUG) {
             UserInterface.smartDashboardPutNumber("Hood Pos", hoodMotor.getRotations());
@@ -271,7 +272,8 @@ public class ArticulatedHood implements ISubsystem {
             case COMP_2022:
                 break;
             default:
-                moveToPos(moveTo, hoodMotor.getRotations());
+
+              //  moveToPos(moveTo, hoodMotor.getRotations());
         }
     }
 
