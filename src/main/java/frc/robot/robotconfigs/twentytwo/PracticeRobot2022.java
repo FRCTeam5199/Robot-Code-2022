@@ -132,6 +132,7 @@ public class PracticeRobot2022 extends DefaultConfig {
         AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INDEXER_SENSOR_ID = 0;
         ENABLE_INDEXER_BUTTON = true;
+        ENABLE_INDEXER_AUTO_INDEX = true;
 
         //Intake
         INTAKE_MOTOR_ID = 21;
