@@ -176,4 +176,9 @@ public class BallPhoton implements IVision {
     public void setLedMode(VisionLEDMode ledMode) {
         throw new UnsupportedOperationException("Cannot set LED mode " + ledMode.name() + " on " + getSubsystemName());
     }
+
+    @Override
+    public void setPipeline(int pipeline) {
+
+    }
 }

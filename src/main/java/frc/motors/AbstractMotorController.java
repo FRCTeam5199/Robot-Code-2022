@@ -248,7 +248,6 @@ public abstract class AbstractMotorController {
      */
     public abstract int getID();
 
-    public abstract int getMaxRPM();
 
 
     /**
