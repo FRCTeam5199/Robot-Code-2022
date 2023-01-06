@@ -104,7 +104,7 @@ public class ArticulatedHood implements ISubsystem {
             case STANDARD_2022:
             case COMP_2022:
                 if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
-                    if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.NINE) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.TEN) == ButtonStatus.DOWN) {
+                    if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.NINE) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.TEN) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.EIGHT) == ButtonStatus.DOWN) {
                         pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
                     }
                     if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.SEVEN) == ButtonStatus.DOWN) {

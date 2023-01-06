@@ -50,6 +50,8 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     double motorRot =0;
     double currentMotorRot = 0;
     public IVision visionCamera;
+    int limelightcounter = 0;
+    double placeholder1, placeholder2, placeholder3;
     //<Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * pi
     public static double MAX_VELOCITY_METERS_PER_SECOND;
 
@@ -62,7 +64,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
         createPIDControllers(new PID(0.0035, 0.00000, 0.0));
         createDriveMotors();
-        setDrivingPIDS(new PID(0.001, 0, 0.0001));
+        setDrivingPIDS(new PID(0.0002, 0, 0.0001, 0.03));
         setCANCoder();
         setupSteeringEncoders();
         if (robotSettings.ENABLE_VISION) {
@@ -71,6 +73,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     @Override
+
     public SubsystemStatus getSubsystemStatus() {
         if (driverFR.driver.isFailed() || driverBR.driver.isFailed() || driverFL.driver.isFailed() || driverBL.driver.isFailed() || driverFR.steering.isFailed() || driverBR.steering.isFailed() || driverFL.steering.isFailed() || driverBL.steering.isFailed())
             return SubsystemStatus.FAILED;
@@ -154,7 +157,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
             } else {
                 visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
                 if (Math.abs(xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X)) >= .2) {
-                    rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1.5);
+                    rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1.6);
                     startHeading = guidance.imu.relativeYaw();
                 } else {
                     rotation = (guidance.imu.relativeYaw() - startHeading) * -.05;
@@ -285,9 +288,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         } else {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMeters, yMeters, rotation, Rotation2d.fromDegrees(-guidance.imu.relativeYaw()));
         }
-
         driveWithChassisSpeeds(speeds);
-
     }
 
     @Override
@@ -444,24 +445,62 @@ public class DriveManagerSwerve extends AbstractDriveManager {
             currentMotorRot = driverFR.driver.getRotations();
         }
 
-        System.out.println("original motor rotation: " + currentMotorRot + "motorRot = " + motorRot + "how far motor has moved: " + driverFR.driver.getRotations());
+        //System.out.println("original motor rotation: " + currentMotorRot + "motorRot = " + motorRot + "how far motor has moved: " + driverFR.driver.getRotations());
         if ((driverFR.driver.getRotations() > currentMotorRot - motorRot)&& move > 0) {
-            driverFR.driver.moveAtVelocity(-2);
-            driverFL.driver.moveAtVelocity(-2);
-            driverBR.driver.moveAtVelocity(-2);
-            driverBL.driver.moveAtVelocity(-2);
+            driveMPS(adjustedDrive(-.3),adjustedDrive(0),adjustedRotation(0));
             return false;
         } else if ((driverFR.driver.getRotations() < currentMotorRot + motorRot) && move < 0) {
-            driverFR.driver.moveAtVelocity(2);
-            driverFL.driver.moveAtVelocity(2);
-            driverBR.driver.moveAtVelocity(2);
-            driverBL.driver.moveAtVelocity(2);
+            driveMPS(adjustedDrive(.3),adjustedDrive(0),adjustedRotation(0));
             return false;
         } else {
-            driverFR.driver.moveAtPercent(0);
-            driverFL.driver.moveAtPercent(0);
-            driverBR.driver.moveAtPercent(0);
-            driverBL.driver.moveAtPercent(0);
+            motorRot = 0;
+            resetWheels();
+            System.out.println("we are all done in here");
+            return true;
+        }
+    }
+
+    public boolean driveWheetRot(double move, double percent) {
+        useLocalOrientation = true;
+        if (motorRot == 0) {
+            motorRot = Math.abs(move);
+            currentMotorRot = driverFR.driver.getRotations();
+        }
+
+        //System.out.println("original motor rotation: " + currentMotorRot + "motorRot = " + motorRot + "how far motor has moved: " + driverFR.driver.getRotations());
+        if ((driverFR.driver.getRotations() > currentMotorRot - motorRot)&& move > 0) {
+            driveMPS(adjustedDrive(-percent),adjustedDrive(0),adjustedRotation(0));
+            return false;
+        } else if ((driverFR.driver.getRotations() < currentMotorRot + motorRot) && move < 0) {
+            driveMPS(adjustedDrive(percent),adjustedDrive(0),adjustedRotation(0));
+            return false;
+        } else {
+            motorRot = 0;
+            resetWheels();
+            System.out.println("we are all done in here");
+            return true;
+        }
+    }
+
+    public boolean driveWheetRot(double move, double percent, double movedeg) {
+        useLocalOrientation = false;
+        if (motorRot == 0) {
+            motorRot = Math.abs(move);
+            currentMotorRot = driverFR.driver.getRotations();
+        }
+
+        //System.out.println("original motor rotation: " + currentMotorRot + "motorRot = " + motorRot + "how far motor has moved: " + driverFR.driver.getRotations());
+        placeholder1 = driverFR.driver.getRotations() - move /driverFR.driver.getRotations();
+
+        if ((driverFR.driver.getRotations() > currentMotorRot - motorRot)&& move > 0) {
+            driveMPS(adjustedDrive(-percent),adjustedDrive(0),adjustedRotation(0));
+            return false;
+        } else if ((driverFR.driver.getRotations() < currentMotorRot + motorRot) && move < 0) {
+            driveMPS(adjustedDrive(percent),adjustedDrive(0),adjustedRotation(0));
+            return false;
+        } else {
+            motorRot = 0;
+            resetWheels();
             System.out.println("we are all done in here");
             return true;
         }
@@ -470,22 +509,48 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     public boolean turnDegree(int degrees){
         if(orgDeg == 0)
             orgDeg = guidance.imu.relativeYaw();
-        if(orgDeg + degrees >= guidance.imu.relativeYaw()){
-
-            driverFR.driver.moveAtVelocity(-2);
-            driverFL.driver.moveAtVelocity(2);
-            driverBR.driver.moveAtVelocity(-2);
-            driverBL.driver.moveAtVelocity(2);
-            System.out.println("The original degree was: " + orgDeg + "The Current Degree was: " + guidance.imu.relativeYaw());
+        if(orgDeg + degrees >= guidance.imu.relativeYaw() && degrees > 0){
+            driveMPS(adjustedDrive(0),adjustedDrive(0),adjustedRotation(.55));
+            //System.out.println("The original degree was: " + orgDeg + "The Current Degree was: " + guidance.imu.relativeYaw());
             return false;
-        }else {
-            driverFR.driver.moveAtPercent(0);
-            driverFL.driver.moveAtPercent(0);
-            driverBR.driver.moveAtPercent(0);
-            driverBL.driver.moveAtPercent(0);
+
+
+        }else if(orgDeg + degrees <= guidance.imu.relativeYaw() && degrees < 0) {
+                driveMPS(adjustedDrive(0),adjustedDrive(0),adjustedRotation(-.55));
+                //System.out.println("The original degree was: " + orgDeg + "The Current Degree was: " + guidance.imu.relativeYaw());
+                return false;
+        }else{
+            resetWheels();
             orgDeg = 0;
             System.out.println("finished turning");
             return true;
         }
+
+    }
+
+    public boolean aimYaw(){
+        visionCamera.setLedMode(IVision.VisionLEDMode.ON);
+        double neededRot= -(visionCamera.getAngle() / 15);
+        driveMPS(adjustedDrive(0),adjustedDrive(0),adjustedRotation(neededRot));
+        if(!visionCamera.hasValidTarget()){
+            //System.out.println("not target found");
+            if(limelightcounter == 1) {
+                resetWheels();
+                return true;
+            }
+            limelightcounter++;
+        }
+        if( Math.abs(visionCamera.getAngle()) <= 4){
+            //System.out.println("inrange of limelight");
+            resetWheels();
+            return true;
+        }
+        System.out.println("turning");
+        return false;
+    }
+
+    public void resetWheels(){
+        driveMPS(0.005, 0,0);
     }
 }
+

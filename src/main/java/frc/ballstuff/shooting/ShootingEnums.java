@@ -46,7 +46,7 @@ public enum ShootingEnums {
             hopper.setAll(criteria);
         }
     }), FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter -> {
-        double rpm = 1950;
+        double rpm = 2050;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
             boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
@@ -58,7 +58,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022(shooter -> {
-        double rpm = 2225;
+        double rpm = 2400;
         //"hood up and tarmack whatever fender is" -Morganne 19:13 3/27/2022
         //2200 rpm Morganne 19:19 3/27/2022
         shooter.setSpeed(rpm, true);
@@ -72,7 +72,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_FAR_2022(shooter -> {
-        double rpm = 2550;
+        double rpm = 3000;
         //change it to 2800 Morganne 3/21/22 23:03
         //now 2700 Morganne/Rick 3/21/22 23:09
         shooter.setSpeed(rpm, true);
