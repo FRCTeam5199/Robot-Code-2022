@@ -1,15 +1,10 @@
 package frc.ballstuff.intaking;
 
-import frc.misc.ISubsystem;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
-import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
-import frc.motors.VictorMotorController;
+import frc.misc.*;
+import frc.motors.*;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.vision.distancesensor.IDistanceSensor;
-import frc.vision.distancesensor.RevDistanceSensor;
+import frc.sensors.distancesensor.IDistanceSensor;
+import frc.sensors.distancesensor.RevDistanceSensor;
 
 import static com.revrobotics.Rev2mDistanceSensor.Port.kOnboard;
 import static com.revrobotics.Rev2mDistanceSensor.RangeProfile.kHighAccuracy;
@@ -44,7 +39,7 @@ public class Hopper2020 implements ISubsystem {
                     agitator.setSensorToRealDistanceFactor(1);
                     break;
                 case TALON_FX:
-                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
+                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_CANBUS, robotSettings.AGITATOR_MOTOR_ID);
                     agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                     break;
                 case VICTOR:
@@ -61,7 +56,7 @@ public class Hopper2020 implements ISubsystem {
                     indexer.setSensorToRealDistanceFactor(1);
                     break;
                 case TALON_FX:
-                    indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
+                    indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_CANBUS, robotSettings.INDEXER_MOTOR_ID);
                     indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                     break;
                 case VICTOR:

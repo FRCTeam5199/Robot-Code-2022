@@ -4,10 +4,12 @@ import com.revrobotics.*;
 import frc.misc.PID;
 import frc.robot.Robot;
 
+import static com.revrobotics.CANSparkMax.ControlType.*;
 import static com.revrobotics.CANSparkMax.IdleMode.kBrake;
 import static com.revrobotics.CANSparkMax.IdleMode.kCoast;
 import static com.revrobotics.CANSparkMaxLowLevel.MotorType.*;
 import static com.revrobotics.CANSparkMax.ControlType.*;
+import static com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless;
 
 /**
  * This works to wrap Neo's and maybe some other motors
@@ -80,19 +82,14 @@ public class SparkMotorController extends AbstractMotorController {
     }
 
     @Override
+    public void moveAtVoltage(double voltin) {
+        motor.setVoltage(voltin);
+    }
+
+    @Override
     public AbstractMotorController setBrake(boolean brake) {
         motor.setIdleMode(brake ? kBrake : kCoast);
         return this;
-    }
-
-    @Override
-    public double getVoltage() {
-        return motor.getBusVoltage() * motor.getAppliedOutput();
-    }
-
-    @Override
-    public void moveAtVoltage(double voltin) {
-        motor.setVoltage(voltin);
     }
 
     @Override
@@ -103,6 +100,11 @@ public class SparkMotorController extends AbstractMotorController {
     @Override
     public double getSpeed() {
         return encoder.getVelocity();
+    }
+
+    @Override
+    public double getVoltage() {
+        return motor.getBusVoltage() * motor.getAppliedOutput();
     }
 
     @Override
@@ -170,8 +172,19 @@ public class SparkMotorController extends AbstractMotorController {
     }
 
     @Override
+    public int getMaxRPM() {
+        return SupportedMotors.CAN_SPARK_MAX.MAX_SPEED_RPM;
+    }
+
+    @Override
     public void moveAtPercent(double percent) {
         motor.set(percent);
+    }
+
+    @Override
+    public AbstractMotorController unfollow() {
+        motor.follow(motor);
+        return this;
     }
 
     @Override
@@ -187,6 +200,11 @@ public class SparkMotorController extends AbstractMotorController {
     }
 
     @Override
+    public void setRealFactorFromMotorRPS(double r2rf) {
+        sensorToRealDistanceFactor = r2rf;
+    }
+
+    @Override
     public double getMotorTemperature() {
         return motor.getMotorTemperature();
     }
@@ -198,11 +216,6 @@ public class SparkMotorController extends AbstractMotorController {
 
     public void moveAtPositionSmart(double pos) {
         myPid.setReference(pos / sensorToRealDistanceFactor, kSmartMotion, 0);
-    }
-
-    @Override
-    public int getMaxRPM() {
-        return SupportedMotors.CAN_SPARK_MAX.MAX_SPEED_RPM;
     }
 
     public void setAllowedClosedLoopError(double threshold) {

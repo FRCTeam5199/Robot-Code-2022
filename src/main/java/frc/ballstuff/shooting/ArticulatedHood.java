@@ -2,14 +2,10 @@ package frc.ballstuff.shooting;
 
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.controllers.BaseController;
-import frc.misc.ISubsystem;
-import frc.misc.PID;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
-import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
+import frc.misc.*;
+import frc.motors.*;
 import frc.robot.Robot;
 
 import static frc.controllers.ControllerEnums.*;
@@ -50,9 +46,16 @@ public class ArticulatedHood implements ISubsystem {
             case SPEED_2021:
             case STANDARD_OFFSEASON_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
+            case BACKSPIN_SHOOT_2022:
+            case PRACTICE_2022:
+            case STANDARD_2022:
             case STANDARD:
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                break;
+            case COMP_2022:
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
                 break;
             case BOP_IT:
                 joystickController = BaseController.createOrGet(1, BaseController.Controllers.BOP_IT_CONTROLLER);
@@ -63,7 +66,14 @@ public class ArticulatedHood implements ISubsystem {
             default:
                 throw new IllegalStateException("There is no UI configuration for " + robotSettings.SHOOTER_CONTROL_STYLE.name() + " to control the articulated hood. Please implement me");
         }
-        createAndInitMotors();
+        switch (robotSettings.SHOOTER_CONTROL_STYLE) {
+            case BACKSPIN_SHOOT_2022:
+            case PRACTICE_2022:
+            case STANDARD_2022:
+                break;
+            default:
+                createAndInitMotors();
+        }
     }
 
     @Override
@@ -88,9 +98,32 @@ public class ArticulatedHood implements ISubsystem {
 
     @Override
     public void updateGeneric() { //FIVE UP THREE DOWN
-        double currentPos = hoodMotor.getRotations();
+        double currentPos;
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
+            case BACKSPIN_SHOOT_2022:
+            case STANDARD_2022:
+            case COMP_2022:
+                if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
+                    if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN) {
+                        pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
+                    }
+                    if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN) {
+                        pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kReverse);
+                    }
+                }
+                break;
+            case PRACTICE_2022:
+                if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
+                    if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN) {
+                        pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
+                    }
+                    if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN) {
+                        pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kReverse);
+                    }
+                }
+                break;
             case ACCURACY_2021:
+                currentPos = hoodMotor.getRotations();
                 if (currentPos > robotSettings.SHOOTER_HOOD_MAX_POS) {
                     moveTo = -3;
                     hoodMotor.moveAtPercent(0.1);
@@ -122,6 +155,7 @@ public class ArticulatedHood implements ISubsystem {
                 }
                 break;
             case SPEED_2021:
+                currentPos = hoodMotor.getRotations();
                 if (currentPos > robotSettings.SHOOTER_HOOD_MAX_POS) {
                     moveTo = -3;
                     hoodMotor.moveAtPercent(0.1);
@@ -151,6 +185,7 @@ public class ArticulatedHood implements ISubsystem {
                 } else moveToPosFromButtons();
                 break;
             case STANDARD:
+                currentPos = hoodMotor.getRotations();
                 if (HEIGHT_OVERRIDE.getBoolean(false)) {
                     moveToPos(HOOD_HEIGHT.getDouble(0), currentPos);
                 } else if (currentPos > robotSettings.SHOOTER_HOOD_MAX_POS) {
@@ -177,6 +212,7 @@ public class ArticulatedHood implements ISubsystem {
                 break;
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021:
+                currentPos = hoodMotor.getRotations();
                 if (!shooter.tryFiringBalls && shooter.isValidTarget()) {
                     lastSeenCameraArea = Robot.shooter.goalCamera.getSize();
                 }
@@ -225,8 +261,18 @@ public class ArticulatedHood implements ISubsystem {
                 VISION_ESTIMATE_HEIGHT.setNumber(requiredArticulationForTargetSize(shooter.goalCamera.getSize(), robotSettings.CALIBRATED_HOOD_POSITION_ARRAY));
             }
         }
-        if (robotSettings.SHOOTER_CONTROL_STYLE != Shooter.ShootingControlStyles.STANDARD && robotSettings.SHOOTER_CONTROL_STYLE != Shooter.ShootingControlStyles.STANDARD_OFFSEASON_2021 && robotSettings.SHOOTER_CONTROL_STYLE != Shooter.ShootingControlStyles.EXPERIMENTAL_OFFSEASON_2021) //TODO update the old moveto value to use enums as it's kinda clunky
-            moveToPos(moveTo, currentPos);
+        switch (robotSettings.SHOOTER_CONTROL_STYLE) {
+            case STANDARD:
+            case STANDARD_OFFSEASON_2021:
+            case EXPERIMENTAL_OFFSEASON_2021:
+            case STANDARD_2022:
+            case PRACTICE_2022:
+            case BACKSPIN_SHOOT_2022:
+            case COMP_2022:
+                break;
+            default:
+                moveToPos(moveTo, hoodMotor.getRotations());
+        }
     }
 
     @Override
@@ -241,7 +287,8 @@ public class ArticulatedHood implements ISubsystem {
 
     @Override
     public void initAuton() {
-        hoodMotor.resetEncoder();
+        if (!robotSettings.ENABLE_HOOD_PISTON)
+            hoodMotor.resetEncoder();
     }
 
     @Override
@@ -251,7 +298,8 @@ public class ArticulatedHood implements ISubsystem {
 
     @Override
     public void initGeneric() {
-        hoodMotor.setBrake(true);
+        if (!robotSettings.ENABLE_HOOD_PISTON)
+            hoodMotor.setBrake(true);
     }
 
     @Override
@@ -419,7 +467,7 @@ public class ArticulatedHood implements ISubsystem {
                 ((SparkMotorController) hoodMotor).setAllowedClosedLoopError(.01);
                 break;
             case TALON_FX:
-                hoodMotor = new TalonMotorController(robotSettings.SHOOTER_HOOD_ID);
+                hoodMotor = new TalonMotorController(robotSettings.HOOD_MOTOR_CANBUS, robotSettings.SHOOTER_HOOD_ID);
                 hoodMotor.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 break;
             default:

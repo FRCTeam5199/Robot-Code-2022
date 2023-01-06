@@ -22,6 +22,11 @@ public class VictorMotorController extends AbstractMotorController {
     }
 
     @Override
+    public void setRealFactorFromMotorRPS(double r2rf) {
+        sensorToRealDistanceFactor = r2rf * 10 / Robot.robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
+    }
+
+    @Override
     public AbstractMotorController setInverted(boolean invert) {
         motor.setInverted(invert);
         return this;
@@ -44,6 +49,12 @@ public class VictorMotorController extends AbstractMotorController {
         } else
             throw new IllegalArgumentException("I cant follow that!");
         setInverted(invert);
+        return this;
+    }
+
+    @Override
+    public AbstractMotorController unfollow() {
+        motor.follow(motor);
         return this;
     }
 
@@ -153,7 +164,7 @@ public class VictorMotorController extends AbstractMotorController {
         motor.getFaults(foundFaults);
         failureFlag = foundFaults.hasAnyFault();
         if (foundFaults.UnderVoltage) ;
-            //report to PDP
+            //report to PowerDistribution
         else if (foundFaults.RemoteLossOfSignal)
             potentialFix = "Ensure that motor %d is plugged into can AND power";
         else if (foundFaults.APIError)

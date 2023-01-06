@@ -3,7 +3,7 @@ package frc.motors;
 import frc.gpws.Alarms;
 import frc.misc.PID;
 import frc.misc.UserInterface;
-import frc.motors.followers.AbstractFollowerMotorController;
+import frc.motors.followers.*;
 import frc.robot.Main;
 import frc.robot.Robot;
 
@@ -136,6 +136,16 @@ public abstract class AbstractMotorController {
      */
     public abstract boolean isFailed();
 
+    public abstract int getMaxRPM();
+
+    /**
+     * Different from {@link #setSensorToRealDistanceFactor(double)} because this will first convert sensor units to
+     * revolutions per second, and then apply the supplied conversion
+     *
+     * @param r2rf Conversion from motor RPS to real RPM, ft/s, etc
+     */
+    public abstract void setRealFactorFromMotorRPS(double r2rf);
+
     /**
      * In order to prevent out of control PID loops from emerging, especially coming out of a disable in test mde, we
      * set all motors to idle. If we really want them to move then this method will take no effect because
@@ -168,6 +178,13 @@ public abstract class AbstractMotorController {
     public AbstractMotorController follow(AbstractMotorController leader) {
         return follow(leader, false);
     }
+
+    /**
+     *
+     * @return this object for factory style construction
+     * @see AbstractFollowerMotorController
+     */
+    public abstract AbstractMotorController unfollow();
 
     /**
      * Have this motor follow another motor (must be the same motor ie talon to talon). This motor will be the child and
@@ -240,7 +257,7 @@ public abstract class AbstractMotorController {
      */
     public enum SupportedMotors {
         //Spark = Neo 550, Talon = Falcon 500, Victor = 775pros, Servo = whatever servo you put in. I didn't have a better place for this so it's here
-        CAN_SPARK_MAX(11710), TALON_FX(6380), VICTOR(18730), SERVO;
+        CAN_SPARK_MAX(11710), TALON_FX(6380), VICTOR(18730), SERVO, CANIVORE_TALON_FX, CANIVORE_VICTOR;
 
         /**
          * Read the name!
@@ -253,6 +270,37 @@ public abstract class AbstractMotorController {
 
         SupportedMotors() {
             MAX_SPEED_RPM = 0;
+        }
+
+        public AbstractFollowerMotorController createFollowerMotorsOfType(int... followerIDs) {
+            switch (this) {
+                case CAN_SPARK_MAX:
+                    return new SparkFollowerMotorsController(followerIDs);
+                case TALON_FX:
+                    return new TalonFollowerMotorController("rio", followerIDs);
+                case CANIVORE_TALON_FX:
+                    return new TalonFollowerMotorController("CANivore 1", followerIDs);
+                case VICTOR:
+                case SERVO:
+                default:
+                    throw new IllegalArgumentException("I cannot make a motor follower of type " + name());
+            }
+        }
+
+        public AbstractMotorController createMotorOfType(int ID) {
+            switch (this) {
+                case CAN_SPARK_MAX:
+                    return new SparkMotorController(ID);
+                case TALON_FX:
+                    return new TalonMotorController("rio", ID);
+                case VICTOR:
+                    return new VictorMotorController(ID);
+                case CANIVORE_TALON_FX:
+                    return new TalonMotorController("CANivore 1", ID);
+                case SERVO:
+                default:
+                    throw new IllegalArgumentException("I cannot make a motor of type " + name());
+            }
         }
     }
 }

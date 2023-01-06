@@ -5,15 +5,11 @@ import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.util.Units;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
-import frc.misc.InitializationFailureException;
-import frc.misc.PID;
-import frc.misc.SubsystemStatus;
+import frc.misc.*;
 import frc.motors.AbstractMotorController;
 import frc.motors.SwerveMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
@@ -201,7 +197,8 @@ public class DriveManagerSwerve extends AbstractDriveManager {
          */
 
         double gearRatio = 1;//robotSettings.SWERVE_SDS_DRIVE_BASE.getDriveReduction() * robotSettings.SWERVE_SDS_DRIVE_BASE.getWheelDiameter();
-        double voltageMult = 0.91 / 371.0;
+        double voltageMult = 70 / 371.0; // 127.4/371.0 is full speed
+        System.out.println(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverFL.driver.moveAtVoltage(adjustedDriveVoltage((FPS_FL) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
         driverBR.driver.moveAtVoltage(adjustedDriveVoltage((FPS_BR) * gearRatio * robotSettings.DRIVE_SCALE, voltageMult));
@@ -364,6 +361,10 @@ public class DriveManagerSwerve extends AbstractDriveManager {
         MAX_VELOCITY_METERS_PER_SECOND = freeSpeed / 60.0 */*
                 SdsModuleConfigurations.MK3_STANDARD.getDriveReduction() *
                 SdsModuleConfigurations.MK3_STANDARD.getWheelDiameter() **/ Math.PI;
+        driverFR.driver.setSensorToRealDistanceFactor(s2rf);
+        driverFL.driver.setSensorToRealDistanceFactor(s2rf);
+        driverBR.driver.setSensorToRealDistanceFactor(s2rf);
+        driverBL.driver.setSensorToRealDistanceFactor(s2rf);
 
         driverFR.driver.setBrake(true);
         driverFL.driver.setInverted(true).setBrake(true);

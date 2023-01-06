@@ -88,6 +88,20 @@ public class ControllerEnums {
         DOWN;
 
         /**
+         * @return returns true is this is {@link #DOWN}, else false
+         */
+        public boolean isPressed() {
+            return this == DOWN;
+        }
+
+        /**
+         * @return returns true is this is {@link #UP}, else false
+         */
+        public boolean isUp() {
+            return !isPressed();
+        }
+
+        /**
          * Gets the enumeration matching the boolean
          *
          * @param pressed whether the button is pressed or not
@@ -125,7 +139,7 @@ public class ControllerEnums {
      * @see XBoxController
      */
     public enum XBoxButtons implements ControllerInterfaces.IDiscreteInput {
-        A_CROSS(1), B_CIRCLE(2), X_SQUARE(3), Y_TRIANGLE(4), LEFT_BUMPER(5), RIGHT_BUMPER(6), GUIDE(7), MENU(8);
+        A_CROSS(1), B_CIRCLE(2), LEFT_JOYSTICK_BUTTON(9), RIGHT_JOYSTICK_BUTTON(10), Y_TRIANGLE(4), LEFT_BUMPER(5), RIGHT_BUMPER(6), GUIDE(7), MENU(8), X_SQUARE(3);
 
         public final int AXIS_VALUE;
 
@@ -189,7 +203,7 @@ public class ControllerEnums {
      * @see JoystickController
      */
     public enum JoystickButtons implements ControllerInterfaces.IDiscreteInput {
-        ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5), SIX(6), SEVEN(7), EIGHT(8), ELEVEN(11);
+        ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5), SIX(6), SEVEN(7), EIGHT(8), NINE(9), ELEVEN(11), TWELVE(12);
 
         public final int AXIS_VALUE;
 
@@ -318,6 +332,21 @@ public class ControllerEnums {
 
         BopItButtons(int value) {
             AXIS_VALUE = value;
+        }
+
+        @Override
+        public int getChannel() {
+            return AXIS_VALUE;
+        }
+    }
+
+    public enum ButtonPanelButtons2022 implements ControllerInterfaces.IDiscreteInput {
+        LOW_SHOT(1), INTAKE_UP(6), INTAKE_DOWN(11), FENDER_SHOT(2), TARMAC_SHOT(7), FAR_SHOT(12), PIVOT_PISTON_UP(10), PIVOT_PISTON_DOWN(9), AUX_3(13), AUX_2(14), AUX_1(15), AUX_4(8), AUX_5(3), FIRST_STAGE_DOWN(4), FIRST_STAGE_UP(5);
+
+        public final int AXIS_VALUE;
+
+        ButtonPanelButtons2022(int value) {
+            this.AXIS_VALUE = value;
         }
 
         @Override

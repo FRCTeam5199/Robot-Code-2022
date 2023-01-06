@@ -23,9 +23,9 @@ public class TalonMotorController extends AbstractMotorController {
     private final WPI_TalonFX motor;
     public boolean isFollower = false;
 
-    public TalonMotorController(int id) {
+    public TalonMotorController(String bus, int id) {
         super();
-        motor = new WPI_TalonFX(id);
+        motor = new WPI_TalonFX(id, bus);
         Chirp.talonMotorArrayList.add(this);
     }
 
@@ -76,6 +76,11 @@ public class TalonMotorController extends AbstractMotorController {
             throw new IllegalArgumentException("I cant follow that");
         setInverted(invert);
         return this;
+    }
+
+    @Override
+    public void setRealFactorFromMotorRPS(double r2rf) {
+        sensorToRealDistanceFactor = r2rf * 10 / Robot.robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
     }
 
     @Override
@@ -204,6 +209,13 @@ public class TalonMotorController extends AbstractMotorController {
                 followerMotor.moveAtPercent(percent);
             }
         }
+    }
+
+    @Override
+    public AbstractMotorController unfollow() {
+        motor.follow(motor);
+        motorFollowerList.remove(this);
+        return this;
     }
 
     @Override

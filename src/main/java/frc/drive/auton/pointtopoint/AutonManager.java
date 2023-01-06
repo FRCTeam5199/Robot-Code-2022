@@ -1,7 +1,8 @@
 package frc.drive.auton.pointtopoint;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc.ballstuff.intaking.Intake;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
@@ -12,7 +13,6 @@ import frc.misc.UserInterface;
 import frc.misc.UtilFunctions;
 import frc.motors.SparkMotorController;
 import frc.robot.Robot;
-import frc.telemetry.RobotTelemetryStandard;
 
 import static frc.robot.Robot.robotSettings;
 
@@ -23,6 +23,8 @@ public class AutonManager extends AbstractAutonManager {
     public AutonRoutines autonPath;
     public boolean specialActionComplete = false;
     public double yawBeforeTurn = 0, rotationOffset = 0.01;
+    private boolean isInTolerance = false;
+    private boolean isAiming = false;
 
     public AutonManager(AutonRoutines routine, AbstractDriveManager driveManager) {
         super(driveManager);
@@ -52,6 +54,7 @@ public class AutonManager extends AbstractAutonManager {
 
     @Override
     public void updateGeneric() {
+        UserInterface.smartDashboardPutNumber("Auton Stage", autonPath.currentWaypoint);
     }
 
     @Override
@@ -86,10 +89,14 @@ public class AutonManager extends AbstractAutonManager {
         if (autonPath.currentWaypoint >= autonPath.WAYPOINTS.size())
             return;
         updateGeneric();
+        if (isAiming){
+            drivingChild.aimAtTargetYaw();
+        }
         System.out.println("Home is: " + autonPath.WAYPOINTS.get(0).LOCATION + " and im going to " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION));
         Point point = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION);
-        if (attackPoint(point, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED)) {
-            System.out.println("IN TOLERANCE");
+        if (attackPoint(point, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED) || isInTolerance) {
+            isInTolerance = true;
+            DriverStation.reportWarning("IN TOLERANCE", false);
             System.out.println("Special Action: " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.toString());
             switch (autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION) {
                 case NONE:
@@ -128,10 +135,12 @@ public class AutonManager extends AbstractAutonManager {
                     break;
                 case INTAKE_IN:
                     Robot.intake.setIntake(Intake.IntakeDirection.IN);
+                    Robot.hopper.setAgitatorTopbar(true);
                     specialActionComplete = true;
                     break;
                 case INTAKE_OFF:
                     Robot.intake.setIntake(Intake.IntakeDirection.OFF);
+                    Robot.hopper.setAgitatorTopbar(false);
                     specialActionComplete = true;
                     break;
                 case INTAKE_UP:
@@ -146,24 +155,121 @@ public class AutonManager extends AbstractAutonManager {
                     specialActionComplete = Robot.turret.resetShooter();
                     break;
                 case AIM_ROBOT_AT_TARGET_PITCH:
-                    specialActionComplete = ((DriveManagerStandard)Robot.driver).aimAtTarget();
+                    specialActionComplete = drivingChild.aimAtTargetPitch();
+                    break;
+                case AIM_ROBOT_AT_TARGET_YAW:
+                    isAiming = true;
+                    specialActionComplete = true;
+                    break;
+                case AIM_ROBOT_AT_TARGET_YAW_STOP:
+                    isAiming = false;
+                    specialActionComplete = true;
+                    break;
+                case AIM_ROBOT_AT_TARGET_YAW_OFFSET_RIGHT:
+                    specialActionComplete = drivingChild.aimAtTargetYawOffsetRight();
                     break;
                 case DRIVE_180:
-                    specialActionComplete = ((DriveManagerStandard)Robot.driver).rotate180();
+                    specialActionComplete = drivingChild.rotateDegreesRight(180);
                     break;
-                case SHOOT_ALL_2022:
-                    specialActionComplete = Robot.shooter.fireAmount2022(5);
+                case DRIVE_40_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(40);
+                    break;
+                case DRIVE_137_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(137);
+                    break;
+                case DRIVE_165_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(165);
+                    break;
+                case DRIVE_160_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(160);
+                    break;
+                case DRIVE_180_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(180);
+                    break;
+                case DRIVE_130_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(130);
+                    break;
+                case DRIVE_135_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(135);
+                    break;
+                case DRIVE_20_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(20);
+                    break;
+                case DRIVE_3_REVERSE:
+                    specialActionComplete = drivingChild.rotateDegreesLeft(2.5);
+                    break;
+                case DRIVE_155:
+                    specialActionComplete = drivingChild.rotateDegreesRight(155);
+                    break;
+                case DRIVE_165:
+                    specialActionComplete = drivingChild.rotateDegreesRight(165);
+                    break;
+                case DRIVE_60:
+                    specialActionComplete = drivingChild.rotateDegreesRight(60);
+                    break;
+                case DRIVE_40:
+                    specialActionComplete = drivingChild.rotateDegreesRight(40);
+                    break;
+                case DRIVE_10:
+                    specialActionComplete = drivingChild.rotateDegreesRight(10);
+                    break;
+                case DRIVE_70:
+                    specialActionComplete = drivingChild.rotateDegreesRight(70);
+                    break;
+                case DRIVE_225:
+                    specialActionComplete = drivingChild.rotateDegreesRight(225);
+                    break;
+                case DRIVE_170:
+                    specialActionComplete = drivingChild.rotateDegreesRight(170);
+                    break;
+                case DRIVE_172:
+                    specialActionComplete = drivingChild.rotateDegreesRight(174);
+                    break;
+                case SHOOT_ALL_2022_FURTHER:
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2350);
+                    break;
+                case SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE:
+                    specialActionComplete = Robot.shooter.fireAmount2022(5, 2250);
+                    break;
+                case SHOOT_ALL_2022_FAR:
+                    specialActionComplete = Robot.shooter.fireAmount2022(2.0, 2300);
+                    break;
+                case SHOOT_ALL_2022_FAR_FRIAR:
+                    specialActionComplete = Robot.shooter.fireAmount2022(3, 2300);
+                    break;
+                case SHOOT_ALL_2022_VERY_FAR:
+                    specialActionComplete = Robot.shooter.fireAmount2022Spin(6, 3900);
+                    break;
+                case SHOOT_ALL_2022_NOT_FAR_ENOUGH:
+                    specialActionComplete = Robot.shooter.fireAmount2022(6, 2800);
+                    break;
+                case DRIVE_BACK_TIMED:
+                    specialActionComplete = drivingChild.driveTimed(100, false);
+                    break;
+                case WAIT_ONE:
+                    specialActionComplete = drivingChild.wait(50);
+                    break;
+                case WAIT_HALF:
+                    specialActionComplete = drivingChild.wait(25);
+                    break;
+                case DRIVE_BACK_TIMED_FRIAR:
+                    specialActionComplete = drivingChild.driveTimed(15, false);
+                    break;
+                case DRIVE_FORWARD_TIMED:
+                    specialActionComplete = drivingChild.driveTimed(75, true);
                     break;
                 default:
                     throw new UnsupportedOperationException("Cringe. You're unable to use the Special Action " + autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPECIAL_ACTION.name() + " in your auton.");
             }
             if (specialActionComplete) {
                 if (++autonPath.currentWaypoint < autonPath.WAYPOINTS.size()) {
+                    isInTolerance = false;
                     //throw new IllegalStateException("Holy crap theres no way it worked. This is illegal");
                     Point b = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION);
                     setupNextPosition(b);
                     //attackPoint(b, autonPath.WAYPOINTS.get(autonPath.currentWaypoint).SPEED);
                     specialActionComplete = false;
+                    ROT_PID.reset();
                 } else {
                     onFinish();
                 }
@@ -172,7 +278,7 @@ public class AutonManager extends AbstractAutonManager {
     }
 
     /**
-     * "Attack" (drive towards) a point on the field. Units are in meters and its scary.
+     * "Attack" (drive towards) a point on the field.
      *
      * @param point the {@link Point point on the field} to attack
      * @param speed the speed at which to do it
@@ -190,22 +296,19 @@ public class AutonManager extends AbstractAutonManager {
         }
         UserInterface.smartDashboardPutNumber("WheelRotations", drivingChild.leaderL.getRotations());
         boolean inTolerance = here.isWithin(robotSettings.AUTON_TOLERANCE * 3, point);
+        if (point.X <= -9000 && point.Y <= -9000)
+            inTolerance = true;
         UserInterface.smartDashboardPutNumber("rotOffset", -rotationOffset);
         UserInterface.smartDashboardPutString("Current Position", here.toString());
         if (!inTolerance) {
-            double turned = (drivingChild.guidance.imu.relativeYaw() - yawBeforeTurn) * -1;
-            UserInterface.smartDashboardPutNumber("Turned", turned);
+            double x = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION).X;
+            double y = autonPath.WAYPOINTS.get(autonPath.currentWaypoint).LOCATION.subtract(autonPath.WAYPOINTS.get(0).LOCATION).Y;
+            double targetHeading = speed < 0 ? drivingChild.guidance.realRetrogradeHeadingError(x,y) : drivingChild.guidance.realHeadingError(x,y);
 
-            rotationOffset = Math.toDegrees(Math.toRadians(rotationOffset) + Math.PI);
-            while (rotationOffset >= 360) rotationOffset -= 360;
-            while (rotationOffset <= -360) rotationOffset += 360;
-
-            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed, -ROT_PID.calculate(turned + rotationOffset) * robotSettings.AUTO_ROTATION_SPEED);
-            //-rotationOffset * robotSettings.AUTO_ROTATION_SPEED);
-            //System.out.println("DrivePure @ " + robotSettings.AUTO_SPEED * speed);
-            //System.out.println("Driving FPS " + robotSettings.AUTO_SPEED * speed);
+            drivingChild.drivePure(robotSettings.AUTO_SPEED * speed /* (robotSettings.INVERT_DRIVE_DIRECTION ? -1 : 0)*/, ROT_PID.calculate(targetHeading) * -robotSettings.AUTO_ROTATION_SPEED);
         } else {
             drivingChild.drivePure(0, 0);
+            if (robotSettings.DEBUG)
             System.out.println("In tolerance.");
             //System.out.println("Driving FPS " + 0);
         }
@@ -219,7 +322,7 @@ public class AutonManager extends AbstractAutonManager {
      */
     public void setupNextPosition(Point point) {
         yawBeforeTurn = drivingChild.guidance.imu.relativeYaw();
-        rotationOffset = ((RobotTelemetryStandard) drivingChild.guidance).angleFromHere(point.X, point.Y);
+        rotationOffset = drivingChild.guidance.angleFromHere(point.X, point.Y);
     }
 
     /**
@@ -237,6 +340,7 @@ public class AutonManager extends AbstractAutonManager {
     @Override
     public void initAuton() {
         robotSettings.autonComplete = false;
+        drivingChild.setBrake(true);
         if (robotSettings.ENABLE_IMU) {
             drivingChild.guidance.resetOdometry();
             drivingChild.guidance.imu.resetOdometry();

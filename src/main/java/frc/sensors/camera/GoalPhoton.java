@@ -1,9 +1,7 @@
-package frc.vision.camera;
+package frc.sensors.camera;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.networktables.*;
 import frc.misc.SubsystemStatus;
 
 import static frc.robot.Robot.robotSettings;
@@ -16,6 +14,7 @@ public class GoalPhoton implements IVision {
     private NetworkTableEntry pitch;
     private NetworkTableEntry pose;
     private LinearFilter filter;
+    private NetworkTable photon;
 
     /**
      * inits GoalPhoton
@@ -31,12 +30,11 @@ public class GoalPhoton implements IVision {
     @Override
     public void init() {
         filter = LinearFilter.movingAverage(5);
-        NetworkTableInstance table = NetworkTableInstance.getDefault();
-        NetworkTable cameraTable = table.getTable("photonvision").getSubTable(robotSettings.GOAL_CAM_NAME);
-        yaw = cameraTable.getEntry("targetYaw");
-        size = cameraTable.getEntry("targetArea");
-        hasTarget = cameraTable.getEntry("hasTarget");
-        pitch = cameraTable.getEntry("targetPitch");
+        photon = NetworkTableInstance.getDefault().getTable("photonvision").getSubTable(robotSettings.GOAL_CAM_NAME);
+        yaw = photon.getEntry("targetYaw");
+        size = photon.getEntry("targetArea");
+        hasTarget = photon.getEntry("hasTarget");
+        pitch = photon.getEntry("targetPitch");
     }
 
     @Override
@@ -116,6 +114,13 @@ public class GoalPhoton implements IVision {
             return filter.calculate(angle);
         }
         return 0;
+    }
+
+    @Override
+    public void setPipeline(int pipeline) {
+        if (pipeline >= 0 && pipeline <= 9) {
+            photon.getEntry("pipeline").setNumber(pipeline);
+        }
     }
 
     /**

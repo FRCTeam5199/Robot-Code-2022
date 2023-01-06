@@ -3,19 +3,17 @@ package frc.climber;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.controllers.BaseController;
+import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonStatus;
-import frc.misc.ISubsystem;
-import frc.misc.InitializationFailureException;
-import frc.misc.SubsystemStatus;
-import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
-import frc.motors.VictorMotorController;
+import frc.misc.*;
+import frc.motors.*;
 import frc.robot.Robot;
+import frc.sensors.LimitSwitchSensor;
 
 import java.util.Objects;
 
 import static frc.controllers.ControllerEnums.ButtonPanelButtons.*;
+import static frc.robot.Robot.intake;
 import static frc.robot.Robot.robotSettings;
 
 
@@ -29,6 +27,7 @@ public class Climber implements ISubsystem {
     private AbstractMotorController[] climberMotors;
     private AbstractMotorController climberStg1, climberStg2;
     private boolean isLocked = false;
+    private LimitSwitchSensor leftSensor, rightSensor;
 
     public Climber() {
         addToMetaList();
@@ -37,10 +36,15 @@ public class Climber implements ISubsystem {
 
     @Override
     public void init() {
-        if (robotSettings.CLIMBER_CONTROL_STYLE != ClimberControlStyles.STANDARD_2022)
+        if (robotSettings.USE_TWO_CLIMBING_STAGES) {
+            create2StageMotors();
+        } else {
             createMotors();
-        else
-            createCoolerMotors();
+        }
+        if (robotSettings.LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER) {
+            leftSensor = new LimitSwitchSensor(robotSettings.CLIMBER_BUTTON_LEFT_ID);
+            rightSensor = new LimitSwitchSensor(robotSettings.CLIMBER_BUTTON_RIGHT_ID);
+        }
         createControllers();
     }
 
@@ -89,17 +93,48 @@ public class Climber implements ISubsystem {
             }
             break;
             case STANDARD_2022: {
-                if (buttonpanel.get(AUX_TOP) == ButtonStatus.DOWN) {
-                    climberStg1.moveAtPercent(0.8);
-                } else if (buttonpanel.get(AUX_BOTTOM) == ButtonStatus.DOWN) {
-                    climberStg1.moveAtPercent(-0.8);
-                } else if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN) {
-                    climberStg2.moveAtPercent(0.8);
-                } else if (buttonpanel.get(LOWER_CLIMBER) == ButtonStatus.DOWN) {
-                    climberStg2.moveAtPercent(-0.8);
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN) {//&& !isLocked) {
+                    for (AbstractMotorController motor : climberMotors) {
+                        motor.moveAtPercent(1);
+                    }
+                    //climberStg1.moveAtPercent(-0.8);
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN) {
+                    if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INTAKE) {
+                        intake.deployIntake(false);
+                    }
+                    if (!robotSettings.LIMIT_SWITCH_ON_EACH_SIDE_CLIMBER) {
+                        for (AbstractMotorController motor : climberMotors) {
+                            motor.moveAtPercent(-1);
+                        }
+                    } else {
+                        if (!leftSensor.isTriggered()) {
+                            climberMotors[0].moveAtPercent(-1);
+                        } else {
+                            climberMotors[0].moveAtPercent(0);
+                        }
+                        if (!rightSensor.isTriggered()) {
+                            climberMotors[1].moveAtPercent(-1);
+                        } else {
+                            climberMotors[1].moveAtPercent(0);
+                        }
+                    }
+                    //climberStg1.moveAtPercent(0.8);
                 } else {
-                    climberStg1.moveAtPercent(0);
-                    climberStg2.moveAtPercent(0);
+                    if (robotSettings.USE_TWO_CLIMBING_STAGES) {
+                        climberStg1.moveAtPercent(0);
+                    } else {
+                        for (AbstractMotorController motor : climberMotors) {
+                            motor.moveAtPercent(0);
+                        }
+                    }
+                }
+                if (joystick.get(ControllerEnums.JoystickButtons.TWELVE) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_UP) == ButtonStatus.DOWN) {
+                    climberPiston(true);
+                } else if (joystick.get(ControllerEnums.JoystickButtons.ELEVEN) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_DOWN) == ButtonStatus.DOWN) {
+                    climberPiston(false);
+                    if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INTAKE) {
+                        intake.deployIntake(true);
+                    }
                 }
             }
             break;
@@ -112,27 +147,40 @@ public class Climber implements ISubsystem {
 
     @Override
     public void initTest() {
-
+        if (robotSettings.USE_TWO_CLIMBING_STAGES) {
+            climberStg1.setBrake(false);
+            climberStg2.setBrake(false);
+        } else {
+            for (AbstractMotorController motor : climberMotors) {
+                motor.setBrake(false);
+            }
+        }
     }
 
     @Override
     public void initTeleop() {
-
+        initGeneric();
     }
 
     @Override
     public void initAuton() {
-
+        initGeneric();
     }
 
     @Override
     public void initDisabled() {
-
     }
 
     @Override
     public void initGeneric() {
-
+        if (robotSettings.USE_TWO_CLIMBING_STAGES) {
+            climberStg1.setBrake(true);
+            climberStg2.setBrake(true);
+        } else {
+            for (AbstractMotorController motor : climberMotors) {
+                motor.setBrake(true);
+            }
+        }
     }
 
     @Override
@@ -141,16 +189,24 @@ public class Climber implements ISubsystem {
     }
 
     public void climberLocks(boolean deployed) {
-        if (robotSettings.ENABLE_PNOOMATICS)
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_LOCK)
             Robot.pneumatics.climberLock.set(deployed ? Value.kForward : Value.kReverse);
         isLocked = deployed;
     }
 
-    private void createCoolerMotors() {
+    public void climberPiston(boolean deployed) {
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_PISTON) {
+            Robot.pneumatics.climberPiston.set(deployed ? Value.kForward : Value.kReverse);
+            if (robotSettings.USE_TWO_CLIMBER_PISTONS)
+                Robot.pneumatics.climberPiston2.set(deployed ? Value.kForward : Value.kReverse);
+        }
+    }
+
+    private void create2StageMotors() {
         double s2rfstg1 = 1;
         switch (robotSettings.CLIMBER_MOTOR_TYPE) {
             case TALON_FX: {
-                climberStg1 = new TalonMotorController(robotSettings.CLIMBER_STG1_MOTOR_ID);
+                climberStg1 = new TalonMotorController(robotSettings.CLIMBER_MOTOR_CANBUS, robotSettings.CLIMBER_STG1_MOTOR_ID);
                 s2rfstg1 = 600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
             }
             break;
@@ -171,7 +227,7 @@ public class Climber implements ISubsystem {
         double s2rfstg2 = 1;
         switch (robotSettings.CLIMBER_STG2_MOTOR_TYPE) {
             case TALON_FX: {
-                climberStg2 = new TalonMotorController(robotSettings.CLIMBER_STG2_MOTOR_ID);
+                climberStg2 = new TalonMotorController(robotSettings.CLIMBER_MOTOR_CANBUS, robotSettings.CLIMBER_STG2_MOTOR_ID);
                 s2rfstg2 = 600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION;
             }
             break;
@@ -198,7 +254,7 @@ public class Climber implements ISubsystem {
                     climberMotors[indexer] = new VictorMotorController(robotSettings.CLIMBER_MOTOR_IDS[indexer]);
                     break;
                 case TALON_FX:
-                    climberMotors[indexer] = new TalonMotorController(robotSettings.CLIMBER_MOTOR_IDS[indexer]);
+                    climberMotors[indexer] = new TalonMotorController(robotSettings.CLIMBER_MOTOR_CANBUS, robotSettings.CLIMBER_MOTOR_IDS[indexer]);
                     break;
                 case CAN_SPARK_MAX:
                     climberMotors[indexer] = new SparkMotorController(robotSettings.CLIMBER_MOTOR_IDS[indexer]);
@@ -213,11 +269,15 @@ public class Climber implements ISubsystem {
     }
 
     private void createControllers() {
-        switch (robotSettings.INTAKE_CONTROL_STYLE) {
+        switch (robotSettings.CLIMBER_CONTROL_STYLE) {
             case FLIGHT_STICK:
                 joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
-            case ROBOT_2022:
+            case STANDARD_2022:
+                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                break;
+            case OLD_STANDARD_2022:
             case STANDARD:
                 buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 break;
@@ -243,6 +303,7 @@ public class Climber implements ISubsystem {
 
     public enum ClimberControlStyles {
         STANDARD,
+        OLD_STANDARD_2022,
         STANDARD_2022,
         WII,
         DRUM_TIME,

@@ -7,8 +7,8 @@ import frc.drive.auton.AutonType;
 import frc.misc.PID;
 import frc.motors.AbstractMotorController;
 import frc.robot.robotconfigs.DefaultConfig;
+import frc.sensors.camera.IVision;
 import frc.telemetry.imu.AbstractIMU;
-import frc.vision.camera.IVision;
 
 public class PracticeRobot2021 extends DefaultConfig {
     //Subsystems
@@ -71,7 +71,7 @@ public class PracticeRobot2021 extends DefaultConfig {
         motorPulleySize = 0;//?;
         driverPulleySize = 0;//?;
         CAMERA_HEIGHT = 0; //Inches
-        CAMERA_PITCH = 0; //Radians
+        CAMERA_ANGLE = 0; //Radians
         TARGET_HEIGHT = 0;//2.44; //Meters
 
         XBOX_CONTROLLER_DEADZONE = 0.07;
@@ -90,7 +90,7 @@ public class PracticeRobot2021 extends DefaultConfig {
         GOAL_CAM_NAME = "GoalCamera";
         BALL_CAM_NAME = "BallCamera";
 
-        //PDP
+        //PowerDistribution
         PDP_ID = 0;
 
         //Drive Motors

@@ -72,6 +72,7 @@ public abstract class BaseController {
     public enum Controllers {
         BOP_IT_CONTROLLER(BopItBasicController::new),
         BUTTON_PANEL_CONTROLLER(ButtonPanelController::new),
+        BUTTTON_PANEL_CONTROLLER_2022(ButtonPanelController2022::new),
         DRUM_CONTROLLER(DrumTimeController::new),
         JOYSTICK_CONTROLLER(JoystickController::new),
         SIX_BUTTON_GUITAR_CONTROLLER(SixButtonGuitarController::new),

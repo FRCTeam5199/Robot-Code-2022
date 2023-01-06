@@ -4,16 +4,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.ballstuff.shooting.Shooter;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
-import frc.misc.ISubsystem;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
+import frc.misc.*;
 import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
-import frc.motors.VictorMotorController;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.vision.distancesensor.IDistanceSensor;
-import frc.vision.distancesensor.RevDistanceSensor;
+import frc.sensors.*;
+import frc.sensors.distancesensor.IDistanceSensor;
+import frc.sensors.distancesensor.RevDistanceSensor;
 
 import java.util.Objects;
 
@@ -33,6 +29,7 @@ public class Hopper implements ISubsystem {
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
     private BaseController controller, panel;
+    public ISensor sensor;
 
     public Hopper() {
         addToMetaList();
@@ -46,8 +43,11 @@ public class Hopper implements ISubsystem {
      */
     private void initMisc() throws UnsupportedOperationException {
         switch (robotSettings.HOPPER_CONTROL_STYLE) {
-            case STANDARD:
+            case COMP_2022:
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
+            case STANDARD:
             case STANDARD_2022:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
                 break;
@@ -55,75 +55,70 @@ public class Hopper implements ISubsystem {
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
             default:
-                throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.DRIVE_STYLE.name() + " to control the drivetrain. Please implement me");
+                throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.HOPPER_CONTROL_STYLE.name() + " to control the hopper. Please implement me");
         }
-        if (robotSettings.DEBUG && DEBUG && controller != null)
-            System.out.println("Created a " + controller);
+        if (robotSettings.DEBUG && DEBUG && controller != null) System.out.println("Created a " + controller);
+    }
+
+    private void setBreak(boolean isBreak) {
+        if (robotSettings.ENABLE_INDEXER)
+            indexer.setBrake(isBreak);
+        if (robotSettings.ENABLE_AGITATOR)
+            agitator.setBrake(isBreak);
+        if (robotSettings.ENABLE_AGITATOR_TOP)
+            agitatorTop.setBrake(isBreak);
+    }
+
+    private void createControllers() {
+        switch (robotSettings.HOPPER_CONTROL_STYLE) {
+            case COMP_2022:
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                break;
+            case STANDARD:
+            case STANDARD_2022:
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                break;
+            case PRACTICE_2022:
+                controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
+            default:
+                throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.HOPPER_CONTROL_STYLE.name() + " to control the hopper. Please implement me");
+        }
     }
 
     @Override
     public void init() {
-        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX && !robotSettings.ENABLE_BREAK_BEAM && !robotSettings.ENABLE_INDEXER_BUTTON) {
             indexSensor = new RevDistanceSensor(kOnboard, kInches, kHighAccuracy);
             System.out.println("Enabling index sensor.");
+        } else {
+            if (robotSettings.ENABLE_BREAK_BEAM && robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                sensor = new BreakBeamSensor(robotSettings.INDEXER_SENSOR_ID);
+            } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                sensor = new LimitSwitchSensor(robotSettings.INDEXER_SENSOR_ID);
+            }
         }
         createAndInitMotors();
         initMisc();
+        createControllers();
     }
 
-
     private void createAndInitMotors() throws IllegalStateException {
-        if (robotSettings.ENABLE_AGITATOR)
-            switch (robotSettings.AGITATOR_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    agitator = new SparkMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(1);
-                    break;
-                case TALON_FX:
-                    agitator = new TalonMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    agitator = new VictorMotorController(robotSettings.AGITATOR_MOTOR_ID);
-                    agitator.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper agitator motor config for " + robotSettings.AGITATOR_MOTOR_TYPE.name());
-            }
-        if (robotSettings.ENABLE_AGITATOR_TOP)
-            switch (robotSettings.AGITATOR_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    agitatorTop = new SparkMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(1);
-                case TALON_FX:
-                    agitatorTop = new TalonMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    agitatorTop = new VictorMotorController(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
-                    agitatorTop.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper agitator topbar motor config for " + robotSettings.AGITATOR_TOP_MOTOR_TYPE.name());
-            }
-        if (robotSettings.ENABLE_INDEXER)
-            switch (robotSettings.INDEXER_MOTOR_TYPE) {
-                case CAN_SPARK_MAX:
-                    indexer = new SparkMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(1);
-                    break;
-                case TALON_FX:
-                    indexer = new TalonMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                case VICTOR:
-                    indexer = new VictorMotorController(robotSettings.INDEXER_MOTOR_ID);
-                    indexer.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
-                    break;
-                default:
-                    throw new IllegalStateException("No such supported hopper indexer motor config for " + robotSettings.INDEXER_MOTOR_TYPE.name());
-            }
-        agitatorTop.setInverted(true);
+        if (robotSettings.ENABLE_AGITATOR) {
+            agitator = robotSettings.AGITATOR_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_MOTOR_ID);
+            agitator.setRealFactorFromMotorRPS(1);
+            agitator.setInverted(robotSettings.HOPPER_AGITATOR_INVERT_MOTOR).setBrake(true);
+        }
+        if (robotSettings.ENABLE_AGITATOR_TOP) {
+            agitatorTop = robotSettings.AGITATOR_TOP_MOTOR_TYPE.createMotorOfType(robotSettings.AGITATOR_TOPBAR_MOTOR_ID);
+            agitatorTop.setRealFactorFromMotorRPS(1);
+            agitatorTop.setInverted(robotSettings.HOPPER_TOP_INVERT_MOTOR);
+        }
+        if (robotSettings.ENABLE_INDEXER) {
+            indexer = robotSettings.INDEXER_MOTOR_TYPE.createMotorOfType(robotSettings.INDEXER_MOTOR_ID);
+            indexer.setRealFactorFromMotorRPS(1);
+            indexer.setInverted(robotSettings.HOPPER_INDEXER_INVERT_MOTOR);
+        }
     }
 
     @Override
@@ -150,12 +145,9 @@ public class Hopper implements ISubsystem {
             updateTeleop();
             //agitator.moveAtPercent(0.6);
         } else {
-            if (robotSettings.ENABLE_AGITATOR)
-                agitator.moveAtPercent(0);
-            if (robotSettings.ENABLE_INDEXER)
-                indexer.moveAtPercent(0);
-            if (robotSettings.ENABLE_AGITATOR_TOP)
-                agitatorTop.moveAtPercent(0);
+            if (robotSettings.ENABLE_AGITATOR) agitator.moveAtPercent(0);
+            if (robotSettings.ENABLE_INDEXER) indexer.moveAtPercent(0);
+            if (robotSettings.ENABLE_AGITATOR_TOP) agitatorTop.moveAtPercent(0);
         }
     }
 
@@ -168,15 +160,21 @@ public class Hopper implements ISubsystem {
      */
     public double indexerSensorRange() {
         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-            return indexSensor.getDistance();
+            if (!robotSettings.ENABLE_BREAK_BEAM && !robotSettings.ENABLE_INDEXER_BUTTON) {
+                return indexSensor.getDistance();
+            } else {
+                return -3;
+            }
         }
         return -2;
     }
 
     public boolean isIndexed() {
-        return robotSettings.ENABLE_INDEXER_AUTO_INDEX
-                && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE
-                && indexerSensorRange() > 0;
+        if (robotSettings.ENABLE_BREAK_BEAM || robotSettings.ENABLE_INDEXER_BUTTON) {
+            return sensor.isTriggered();
+        } else {
+            return robotSettings.ENABLE_INDEXER_AUTO_INDEX && indexerSensorRange() < robotSettings.INDEXER_DETECTION_CUTOFF_DISTANCE && indexerSensorRange() > 0;
+        }
     }
 
     /**
@@ -222,7 +220,7 @@ public class Hopper implements ISubsystem {
                 if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            indexer.moveAtPercent(!isIndexed() ? 0.15 : 0);
+                            indexer.moveAtPercent(!isIndexed() ? 0.05 : 0);
                         } else {
                             indexer.moveAtPercent(0);
                         }
@@ -233,7 +231,7 @@ public class Hopper implements ISubsystem {
                         } else if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_OUT) == ControllerEnums.ButtonStatus.DOWN) {
                             agitator.moveAtPercent(-0.5);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitator.moveAtPercent(!isIndexed() ? 0.3 : 0);
+                            agitator.moveAtPercent(!isIndexed() ? 0.2 : 0);
                         } else {
                             agitator.moveAtPercent(0);
                         }
@@ -243,21 +241,85 @@ public class Hopper implements ISubsystem {
                             agitatorTop.moveAtPercent(0.5);
                         } else if (panel.get(ControllerEnums.ButtonPanelButtons.HOPPER_OUT) == ControllerEnums.ButtonStatus.DOWN) {
                             agitatorTop.moveAtPercent(-0.5);
+                        } else if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
+                            agitatorTop.moveAtPercent(0.5);
+                        } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
+                            //lol imagine mechanical being bad
+                            agitatorTop.moveAtPercent(0);
                         } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
-                            agitatorTop.moveAtPercent(!isIndexed() ? 0.4 : 0);
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.2 : 0);
                         } else {
                             agitatorTop.moveAtPercent(0);
                         }
                     }
                 } else {
                     if (robotSettings.ENABLE_INDEXER) {
-                        indexer.moveAtPercent(indexerActive ? 0.6 : 0);
+                        indexer.moveAtPercent(indexerActive ? 0.3 : 0);
+                    }
+                    if (robotSettings.ENABLE_AGITATOR) {
+                        agitator.moveAtPercent(agitatorActive ? 0.3 : 0);
+                    }
+                    if (robotSettings.ENABLE_AGITATOR_TOP) {
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.2 : 0);
+                    }
+                }
+                if (robotSettings.DEBUG && DEBUG) {
+                    UserInterface.smartDashboardPutBoolean("indexer enable", indexerActive);
+                    UserInterface.smartDashboardPutBoolean("agitator enable", agitatorActive);
+                    UserInterface.smartDashboardPutBoolean("agitator top enable", agitatorTopbarActive);
+                    UserInterface.smartDashboardPutNumber("indexer sensor", indexerSensorRange());
+                    UserInterface.smartDashboardPutBoolean("hopper indexed", isIndexed());
+                }
+                break;
+            }
+            case COMP_2022: {
+                if (!indexerActive && !agitatorActive && !agitatorTopbarActive) {
+                    if (robotSettings.ENABLE_INDEXER) {
+                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                            if (!isIndexed())
+                                indexer.moveAtPercent(0.8);//0.05*3.5);
+                                //Morganne set to 0.8 "all time" 3/19/22 17:34
+                                //"Can we only do tarmac from now on" -Morganne 3/19/22 16:42
+                            else {
+                                //double rot = indexer.getRotations() / indexer.sensorToRealDistanceFactor;
+                                //indexer.moveAtPosition(rot);
+                                indexer.moveAtPercent(0);
+                            }
+                        } else {
+                            indexer.moveAtPercent(0);
+                        }
+                    }
+                    if (robotSettings.ENABLE_AGITATOR) {
+                        if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                            agitator.moveAtPercent(!isIndexed() ? 0.6 : 0);
+                        } else {
+                            agitator.moveAtPercent(0);
+                        }
+                    }
+                    if (robotSettings.ENABLE_AGITATOR_TOP) {
+                        if (controller.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
+                            agitatorTop.moveAtPercent(0.25);
+                        } else if (controller.get(ControllerEnums.JoystickButtons.SIX) == ControllerEnums.ButtonStatus.DOWN) {
+                            //lol imagine mechanical being bad
+                            agitatorTop.moveAtPercent(0);
+                        } else if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
+                            agitatorTop.moveAtPercent(!isIndexed() ? 0.25 : 0);
+                            //"Turn everything 25" -Morganne 3/27/2022 18:12
+                        } else {
+                            agitatorTop.moveAtPercent(0);
+                        }
+                    }
+                } else {
+                    if (robotSettings.ENABLE_INDEXER) {
+                        indexer.moveAtPercent(indexerActive ? 0.8 : 0);//0.3*1.5 : 0);
+                        // Morganne 16:10 3/19/22 change it from 0.6 to 0.8
                     }
                     if (robotSettings.ENABLE_AGITATOR) {
                         agitator.moveAtPercent(agitatorActive ? 0.6 : 0);
                     }
                     if (robotSettings.ENABLE_AGITATOR_TOP) {
-                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
+                        agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.25 : 0);
+                        //"I think 45 right now" -Morganne 3/27/2022 18:09
                     }
                 }
                 if (robotSettings.DEBUG && DEBUG) {
@@ -270,13 +332,10 @@ public class Hopper implements ISubsystem {
                 break;
             }
             case PRACTICE_2022: {
-                setAll(controller.get(ControllerEnums.XBoxButtons.X_SQUARE) == ControllerEnums.ButtonStatus.DOWN);
-                if (robotSettings.ENABLE_AGITATOR_TOP)
-                    agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
-                if (robotSettings.ENABLE_AGITATOR)
-                    agitator.moveAtPercent(agitatorActive ? 0.5 : 0);
-                if (robotSettings.ENABLE_INDEXER)
-                    indexer.moveAtPercent(indexerActive ? 0.5 : 0);
+                setAll(controller.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ControllerEnums.ButtonStatus.DOWN);
+                if (robotSettings.ENABLE_AGITATOR_TOP) agitatorTop.moveAtPercent(agitatorTopbarActive ? 0.5 : 0);
+                if (robotSettings.ENABLE_AGITATOR) agitator.moveAtPercent(agitatorActive ? 0.5 : 0);
+                if (robotSettings.ENABLE_INDEXER) indexer.moveAtPercent(indexerActive ? 0.5 : 0);
                 break;
             }
         }
@@ -284,27 +343,27 @@ public class Hopper implements ISubsystem {
 
     @Override
     public void initTest() {
-
+        initGeneric();
     }
 
     @Override
     public void initTeleop() {
-
+        initGeneric();
     }
 
     @Override
     public void initAuton() {
-
+        initGeneric();
     }
 
     @Override
     public void initDisabled() {
-
+        setBreak(false);
     }
 
     @Override
     public void initGeneric() {
-
+        setBreak(true);
     }
 
     @Override
@@ -363,7 +422,7 @@ public class Hopper implements ISubsystem {
      * Used to change how the input is handled by the {@link Shooter} and what kind of controller to use
      */
     public enum HopperControlStyles {
-        STANDARD, STANDARD_2022, PRACTICE_2022;
+        STANDARD, STANDARD_2022, PRACTICE_2022, COMP_2022;
 
         private static SendableChooser<Shooter.ShootingControlStyles> myChooser;
 

@@ -13,7 +13,7 @@ public class UtilFunctions {
      * @author jojo2357
      */
     public static double weightedAverage(double voltage, double[] uppers, double[] lowers) {
-        return lowers[1] + (uppers[1] - lowers[1]) * (voltage - lowers[0]) * (uppers[0] - lowers[0]);
+        return lowers[1] + (uppers[1] - lowers[1]) * (voltage - lowers[0]) / (uppers[0] - lowers[0]);
     }
 
     /**
@@ -33,6 +33,15 @@ public class UtilFunctions {
      */
     public static double mathematicalMod(double value, double modulo) {
         return (value - Math.floor(value / modulo) * modulo);
+    }
+
+    /**
+     * Returns the given degree in the bounds of -359 to 359
+     * @param degrees I don't know how else to describe this
+     * @return the degrees wrapped properly
+     */
+    public static double wrapAround360(double degrees) {
+        return mathematicalMod(degrees + 180, 360) - 180;
     }
 
     /**

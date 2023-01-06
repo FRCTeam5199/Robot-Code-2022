@@ -1,21 +1,17 @@
 package frc.ballstuff.shooting;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.ButtonPanelButtons;
 import frc.controllers.ControllerEnums.ButtonStatus;
-import frc.misc.ISubsystem;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
-import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
+import frc.misc.*;
+import frc.motors.*;
 import frc.robot.Robot;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
+import frc.sensors.camera.IVision;
 import frc.telemetry.AbstractRobotTelemetry;
-import frc.vision.camera.IVision;
 
 import static frc.robot.Robot.*;
 
@@ -54,7 +50,7 @@ public class Turret implements ISubsystem {
                 turretMotor.setSensorToRealDistanceFactor(robotSettings.TURRET_SPROCKET_SIZE * robotSettings.TURRET_GEAR_RATIO * Math.PI / 30.0);
                 break;
             case TALON_FX:
-                turretMotor = new TalonMotorController(robotSettings.TURRET_YAW_ID);
+                turretMotor = new TalonMotorController(robotSettings.TURRET_MOTOR_CANBUS, robotSettings.TURRET_YAW_ID);
                 turretMotor.setSensorToRealDistanceFactor(robotSettings.TURRET_SPROCKET_SIZE * robotSettings.TURRET_GEAR_RATIO * Math.PI / 30 * 600.0 / 2048.0);
                 break;
             default:

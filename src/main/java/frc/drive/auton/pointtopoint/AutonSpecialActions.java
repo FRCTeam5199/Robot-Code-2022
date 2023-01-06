@@ -81,14 +81,47 @@ public enum AutonSpecialActions {
      * Uses the pitch of the vision camera to rotate the bot towards the target
      */
     AIM_ROBOT_AT_TARGET_PITCH,
+    AIM_ROBOT_AT_TARGET_YAW,
+    AIM_ROBOT_AT_TARGET_YAW_STOP,
+    AIM_ROBOT_AT_TARGET_YAW_FAR,
+    AIM_ROBOT_AT_TARGET_YAW_OFFSET_RIGHT,
 
     /**
      * Rotates the robot 180 degrees
      */
     DRIVE_180,
+    DRIVE_40_REVERSE,
+    DRIVE_137_REVERSE,
+    DRIVE_165_REVERSE,
+    DRIVE_160_REVERSE,
+    DRIVE_180_REVERSE,
+    DRIVE_130_REVERSE,
+    DRIVE_135_REVERSE,
+    DRIVE_20_REVERSE,
+    DRIVE_3_REVERSE,
+    DRIVE_225,
+    DRIVE_155,
+    DRIVE_70,
+    DRIVE_60,
+    DRIVE_40,
+    DRIVE_10,
+    DRIVE_165,
+    DRIVE_170,
+    DRIVE_172,
 
     /**
      * Shoots the two balls in the hopper for 2022
      */
-    SHOOT_ALL_2022
+    SHOOT_ALL_2022_FURTHER,
+    SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE,
+    SHOOT_ALL_2022_FAR,
+    SHOOT_ALL_2022_FAR_FRIAR,
+    SHOOT_ALL_2022_VERY_FAR,
+    SHOOT_ALL_2022_NOT_FAR_ENOUGH,
+
+    WAIT_ONE,
+    WAIT_HALF,
+    DRIVE_BACK_TIMED,
+    DRIVE_BACK_TIMED_FRIAR,
+    DRIVE_FORWARD_TIMED
 }

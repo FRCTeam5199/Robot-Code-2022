@@ -1,27 +1,25 @@
 package frc.ballstuff.shooting;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.ballstuff.intaking.Hopper2020;
 import frc.climber.Climber;
 import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
-import frc.controllers.ControllerEnums.ButtonPanelButtons;
-import frc.controllers.ControllerEnums.ButtonStatus;
-import frc.controllers.ControllerEnums.JoystickButtons;
-import frc.misc.ISubsystem;
-import frc.misc.PID;
-import frc.misc.SubsystemStatus;
-import frc.misc.UserInterface;
-import frc.motors.AbstractMotorController;
-import frc.motors.SparkMotorController;
-import frc.motors.TalonMotorController;
+import frc.controllers.ControllerEnums.*;
+import frc.misc.*;
+import frc.motors.*;
 import frc.robot.Robot;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
-import frc.vision.camera.IVision;
+import frc.sensors.camera.IVision;
+import frc.sensors.colorsensor.IColorSensor;
+import frc.sensors.colorsensor.RevColorSensor;
 
 import java.util.Objects;
 
+import static frc.misc.UtilFunctions.weightedAverage;
 import static frc.robot.Robot.*;
 
 /**
@@ -29,7 +27,7 @@ import static frc.robot.Robot.*;
  * fast things)
  */
 public class Shooter implements ISubsystem {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     private final NetworkTableEntry P = UserInterface.SHOOTER_P.getEntry(),
             I = UserInterface.SHOOTER_I.getEntry(),
             D = UserInterface.SHOOTER_D.getEntry(),
@@ -37,18 +35,29 @@ public class Shooter implements ISubsystem {
             constSpeed = UserInterface.SHOOTER_CONST_SPEED.getEntry(),
             calibratePID = UserInterface.SHOOTER_CALIBRATE_PID.getEntry(),
             rpmGraph = UserInterface.SHOOTER_RPM_GRAPH.getEntry(),
-            rpm = UserInterface.SHOOTER_RPM.getEntry();
+            backspinGraph = UserInterface.BACKSPIN_RPM_GRAPH.getEntry(),
+            rpm = UserInterface.SHOOTER_RPM.getEntry(),
+            BACKSPIN_P = UserInterface.BACKSPIN_P.getEntry(),
+            BACKSPIN_I = UserInterface.BACKSPIN_I.getEntry(),
+            BACKSPIN_D = UserInterface.BACKSPIN_D.getEntry(),
+            BACKSPIN_F = UserInterface.BACKSPIN_F.getEntry(),
+            calibrateBackspinPID = UserInterface.BACKSPIN_CALIBRATE_PID.getEntry(),
+            constSpeedBackspinMult = UserInterface.BACKSPIN_CONST_SPEED_MULT.getEntry();
     public double speed = 4200;
-    public int goalTicks = 20 * 15; //20 ticks = 1 second
+    public double goalTicks = 20 * 15; //20 ticks = 1 second
     public int ballsShot = 0, ticksPassed = 0, emptyIndexerTicks = 0, hopperCooldownTicks = 0, ballsToShoot = 0;
     public int timerTicks = 0;
     public IVision goalCamera;
-    public AbstractMotorController leader, follower;
+    public IColorSensor colorSensor;
+    public AbstractMotorController leader, follower, backSpin;
     public boolean isConstSpeed, isConstSpeedLast = false, shooting = false, isSpinningUp = false, isSpinningUpHeld, singleShot = false, multiShot = false, loadingIndexer = false;
     public boolean checkForDips = false;
     public boolean tryFiringBalls = false;
     BaseController panel, joystickController, xbox;
     private PID lastPID = PID.EMPTY_PID;
+    private PID backspinLastPID = PID.EMPTY_PID;
+    public double backspinMult = 1.625;
+    public double distanceFromGoal = 0;
 
     public Shooter() {
         addToMetaList();
@@ -60,12 +69,18 @@ public class Shooter implements ISubsystem {
      */
     @Override
     public void init() throws IllegalStateException {
+        if (robotSettings.ENABLE_COLOR_SENSOR) {
+            colorSensor = new RevColorSensor(I2C.Port.kOnboard);
+            System.out.println("Enabling color sensor.");
+        }
+
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
             case STANDARD_2022:
             case ACCURACY_2021:
             case SPEED_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021:
+            case BACKSPIN_SHOOT_2022:
             case STANDARD:
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
@@ -81,6 +96,11 @@ public class Shooter implements ISubsystem {
             case FLIGHT_STICK:
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
                 break;
+            case COMP_2022:
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                break;
             default:
                 throw new IllegalStateException("There is no UI configuration for " + robotSettings.SHOOTER_CONTROL_STYLE.name() + " to control the shooter. Please implement me");
         }
@@ -88,6 +108,7 @@ public class Shooter implements ISubsystem {
         if (robotSettings.ENABLE_VISION) {
             goalCamera = IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE);
         }
+        backspinMult = robotSettings.BACKSPIN_MULTIPLIER;
     }
 
     @Override
@@ -129,8 +150,13 @@ public class Shooter implements ISubsystem {
             case SPEED_2021:
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021:
+            case BACKSPIN_SHOOT_2022:
             case STANDARD:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+            case COMP_2022:
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
                 xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
             case FLIGHT_STICK:
@@ -165,18 +191,34 @@ public class Shooter implements ISubsystem {
      * @author Smaltin
      */
     private void updateShuffleboard() {
-        if (calibratePID.getBoolean(false)) {
-            PID readPid = new PID(P.getDouble(robotSettings.SHOOTER_PID.getP()), I.getDouble(robotSettings.SHOOTER_PID.getI()), D.getDouble(robotSettings.SHOOTER_PID.getD()), F.getDouble(robotSettings.SHOOTER_PID.getF()));
-            if (!lastPID.equals(readPid)) {
-                lastPID = readPid;
-                leader.setPid(lastPID);
-                if (robotSettings.DEBUG && DEBUG) {
-                    System.out.println("Set shooter pid to " + lastPID);
+        if (calibratePID.getBoolean(false) || calibrateBackspinPID.getBoolean(false)) {
+            if (calibratePID.getBoolean(false)) {
+                PID readPid = new PID(P.getDouble(robotSettings.SHOOTER_PID.getP()), I.getDouble(robotSettings.SHOOTER_PID.getI()), D.getDouble(robotSettings.SHOOTER_PID.getD()), F.getDouble(robotSettings.SHOOTER_PID.getF()));
+                if (!lastPID.equals(readPid)) {
+                    lastPID = readPid;
+                    leader.setPid(lastPID);
+                    if (robotSettings.DEBUG && DEBUG) {
+                        System.out.println("Set shooter pid to " + lastPID);
+                    }
+                }
+            }
+            if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
+                if (calibrateBackspinPID.getBoolean(false)) {
+                    PID backReadPid = new PID(BACKSPIN_P.getDouble(robotSettings.BACKSPIN_PID.getP()), BACKSPIN_I.getDouble(robotSettings.BACKSPIN_PID.getI()), BACKSPIN_D.getDouble(robotSettings.BACKSPIN_PID.getD()), BACKSPIN_F.getDouble(robotSettings.BACKSPIN_PID.getF()));
+                    if (!backspinLastPID.equals(backReadPid)) {
+                        backspinLastPID = backReadPid;
+                        backSpin.setPid(backspinLastPID);
+                        if (robotSettings.DEBUG && DEBUG) {
+                            System.out.println("Set shooter backspin pid to " + backspinLastPID);
+                        }
+                    }
                 }
             }
         } else {
             if (!isConstSpeed && isConstSpeedLast) {
                 leader.setPid(robotSettings.SHOOTER_PID);
+                if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
+                    backSpin.setPid(robotSettings.BACKSPIN_PID);
                 isConstSpeedLast = false;
                 if (DEBUG && robotSettings.DEBUG) {
                     System.out.println("Normal shooter PID.");
@@ -190,6 +232,28 @@ public class Shooter implements ISubsystem {
         //UserInterface.smartDashboardPutNumber("RPM", leader.getSpeed());
         rpmGraph.setNumber(leader.getSpeed());
         rpm.setNumber(leader.getSpeed());
+        if (robotSettings.TARGET_HEIGHT != 0 && robotSettings.ENABLE_VISION) {
+            if (isValidTarget()) {
+                switch (robotSettings.SHOOTER_CONTROL_STYLE) {
+                    case COMP_2022:
+                    case STANDARD_2022:
+                    case PRACTICE_2022:
+                        distanceFromGoal = goalCamera.getDistanceUsingPitch();
+                        break;
+                    case STANDARD_OFFSEASON_2021:
+                        distanceFromGoal = goalCamera.getDistanceUsingPitch();
+                        break;
+                }
+                UserInterface.smartDashboardPutNumber("Distance from Target", distanceFromGoal);
+            } else {
+                //distanceFromGoal = -1;
+            }
+        }
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
+            backspinGraph.setNumber(backSpin.getSpeed());
+            UserInterface.smartDashboardPutNumber("Current BackSpin RPM", backSpin.getSpeed());
+            UserInterface.smartDashboardPutNumber("Backspin Target RPM", speed * backspinMult);
+        }
         UserInterface.smartDashboardPutNumber("Target RPM", speed);
         UserInterface.smartDashboardPutBoolean("atSpeed", isAtSpeed());
         UserInterface.smartDashboardPutBoolean("IS SHOOTING?", shooting);
@@ -203,6 +267,8 @@ public class Shooter implements ISubsystem {
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll(false);
         }
+        if (robotSettings.ENABLE_HOPPER)
+            hopper.setAll(false);
         double speedYouWant = constSpeed.getDouble(0);
         if (speedYouWant != 0) {
             isConstSpeed = true;
@@ -211,6 +277,8 @@ public class Shooter implements ISubsystem {
                 leader.setPid(robotSettings.SHOOTER_CONST_SPEED_PID);
             }
             leader.moveAtVelocity(speedYouWant);
+            if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
+                backSpin.moveAtVelocity(speedYouWant * constSpeedBackspinMult.getDouble(robotSettings.BACKSPIN_MULTIPLIER));
         } else {
             leader.moveAtPercent(0);
         }
@@ -224,7 +292,10 @@ public class Shooter implements ISubsystem {
      * @return if the shooter is actually at the requested speed
      */
     public boolean isAtSpeed() {
-        return Math.abs(leader.getSpeed() - speed) < 200;
+        return robotSettings.ENABLE_SHOOTER_BACKSPIN ?
+                Math.abs(leader.getSpeed() - speed) < 150
+                        && Math.abs(backSpin.getSpeed() - (speed * backspinMult)) < 150
+                : Math.abs(leader.getSpeed() - speed) < 150;
     }
 
     @Override
@@ -454,8 +525,8 @@ public class Shooter implements ISubsystem {
             }
             case STANDARD_2022: {
                 if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
-                    //ShootingEnums.FIRE_SOLID_SPEED_STANDARD2022.shoot(this);
-                    ShootingEnums.PID_TUNING.shoot(this);
+                    ShootingEnums.FIRE_SOLID_SPEED_STANDARD2022.shoot(this);
+                    //ShootingEnums.PID_TUNING.shoot(this);
                     isConstSpeed = false;
                 } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) && robotSettings.CLIMBER_CONTROL_STYLE != Climber.ClimberControlStyles.STANDARD_2022) {
                     shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
@@ -476,15 +547,58 @@ public class Shooter implements ISubsystem {
                     ballsShot = 0;
                     shooterDefault();
                 }
-
-
+                break;
+            }
+            case BACKSPIN_SHOOT_2022: {
+                if (joystickController.get(ControllerEnums.JoystickButtons.NINE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_2022.shoot(this);
+                } else {
+                    tryFiringBalls = false;
+                    leader.moveAtPercent(0);
+                    backSpin.moveAtPercent(0);
+                    ballsShot = 0;
+                    shooterDefault();
+                }
+                break;
+            }
+            case COMP_2022: {
+                if (DEBUG && robotSettings.DEBUG && robotSettings.ENABLE_COLOR_SENSOR) {
+                    System.out.println("I'm seeing color " + colorSensor.getColor().toString());
+                }
+                if (robotSettings.ENABLE_COLOR_SENSOR && !colorSensor.isColor(DriverStation.getAlliance() == DriverStation.Alliance.Red ? Color.kRed : Color.kBlue) && panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
+                    ShootingEnums.WHAT_ARE_YOU_DOING_HERE_SHOO.shoot(this);
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN) {
+                    if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
+                        ShootingEnums.FIRE_FROM_RPM_ARTICULATION_2022.shoot(this);
+                    } else {
+                        ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022.shoot(this);
+                    }
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN) {
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022.shoot(this);
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN) {
+                    ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_FAR_2022.shoot(this);
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
+                    if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
+                        ShootingEnums.FIRE_FROM_RPM_ARTICULATION_2022.shoot(this);
+                    } else {
+                        ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_LOW_2022.shoot(this);
+                    }
+                } else {
+                    tryFiringBalls = false;
+                    leader.moveAtPercent(0);
+                    backSpin.moveAtPercent(0);
+                    ballsShot = 0;
+                    shooterDefault();
+                    if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                        pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
+                }
                 break;
             }
             case PRACTICE_2022: {
                 //if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
                 if (joystickController.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_PRACTICE2022.shoot(this);
-                    if (joystickController.get(ControllerEnums.XBoxButtons.X_SQUARE) == ButtonStatus.DOWN) {
+                    if (joystickController.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ButtonStatus.DOWN) {
                         hopper.setAll(true);
                     }
                 } else {
@@ -527,6 +641,9 @@ public class Shooter implements ISubsystem {
             leader.setPid(new PID(0.0025, 0.0000007, 0.03, 0));
         } else {
             leader.setPid(robotSettings.SHOOTER_PID);
+            if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
+                backSpin.setPid(robotSettings.BACKSPIN_PID);
+            }
         }
     }
 
@@ -536,7 +653,7 @@ public class Shooter implements ISubsystem {
     }
 
     /**
-     * Initialize the motors. Checks for SHOOTER_USE_SPARKS and SHOOTER_USE_TWO_MOTORS to allow modularity.
+     * Initialize the motors. Checks for {@link AbstractMotorController.SupportedMotors SHOOTER_MOTOR_TYPE} and {@link frc.robot.robotconfigs.DefaultConfig SHOOTER_USE_TWO_MOTORS} to allow modularity.
      *
      * @throws IllegalStateException If the motor configuration is not implemented
      */
@@ -551,10 +668,14 @@ public class Shooter implements ISubsystem {
                 leader.setSensorToRealDistanceFactor(1);
                 break;
             case TALON_FX:
-                leader = new TalonMotorController(robotSettings.SHOOTER_LEADER_ID);
+                leader = new TalonMotorController(robotSettings.SHOOTER_MOTOR_CANBUS, robotSettings.SHOOTER_LEADER_ID);
                 if (robotSettings.SHOOTER_USE_TWO_MOTORS) {
-                    follower = new TalonMotorController(robotSettings.SHOOTER_FOLLOWER_ID);
+                    follower = new TalonMotorController(robotSettings.SHOOTER_MOTOR_CANBUS, robotSettings.SHOOTER_FOLLOWER_ID);
                     follower.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
+                }
+                if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
+                    backSpin = new TalonMotorController(robotSettings.SHOOTER_BACKSPIN_MOTOR_CANBUS, robotSettings.BACKSPIN_ID);
+                    backSpin.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 }
                 leader.setSensorToRealDistanceFactor(600 / robotSettings.CTRE_SENSOR_UNITS_PER_ROTATION);
                 break;
@@ -565,6 +686,9 @@ public class Shooter implements ISubsystem {
         leader.setInverted(robotSettings.SHOOTER_INVERTED);
         if (robotSettings.SHOOTER_USE_TWO_MOTORS) {
             follower.follow(leader, !robotSettings.SHOOTER_INVERTED).setCurrentLimit(80).setBrake(false);
+        }
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN) {
+            backSpin.setInverted(robotSettings.BACKSPIN_INVERTED).setOpenLoopRampRate(3);
         }
         leader.setCurrentLimit(80).setBrake(false).setOpenLoopRampRate(1).resetEncoder();
         //leader.setOpenLoopRampRate(0);
@@ -599,6 +723,24 @@ public class Shooter implements ISubsystem {
         return leader.getSpeed();
     }
 
+    public double getSpeedToShoot() {
+        if (distanceFromGoal >= robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][0]) { //high bound
+            System.out.println("A " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1]);
+            return robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length - 1][1];
+        }
+        if (distanceFromGoal <= robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][0]) { //low bound
+            System.out.println("B " + robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1]);
+            return robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[0][1];
+        }
+        for (int i = 1; i < robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY.length; i++) {
+            if (distanceFromGoal < robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i][0]) {
+                System.out.println("C " + weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1]));
+                return weightedAverage(distanceFromGoal, robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i], robotSettings.CALIBRATED_SHOOTER_RPM_ARRAY[i - 1]);
+            }
+        }
+        return 0;
+    }
+
     /**
      * Set drive wheel RPM
      *
@@ -610,6 +752,34 @@ public class Shooter implements ISubsystem {
         }
         speed = rpm;
         leader.moveAtVelocity(rpm);
+
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
+            backSpin.moveAtVelocity(rpm * backspinMult);
+    }
+
+    /**
+     * Set drive wheel RPM
+     *
+     * @param rpm speed to set
+     */
+    public void setSpeed(double rpm, boolean useBackspin) {
+        if (robotSettings.DEBUG && DEBUG) {
+            System.out.println("set shooter speed to " + rpm);
+        }
+        speed = rpm;
+        leader.moveAtVelocity(rpm);
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN && useBackspin)
+            backSpin.moveAtVelocity(rpm * backspinMult);
+    }
+
+    public void setSpeed(double rpm, double backSpinRPM) {
+        if (robotSettings.DEBUG && DEBUG) {
+            System.out.println("set shooter speed to " + rpm);
+        }
+        speed = rpm;
+        leader.moveAtVelocity(rpm);
+        if (robotSettings.ENABLE_SHOOTER_BACKSPIN)
+            backSpin.moveAtVelocity(backSpinRPM);
     }
 
     /**
@@ -656,6 +826,17 @@ public class Shooter implements ISubsystem {
     }
 
     /**
+     * Moves the shooter at a -1 to 1 percent speed
+     *
+     * @param percentSpeed percent from -1 to 1 to move the shooter at
+     */
+    public void setPercentSpeed(double percentSpeed, double backspinSpeed) {
+        speed = percentSpeed * leader.getMaxRPM() * robotSettings.SHOOTER_FLYWHEEL_WEIGHT_MULTIPLIER;
+        leader.moveAtPercent(percentSpeed);
+        backSpin.moveAtPercent(backspinSpeed);
+    }
+
+    /**
      * Fires multiple balls without caring if it sees the target. Good for autonomous and the discord/slaque bot
      *
      * @param shots how many balls to shoot
@@ -676,6 +857,20 @@ public class Shooter implements ISubsystem {
         return !multiShot;
     }
 
+
+    public boolean fireAmountSpin(int shots) {
+        ballsToShoot = shots;
+        multiShot = true;
+        ShootingEnums.FIRE_MULTIPLE_SHOTS.shoot(this);
+        isConstSpeed = !multiShot;
+        updateShuffleboard();
+        if (!multiShot) {
+            shooting = false;
+            setPercentSpeed(0);
+            hopper2020.setAll(false);
+        }
+        return !multiShot;
+    }
     /**
      * Fires multiple balls without caring if it sees the target. Good for autonomous and the discord/slaque bot
      * Used for the 2022 ball shooter
@@ -684,7 +879,8 @@ public class Shooter implements ISubsystem {
      * @return if the balls have finished shooting
      * @author Smaltin
      */
-    public boolean fireAmount2022(int seconds) {
+    public boolean fireAmount2022(double seconds, int rpm) {
+        speed = rpm;
         goalTicks = seconds * 50; //tick = 20ms. 50 ticks in a second.
         if (!shooting) {
             ticksPassed = 0;
@@ -695,8 +891,28 @@ public class Shooter implements ISubsystem {
         updateShuffleboard();
         if (!multiShot) {
             shooting = false;
-            setPercentSpeed(0);
+            setPercentSpeed(0, 0);
             hopper.setAll(false);
+            shooter.timerTicks = 0;
+        }
+        return !multiShot;
+    }
+
+    public boolean fireAmount2022Spin(double seconds, int rpm) {
+        speed = rpm;
+        goalTicks = seconds * 50; //tick = 20ms. 50 ticks in a second.
+        if (!shooting) {
+            ticksPassed = 0;
+            shooting = true;
+            multiShot = true;
+        }
+        ShootingEnums.FIRE_TIMED_2022_SPIN.shoot(this);
+        updateShuffleboard();
+        if (!multiShot) {
+            shooting = false;
+            setPercentSpeed(0, 0);
+            hopper.setAll(false);
+            shooter.timerTicks = 0;
         }
         return !multiShot;
     }
@@ -722,7 +938,7 @@ public class Shooter implements ISubsystem {
      * Used to change how the input is handled by the {@link Shooter} and what kind of controller to use
      */
     public enum ShootingControlStyles {
-        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022;
+        STANDARD, BOP_IT, XBOX_CONTROLLER, ACCURACY_2021, SPEED_2021, STANDARD_2020, EXPERIMENTAL_OFFSEASON_2021, STANDARD_OFFSEASON_2021, WII, DRUM_TIME, GUITAR, FLIGHT_STICK, PRACTICE_2022, STANDARD_2022, BACKSPIN_SHOOT_2022, COMP_2022;
 
         private static SendableChooser<ShootingControlStyles> myChooser;
 

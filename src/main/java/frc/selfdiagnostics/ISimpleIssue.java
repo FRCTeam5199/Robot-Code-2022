@@ -1,8 +1,6 @@
 package frc.selfdiagnostics;
 
-import frc.misc.ClientSide;
-import frc.misc.ISubsystem;
-import frc.misc.UserInterface;
+import frc.misc.*;
 
 /**
  * The purpose of an Issue is to help the user to detect and rectify problems ASAP. When something is not working

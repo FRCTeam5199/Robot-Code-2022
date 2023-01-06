@@ -1,4 +1,4 @@
-package frc.vision.distancesensor;
+package frc.sensors.distancesensor;
 
 import com.revrobotics.Rev2mDistanceSensor;
 import frc.selfdiagnostics.DistanceSensorNonOpIssue;

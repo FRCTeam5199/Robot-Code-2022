@@ -3,9 +3,7 @@ package frc.drive.auton.pointtopoint;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.drive.auton.Point;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 import static frc.drive.auton.pointtopoint.AutonSpecialActions.*;
 
@@ -25,6 +23,22 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(0, 0)),
             new AutonWaypoint(new Point(1.25, 0))
     ),
+    TEST(
+            new AutonWaypoint(new Point(8999, 0))
+
+    ),
+    ONE_BALL_AUTON(
+            new AutonWaypoint(new Point(0,0), 1),
+            new AutonWaypoint(new Point(1.4 , 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_165_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(WAIT_ONE),
+            new AutonWaypoint(SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_STOP)
+    ),
+    SHOOT_WHILE_STILL_2022(
+            new AutonWaypoint(new Point(0, 0), SHOOT_ALL_2022_FURTHER)
+    ),
     /*
     DRIVE_OFF_TARMAC_BACKWARDS(
             new AutonWaypoint(new Point(0, 0)),
@@ -38,14 +52,111 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(-1, 0))
     ),
      */
-    _2022_PICKUP_ONE_SHOOT_TWO(
+    PICKUP_ONE_SHOOT_TWO_2022(
+            new AutonWaypoint(new Point(0, 0), INTAKE_DOWN),
             new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
-            new AutonWaypoint(new Point(2.5, 0), 1, INTAKE_OFF),
-            new AutonWaypoint(new Point(2.5, 0), 1, DRIVE_180),
-            new AutonWaypoint(new Point(2.5, 0), 1, AIM_ROBOT_AT_TARGET_PITCH),
-            new AutonWaypoint(new Point(2.5, 0), 1, SHOOT_ALL_2022)
+            new AutonWaypoint(new Point(1.9, 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(new Point(1.9, 0), 1, DRIVE_180),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(SHOOT_ALL_2022_FAR)
+            //new AutonWaypoint(new Point(0.05, 0), AIM_ROBOT_AT_TARGET_PITCH),
+            //new AutonWaypoint(new Point(0.05, 0), SHOOT_ALL_2022_BEHIND_TARMAC),
+            //new AutonWaypoint(new Point(-1.9, 0), -1)
+    ),
+
+    PICKUP_ONE_DRIVE_SHOOT_TWO_2022(
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(2.2, 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_155),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(SHOOT_ALL_2022_FAR)
+    ),
+
+    TWO_BALL_AUTON(
+            new AutonWaypoint(new Point(0, 0), INTAKE_DOWN),
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(2, 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_160_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(SHOOT_ALL_2022_FURTHER),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_STOP)
+            ),
+    FOUR_BALL_AUTON(
+            new AutonWaypoint(new Point(0, 0), INTAKE_DOWN ),
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(2, 0), 1.01), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_130_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(SHOOT_ALL_2022_FAR),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_STOP),
+            new AutonWaypoint(DRIVE_60),
+            new AutonWaypoint(new Point(7.05, -1.6), 1.55),
+            new AutonWaypoint(WAIT_ONE),
+            new AutonWaypoint(DRIVE_180_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(WAIT_ONE),
+            new AutonWaypoint(SHOOT_ALL_2022_VERY_FAR),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW_STOP)
+    ),
+    FOUR_BALL_AUTON_UGH(
+            new AutonWaypoint(new Point(0, 0), INTAKE_DOWN ),
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(2, 0), 1.01), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_130_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(SHOOT_ALL_2022_FAR),
+            new AutonWaypoint(DRIVE_60),
+            new AutonWaypoint(new Point(7.2, -1.6), 1.55),
+            new AutonWaypoint(DRIVE_180_REVERSE),
+            new AutonWaypoint(DRIVE_FORWARD_TIMED),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(SHOOT_ALL_2022_NOT_FAR_ENOUGH)
+    ),
+    FOUR_BALL_AUTON_FRIAR(
+            new AutonWaypoint(new Point(0, 0), INTAKE_DOWN),
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(2, 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(DRIVE_130_REVERSE),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(SHOOT_ALL_2022_FAR_FRIAR),
+            new AutonWaypoint(DRIVE_155),
+            new AutonWaypoint(new Point(7.1, -1.8), 1.77), //7.2 -1.35
+            new AutonWaypoint(DRIVE_BACK_TIMED_FRIAR),
+            new AutonWaypoint(DRIVE_135_REVERSE),
+            //new AutonWaypoint(DRIVE_225),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_YAW),
+            new AutonWaypoint(SHOOT_ALL_2022_VERY_FAR)
     ),
     /*
+    PICKUP_ONE_DRIVE_SHOOT_TWO_DRIVE_2022(
+            new AutonWaypoint(new Point(0, 0), 1, INTAKE_IN),
+            new AutonWaypoint(new Point(1.9, 0), 1), //(1.7741787849766635, 0.01580735327687336)
+            new AutonWaypoint(new Point(0.5, 0), -1, DRIVE_180),
+            new AutonWaypoint(INTAKE_OFF),
+            new AutonWaypoint(AIM_ROBOT_AT_TARGET_PITCH),
+            new AutonWaypoint(SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE),
+            new AutonWaypoint(DRIVE_180),
+            new AutonWaypoint(new Point(1.9, 0), 1)
+    ),
+     */
+    SHOOT_ALL_THEN_BACKUP(
+            new AutonWaypoint(new Point(0, 0), -1, SHOOT_ALL_2022_REAR_BUMPER_ON_TARMAC_LINE),
+            new AutonWaypoint(new Point(-2, 0), -1, NONE)
+    ),
+    /*
+    DRIVE_FORWARD_ROTATE_DRIVE_BACK(
+            new AutonWaypoint(new Point(0, 0)),
+            new AutonWaypoint(new Point(3, 0), DRIVE_180),
+            new AutonWaypoint(new Point(0, 0))
+    ),
+    ROTATE(
+      new AutonWaypoint(new Point(0, 0), DRIVE_180)
+    ),
+    FORWARD_N_BACK(
+            new AutonWaypoint(new Point(0, 0)),
+            new AutonWaypoint(new Point(3, 0.01)),
+            new AutonWaypoint(new Point(0, 0))
+    ),
     DRIVE_OFF_SHOOT_3(
             new AutonWaypoint(new Point(0, 0)),
             new AutonWaypoint(new Point(1.25, 0), AIM_AT_TARGET_TRENCH),

@@ -1,8 +1,6 @@
 package frc.telemetry.imu;
 
-import frc.misc.ISubsystem;
-import frc.misc.SubsystemStatus;
-import frc.misc.UtilFunctions;
+import frc.misc.*;
 import frc.selfdiagnostics.IMUNonOpIssue;
 
 /**
@@ -92,7 +90,7 @@ public abstract class AbstractIMU implements ISubsystem {
      * @return wrapped yaw val
      */
     public double yawWraparoundAhead() {
-        return UtilFunctions.mathematicalMod(relativeYaw() + 180, 360) - 180;
+        return UtilFunctions.wrapAround360(relativeYaw());
     }
 
     /**

@@ -1,11 +1,10 @@
 package frc.drive.auton;
 
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.*;
 import frc.drive.AbstractDriveManager;
 import frc.drive.DriveManagerStandard;
 import frc.drive.auton.followtrajectory.Trajectories;
@@ -17,6 +16,7 @@ import frc.robot.Robot;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static frc.robot.Robot.pneumatics;
 import static frc.robot.Robot.robotSettings;
 
 /**
@@ -117,6 +117,8 @@ public abstract class AbstractAutonManager implements ISubsystem {
     public void initAuton() {
         robotSettings.autonComplete = false;
         trajectory = paths.get(autonPath);
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+            pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
         if (robotSettings.ENABLE_IMU) {
             DRIVING_CHILD.guidance.resetOdometry();
             if (trajectory != null) {

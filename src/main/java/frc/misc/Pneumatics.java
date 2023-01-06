@@ -1,10 +1,7 @@
 package frc.misc;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
-import frc.climber.Climber;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.*;
 
 import static frc.robot.Robot.robotSettings;
 
@@ -20,7 +17,15 @@ public class Pneumatics implements ISubsystem {
     public DoubleSolenoid ballShifter;
     public DoubleSolenoid buddyClimberLock;
     public Solenoid shooterCooling;
+    public DoubleSolenoid hoodArticulator;
+    public DoubleSolenoid indexerBlocker;
+    public DoubleSolenoid climberPiston;
+    public DoubleSolenoid climberPiston2;
     public Compressor compressor;
+    public PneumaticHub pneumaticsHub;
+    private final NetworkTableEntry
+            compressorOverride = UserInterface.COMPRESSOR_TOGGLE.getEntry(),
+            compressorToggle = UserInterface.COMPRESSOR_STATE.getEntry();
 
     public Pneumatics() {
         addToMetaList();
@@ -29,22 +34,38 @@ public class Pneumatics implements ISubsystem {
 
     @Override
     public void init() {
-        compressor = new Compressor(PneumaticsModuleType.CTREPCM);
-        compressor.enableDigital();
-        if (robotSettings.ENABLE_INTAKE && robotSettings.ENABLE_PNOOMATICS) {
-            solenoidIntake = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.INTAKE_OUT_ID, robotSettings.INTAKE_IN_ID);
+        if (robotSettings.PNEUMATICS_MODULE_TYPE == PneumaticsModuleType.REVPH) {
+            pneumaticsHub = new PneumaticHub(robotSettings.PCM_ID);
+            pneumaticsHub.clearStickyFaults();
+        } else {
+            compressor = new Compressor(robotSettings.PNEUMATICS_MODULE_TYPE);
         }
-        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS) {
-            climberLock = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.CLIMBER_IN_ID, robotSettings.CLIMBER_OUT_ID);
+        if (robotSettings.ENABLE_INTAKE && robotSettings.ENABLE_PNOOMATICS) {
+            solenoidIntake = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.INTAKE_OUT_ID, robotSettings.INTAKE_IN_ID);
+        }
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_LOCK) {
+            climberLock = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_LOCK_IN_ID, robotSettings.CLIMBER_LOCK_OUT_ID);
         }
         if (robotSettings.ENABLE_SHOOTER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_SHOOTER_COOLING) {
-            shooterCooling = new Solenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.SHOOTER_COOLING_ID);
+            shooterCooling = new Solenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.SHOOTER_COOLING_ID);
         }
         if (robotSettings.ENABLE_DRIVE && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_BALL_SHIFTERS) {
-            ballShifter = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.BALL_SHIFTERS_IN_ID, robotSettings.BALL_SHIFTERS_OUT_ID);
+            ballShifter = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.BALL_SHIFTERS_IN_ID, robotSettings.BALL_SHIFTERS_OUT_ID);
         }
         if (robotSettings.ENABLE_BUDDY_CLIMBER && robotSettings.ENABLE_PNOOMATICS) {
-            buddyClimberLock = new DoubleSolenoid(robotSettings.PCM_ID, PneumaticsModuleType.CTREPCM, robotSettings.BUDDY_CLIMBER_LOCK_IN_ID, robotSettings.BUDDY_CLIMBER_LOCK_OUT_ID);
+            buddyClimberLock = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.BUDDY_CLIMBER_LOCK_IN_ID, robotSettings.BUDDY_CLIMBER_LOCK_OUT_ID);
+        }
+        if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
+            hoodArticulator = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.HOOD_ARTICULATOR_IN_ID, robotSettings.HOOD_ARTICULATOR_OUT_ID);
+        }
+        if (robotSettings.ENABLE_INDEXER && robotSettings.ENABLE_HOPPER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK) {
+            indexerBlocker = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.INDEXER_BLOCK_IN_ID, robotSettings.INDEXER_BLOCK_OUT_ID);
+        }
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_CLIMBER_PISTON) {
+            climberPiston = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_PISTON_IN_ID, robotSettings.CLIMBER_PISTON_OUT_ID);
+        }
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_CLIMBER_PISTON && robotSettings.USE_TWO_CLIMBER_PISTONS) {
+            climberPiston2 = new DoubleSolenoid(robotSettings.PCM_ID, robotSettings.PNEUMATICS_MODULE_TYPE, robotSettings.CLIMBER_PISTON2_IN_ID, robotSettings.CLIMBER_PISTON2_OUT_ID);
         }
     }
 
@@ -55,22 +76,43 @@ public class Pneumatics implements ISubsystem {
 
     @Override
     public void updateTest() {
-
+        updateGeneric();
     }
 
     @Override
     public void updateTeleop() {
-
+        updateGeneric();
     }
 
     @Override
     public void updateAuton() {
-
+        updateGeneric();
     }
 
     @Override
     public void updateGeneric() {
-
+        if (robotSettings.PNEUMATICS_MODULE_TYPE == PneumaticsModuleType.CTREPCM) {
+            if (compressorOverride.getBoolean(false)) {
+                System.out.println("Overriding compressor to " + compressorToggle.getBoolean(true));
+                if (compressorToggle.getBoolean(true)) {
+                    compressor.enableDigital();
+                } else {
+                    compressor.disable();
+                }
+            } else {
+                compressor.enableDigital();
+            }
+        } else if (robotSettings.PNEUMATICS_MODULE_TYPE == PneumaticsModuleType.REVPH) {
+            if (compressorOverride.getBoolean(false)) {
+                if (compressorToggle.getBoolean(true)) {
+                    pneumaticsHub.enableCompressorDigital();
+                } else {
+                    pneumaticsHub.disableCompressor();
+                }
+            } else {
+                pneumaticsHub.enableCompressorDigital();
+            }
+        }
     }
 
     @Override
@@ -80,22 +122,28 @@ public class Pneumatics implements ISubsystem {
 
     @Override
     public void initTeleop() {
-
+        initGeneric();
     }
 
     @Override
     public void initAuton() {
-
+        initGeneric();
     }
 
     @Override
     public void initDisabled() {
-
+        if (robotSettings.ENABLE_INDEXER && robotSettings.ENABLE_HOPPER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+            indexerBlocker.set(DoubleSolenoid.Value.kReverse);
     }
 
     @Override
     public void initGeneric() {
-
+        if (robotSettings.ENABLE_INDEXER && robotSettings.ENABLE_HOPPER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+            indexerBlocker.set(DoubleSolenoid.Value.kForward);
+        if (robotSettings.ENABLE_CLIMBER && robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_CLIMBER_LOCK)
+            climberLock.set(DoubleSolenoid.Value.kReverse);
+        if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS)
+            hoodArticulator.set(DoubleSolenoid.Value.kReverse);
     }
 
     @Override

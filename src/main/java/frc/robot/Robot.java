@@ -1,21 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import frc.ballstuff.intaking.Hopper;
-import frc.ballstuff.intaking.Hopper2020;
-import frc.ballstuff.intaking.Intake;
-import frc.ballstuff.shooting.ArticulatedHood;
-import frc.ballstuff.shooting.Shooter;
-import frc.ballstuff.shooting.Turret;
+import frc.ballstuff.intaking.*;
+import frc.ballstuff.shooting.*;
 import frc.climber.BuddyClimber;
 import frc.climber.Climber;
 import frc.discordslackbot.MessageHandler;
-import frc.drive.AbstractDriveManager;
-import frc.drive.DriveManagerStandard;
-import frc.drive.DriveManagerSwerve;
+import frc.drive.*;
 import frc.drive.auton.AbstractAutonManager;
 import frc.drive.auton.AutonType;
 import frc.drive.auton.followtrajectory.Trajectories;
@@ -23,17 +15,14 @@ import frc.drive.auton.pointtopoint.AutonManager;
 import frc.drive.auton.pointtopoint.AutonRoutines;
 import frc.misc.*;
 import frc.motors.AbstractMotorController;
-import frc.pdp.PDP;
+import frc.pdp.PowerDistribution;
 import frc.robot.robotconfigs.DefaultConfig;
-import frc.robot.robotconfigs.twentyone.CompetitionRobot2021;
-import frc.robot.robotconfigs.twentyone.PracticeRobot2021;
-import frc.robot.robotconfigs.twentyone.Swerve2021;
+import frc.robot.robotconfigs.twentyone.*;
 import frc.robot.robotconfigs.twentytwenty.Robot2020;
-import frc.robot.robotconfigs.twentytwo.PracticeRobot2022;
-import frc.robot.robotconfigs.twentytwo.Swerve2022;
-import frc.selfdiagnostics.ISimpleIssue;
-import frc.selfdiagnostics.IssueHandler;
-import frc.selfdiagnostics.MotorDisconnectedIssue;
+import frc.robot.robotconfigs.twentytwo.*;
+import frc.selfdiagnostics.*;
+import frc.sensors.camera.CameraViewer;
+import frc.sensors.camera.IVision;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -60,10 +49,11 @@ public class Robot extends TimedRobot {
     public static ArticulatedHood articulatedHood;
     public static Turret turret;
     public static Chirp chirp;
-    public static PDP pdp;
+    public static PowerDistribution pdp;
     public static LEDs leds;
     public static Pneumatics pneumatics;
     public static Climber climber;
+    public static CameraViewer cameraViewer;
     public static BuddyClimber buddyClimber;
     public static Flashlight flashlight;
     public static AbstractAutonManager autonManager;
@@ -72,116 +62,25 @@ public class Robot extends TimedRobot {
     private static long lastDisable = 0;
 
     /**
-     * Init everything
-     */
-    @Override
-    public void robotInit() throws IllegalStateException {
-        getRestartProximity();
-        robotSettings = getSettings();
-        robotSettings.printMappings();
-        robotSettings.printToggles();
-        robotSettings.printNumbers();
-        UserInterface.initRobot();
-        if (robotSettings.ENABLE_MEMES) {
-            Main.pipeline = ClientServerPipeline.getClient();
-        }
-
-        //flashlight = new Flashlight();
-
-        if (robotSettings.ENABLE_DRIVE) {
-            if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD)
-                driver = new DriveManagerStandard();
-            else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL)
-                driver = new DriveManagerSwerve();
-        }
-        if (robotSettings.ENABLE_LEDS) {
-            leds = new LEDs();
-        }
-        if (robotSettings.ENABLE_INTAKE) {
-            intake = new Intake();
-        }
-        if (robotSettings.ENABLE_2020_HOPPER) {
-            hopper2020 = new Hopper2020();
-        }
-        if (robotSettings.ENABLE_HOPPER)
-            hopper = new Hopper();
-
-        if (robotSettings.ENABLE_SHOOTER) {
-            shooter = new Shooter();
-        }
-        if (robotSettings.ENABLE_HOOD_ARTICULATION) {
-            articulatedHood = new ArticulatedHood();
-        }
-        if (robotSettings.ENABLE_PNOOMATICS) {
-            pneumatics = new Pneumatics();
-        }
-        if (robotSettings.ENABLE_TURRET) {
-            turret = new Turret();
-            if (robotSettings.ENABLE_DRIVE) turret.setTelemetry(driver.guidance);
-        }
-        if (robotSettings.ENABLE_MUSIC) {
-            chirp = new Chirp();
-        }
-        if (robotSettings.ENABLE_CLIMBER) {
-            climber = new Climber();
-        }
-
-        if (robotSettings.ENABLE_BUDDY_CLIMBER) {
-            buddyClimber = new BuddyClimber();
-        }
-        if (robotSettings.ENABLE_FLASHLIGHT) {
-            flashlight = new Flashlight();
-        }
-
-        if (robotSettings.ENABLE_DRIVE && robotSettings.ENABLE_IMU) {
-            switch (robotSettings.AUTON_TYPE) {
-                case GALACTIC_SEARCH:
-                    autonManager = new frc.drive.auton.galacticsearch.AutonManager(driver);
-                    break;
-                case FOLLOW_PATH:
-                    autonManager = new frc.drive.auton.followtrajectory.AutonManager(Trajectories.TEST_SWERVE, driver);//Trajectories.TEST_PATH, driver);
-                    break;
-                case GALACTIC_SCAM:
-                    autonManager = new frc.drive.auton.galacticsearchtest.AutonManager(driver);
-                    break;
-                case POINT_TO_POINT:
-                    autonManager = new frc.drive.auton.pointtopoint.AutonManager(robotSettings.DEFAULT_ROUTINE, driver);
-            }
-        }
-        if (robotSettings.ENABLE_PDP) {
-            pdp = new PDP(robotSettings.PDP_ID);
-        }
-        if (robotSettings.ENABLE_OVERHEAT_DETECTION) {
-            for (AbstractMotorController motor : AbstractMotorController.motorList) {
-                MotorDisconnectedIssue.handleIssue(driver, motor);
-                if (motor.getMotorTemperature() > 5) {
-                    UserInterface.motorTemperatureMonitors.put(motor, UserInterface.WARNINGS_TAB.add(motor.getName(), motor.getMotorTemperature()).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("Min", 30, "Max", Robot.robotSettings.OVERHEAT_THRESHOLD)));
-                }
-            }
-        }
-        String quote = QuoteOfTheDay.getRandomQuote();
-        System.out.println("\n\n" + quote);
-        UserInterface.smartDashboardPutString("Quote", quote);
-    }
-
-    /**
      * Reads from the preferences what the last boot time is. Depending on current system time, sets the {@link
      * #SECOND_TRY} flag to either restart on error or to persist as best as possible. If you leave the robot on for
      * half a century then it might not work right so please refrain from that
      */
     private static void getRestartProximity() {
-        long lastBoot = Long.parseLong(Preferences.getString("lastboot", "0"));
-        long currentBoot = System.currentTimeMillis();
-        Preferences.setString("lastboot", "0" + currentBoot);
-        if (lastBoot > currentBoot) {
-            SECOND_TRY = false;
-        } else if (lastBoot > 1614461266977L) {
-            SECOND_TRY = currentBoot - lastBoot < 30000;
-        } else if (lastBoot < 1614461266977L && currentBoot < 1614461266977L) {
-            SECOND_TRY = currentBoot - lastBoot < 30000;
-        } else {
-            SECOND_TRY = false;
-        }
+        if (robotSettings.ENABLE_ERROR_HANDLING) {
+            long lastBoot = Long.parseLong(Preferences.getString("lastboot", "0"));
+            long currentBoot = System.currentTimeMillis();
+            Preferences.setString("lastboot", "0" + currentBoot);
+            if (lastBoot > currentBoot) {
+                SECOND_TRY = false;
+            } else if (lastBoot > 1614461266977L) {
+                SECOND_TRY = currentBoot - lastBoot < 30000;
+            } else if (lastBoot < 1614461266977L && currentBoot < 1614461266977L) {
+                SECOND_TRY = currentBoot - lastBoot < 30000;
+            } else {
+                SECOND_TRY = false;
+            }
+        } else SECOND_TRY = true;
     }
 
     /**
@@ -207,8 +106,11 @@ public class Robot extends TimedRobot {
                 return new PracticeRobot2022();
             case "2022-Swivel":
                 return new Swerve2022();
+            case "2022-Comp":
+                return new CompetitionRobot2022();
             case "ERR_NOT_FOUND":
-                throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
+                return new CompetitionRobot2022(); //I don't want this "not ID'd" issue happening during comp. Already happened over offseason
+            //throw new InitializationFailureException("Robot is not ID'd", "Open the SmartDashboard, create a String with key \"hostname\" and value \"202#-(Comp/Prac)\"");
             default:
                 throw new InitializationFailureException(String.format("Invalid ID %s for robot.", hostName), "In the SmartDashboard, set the key \"hostname\" to a correct value (ex: \"202#-(Comp/Prac)\")");
         }
@@ -226,6 +128,110 @@ public class Robot extends TimedRobot {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Init everything
+     */
+    @Override
+    public void robotInit() throws IllegalStateException {
+        robotSettings = getSettings();
+        robotSettings.printMappings();
+        robotSettings.printToggles();
+        robotSettings.printNumbers();
+        getRestartProximity();
+        UserInterface.initRobot();
+        if (DriverStation.isFMSAttached()) robotSettings.DEBUG = false;
+
+        if (robotSettings.ENABLE_MEMES) {
+            Main.pipeline = ClientServerPipeline.getClient();
+        }
+
+        //flashlight = new Flashlight();
+
+        if (robotSettings.ENABLE_DRIVE) {
+            if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.STANDARD) {
+                driver = new DriveManagerStandard();
+            }else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL){
+                driver = new DriveManagerSwerve();
+            } else if (robotSettings.DRIVE_BASE == AbstractDriveManager.DriveBases.SWIVEL) {
+                driver = new DriveManagerSwerve();
+            }
+
+        }
+        if (robotSettings.ENABLE_LEDS) {
+            leds = new LEDs();
+        }
+        if (robotSettings.ENABLE_INTAKE) {
+            intake = new Intake();
+        }
+        if (robotSettings.ENABLE_2020_HOPPER) {
+            hopper2020 = new Hopper2020();
+        }
+        if (robotSettings.ENABLE_HOPPER) hopper = new Hopper();
+
+        if (robotSettings.ENABLE_SHOOTER) {
+            shooter = new Shooter();
+        }
+        if (robotSettings.ENABLE_HOOD_ARTICULATION) {
+            articulatedHood = new ArticulatedHood();
+        }
+        if (robotSettings.ENABLE_PNOOMATICS) {
+            pneumatics = new Pneumatics();
+        }
+        if (robotSettings.ENABLE_TURRET) {
+            turret = new Turret();
+            if (robotSettings.ENABLE_DRIVE) turret.setTelemetry(driver.guidance);
+        }
+        if (robotSettings.ENABLE_MUSIC) {
+            chirp = new Chirp();
+        }
+        if (robotSettings.ENABLE_CLIMBER) {
+            climber = new Climber();
+        }
+
+        if (robotSettings.ENABLE_CAMERA) {
+            //cameraViewer = new CameraViewer();
+        }
+
+        if (robotSettings.ENABLE_BUDDY_CLIMBER) {
+            buddyClimber = new BuddyClimber();
+        }
+        if (robotSettings.ENABLE_FLASHLIGHT) {
+            flashlight = new Flashlight();
+        }
+
+        if (robotSettings.ENABLE_DRIVE && robotSettings.ENABLE_IMU) {
+            switch (robotSettings.AUTON_TYPE) {
+                case GALACTIC_SEARCH:
+                    autonManager = new frc.drive.auton.galacticsearch.AutonManager(driver);
+                    break;
+                case FOLLOW_PATH:
+                    autonManager = new frc.drive.auton.followtrajectory.AutonManager(Trajectories.TEST_SWERVE, driver);//Trajectories.TEST_PATH, driver);
+                    break;
+                case GALACTIC_SCAM:
+                    autonManager = new frc.drive.auton.galacticsearchtest.AutonManager(driver);
+                    break;
+                case POINT_TO_POINT:
+                    autonManager = new frc.drive.auton.pointtopoint.AutonManager(robotSettings.DEFAULT_ROUTINE, driver);
+            }
+        }
+        if (robotSettings.ENABLE_PDP) {
+            pdp = new PowerDistribution();
+        }
+        if (robotSettings.ENABLE_OVERHEAT_DETECTION) {
+            for (AbstractMotorController motor : AbstractMotorController.motorList) {
+                MotorDisconnectedIssue.handleIssue(driver, motor);
+                if (motor.getMotorTemperature() > 5) {
+                    UserInterface.motorTemperatureMonitors.put(motor, UserInterface.WARNINGS_TAB.add(motor.getName(), motor.getMotorTemperature()).withWidget(BuiltInWidgets.kNumberBar).withProperties(Map.of("Min", 30, "Max", Robot.robotSettings.OVERHEAT_THRESHOLD)));
+                }
+            }
+        }
+        String quote = QuoteOfTheDay.getRandomQuote();
+        System.out.println("\n\n" + quote);
+        UserInterface.smartDashboardPutString("Quote", quote);
+        if (robotSettings.ENABLE_VISION)
+            IVision.manufactureGoalCamera(robotSettings.GOAL_CAMERA_TYPE).setLedMode(IVision.VisionLEDMode.OFF);
     }
 
     @Override
@@ -319,10 +325,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        if (System.currentTimeMillis() > lastDisable + 5000) {
-            if (robotSettings.ENABLE_DRIVE)
-                driver.setBrake(false);
-            if (robotSettings.ENABLE_HOOD_ARTICULATION)
+        if (System.currentTimeMillis() > lastDisable + 2000) {
+            if (robotSettings.ENABLE_DRIVE) driver.setBrake(false);
+            if (robotSettings.ENABLE_HOOD_ARTICULATION && !robotSettings.ENABLE_HOOD_PISTON)
                 articulatedHood.hoodMotor.setBrake(false);
         }
     }

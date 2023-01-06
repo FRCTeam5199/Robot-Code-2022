@@ -1,22 +1,23 @@
-package frc.vision.camera;
+package frc.sensors.camera;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.networktables.*;
 import frc.misc.SubsystemStatus;
 import frc.misc.UserInterface;
+import frc.robot.Robot;
+
+import static frc.robot.Robot.robotSettings;
 
 /**
  * This is for the limelight looking at the goal that the shooter is shooting at
  */
-public class GoalLimelight implements IVision {
-    public static final GoalLimelight GOAL_LIME_LIGHT = new GoalLimelight();
+public class GamepieceLimelight implements IVision {
+    public static final GamepieceLimelight GAMEPIECE_LIME_LIGHT = new GamepieceLimelight();
     private NetworkTable limelight;
     private NetworkTableEntry yaw, size, hasTarget, pitch, pose;
     private LinearFilter filter;
 
-    private GoalLimelight() {
+    private GamepieceLimelight() {
         addToMetaList();
         init();
     }
@@ -26,7 +27,7 @@ public class GoalLimelight implements IVision {
      */
     @Override
     public void init() {
-        limelight = NetworkTableInstance.getDefault().getTable("limelight");
+        limelight = NetworkTableInstance.getDefault().getTable("limelight-ballcam");
         filter = LinearFilter.movingAverage(5);
         yaw = limelight.getEntry("tx");
         size = limelight.getEntry("ta");
@@ -37,7 +38,7 @@ public class GoalLimelight implements IVision {
 
     @Override
     public SubsystemStatus getSubsystemStatus() {
-        return SubsystemStatus.FAILED;
+        return SubsystemStatus.NOMINAL;
     }
 
     @Override
@@ -86,7 +87,7 @@ public class GoalLimelight implements IVision {
 
     @Override
     public String getSubsystemName() {
-        return "Goal Camera";
+        return "Gamepiece Camera";
     }
 
     @Override
@@ -145,6 +146,17 @@ public class GoalLimelight implements IVision {
             setTo = 3;
         }
         limelight.getEntry("ledMode").setNumber(setTo);
+
+        if (robotSettings.ENABLE_TOGGLEABLE_RING && robotSettings.ENABLE_PDP) {
+           Robot.pdp.setToggleable(setTo == 3 || setTo == 2);
+        }
+    }
+
+    @Override
+    public void setPipeline(int pipeline) {
+        if (pipeline >= 0 && pipeline <= 9) {
+            limelight.getEntry("pipeline").setNumber(pipeline);
+        }
     }
 
     @Override

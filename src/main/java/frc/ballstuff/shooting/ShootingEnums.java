@@ -1,5 +1,6 @@
 package frc.ballstuff.shooting;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.controllers.ControllerEnums;
 import frc.misc.UserInterface;
 
@@ -25,17 +26,104 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
-        shooter.setPercentSpeed(shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));//.46);
+        //shooter.setPercentSpeed(shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));//.46);
         //shooter.setPercentSpeed(.3);
+        shooter.setSpeed(1500 + (2500 - 1500) * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));
         if (robotSettings.ENABLE_HOPPER) {
             hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
         }
         //shooter.setSpeed(1000);
     }),
 
+    FIRE_SOLID_SPEED_BACKSPIN_2022(shooter -> {
+        double rpm = shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * shooter.leader.getMaxRPM();
+        shooter.setSpeed(rpm, rpm * 1.625);
+        if (robotSettings.ENABLE_HOPPER) {
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
+        }
+    }), FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022(shooter -> {
+        double rpm = 1950;
+        shooter.setSpeed(rpm, true);
+        if (robotSettings.ENABLE_HOPPER) {
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
+        }
+    }),
+
+    FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022(shooter -> {
+        double rpm = 2225;
+        //"hood up and tarmack whatever fender is" -Morganne 19:13 3/27/2022
+        //2200 rpm Morganne 19:19 3/27/2022
+        shooter.setSpeed(rpm, true);
+        if (robotSettings.ENABLE_HOPPER) {
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
+        }
+    }),
+
+    FIRE_SOLID_SPEED_BACKSPIN_FAR_2022(shooter -> {
+        double rpm = 2650;
+        //change it to 2800 Morganne 3/21/22 23:03
+        //now 2700 Morganne/Rick 3/21/22 23:09
+        shooter.setSpeed(rpm, true);
+        if (robotSettings.ENABLE_HOPPER) {
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
+        }
+    }),
+
+    FIRE_SOLID_SPEED_BACKSPIN_LOW_2022(shooter -> {
+        double rpm = 1900;
+        shooter.setSpeed(rpm, true);
+        if (robotSettings.ENABLE_HOPPER) {
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
+        }
+    }),
+    
+    FIRE_FROM_RPM_ARTICULATION_2022(shooter -> {
+        double rpm = shooter.getSpeedToShoot();
+        shooter.setSpeed(rpm, true);
+        if (robotSettings.ENABLE_HOPPER) {
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
+        }
+    }),
+
+    WHAT_ARE_YOU_DOING_HERE_SHOO(shooter -> {
+        double rpm = 1000;
+        shooter.setSpeed(rpm, true);
+        if (robotSettings.ENABLE_HOPPER) {
+            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean criteria = shooter.isAtSpeed() && controllerHeld;
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+            hopper.setAll(criteria);
+        }
+    }),
+
     PID_TUNING(shooter -> {
         //shooter.setPercentSpeed(1);
-        shooter.setSpeed(1700); //error of 500
+        shooter.setSpeed(1700, UserInterface.BACKSPIN_RPM.getEntry().getDouble(0)); //error of 500
     }),
 
     FIRE_SOLID_SPEED_PRACTICE2022(shooter -> {
@@ -148,8 +236,7 @@ public enum ShootingEnums {
             }
         }
         shooter.setSpeed(4200);
-    }),
-    FIRE_MULTIPLE_SHOTS(shooter -> {
+    }), FIRE_MULTIPLE_SHOTS(shooter -> {
         if (shooter.ballsToShoot > shooter.ballsShot && shooter.ballsToShoot != -1) {
             shooter.setSpeed(4300); //The speed to run the shooter at during firing, typically 4200
             if (robotSettings.ENABLE_2020_HOPPER) {
@@ -228,12 +315,45 @@ public enum ShootingEnums {
     }),
 
     FIRE_TIMED_2022(shooter -> {
-        shooter.setSpeed(1700);
-        if (shooter.getSpeed() >= 1675) {
+        if (robotSettings.SHOOTER_CONTROL_STYLE == Shooter.ShootingControlStyles.BACKSPIN_SHOOT_2022 || robotSettings.SHOOTER_CONTROL_STYLE == Shooter.ShootingControlStyles.COMP_2022) {
+            shooter.setSpeed(shooter.speed, shooter.speed * 1.625);
+        } else {
+            shooter.setSpeed(shooter.speed);
+        }
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_HOOD_PISTON)
+            pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
+        if (shooter.getSpeed() >= (shooter.speed * 0.95)) {
             shooter.timerTicks++;
-            hopper.setAll(true);
+            if(shooter.timerTicks >= 20)
+                hopper.setAll(true);
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK && (shooter.timerTicks >= 30))
+                pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kReverse);
             if (shooter.timerTicks >= shooter.goalTicks) {
                 shooter.multiShot = false;
+                if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                    pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
+                hopper.setAll(false);
+            }
+        }
+    }),
+    FIRE_TIMED_2022_SPIN(shooter -> {
+        if (robotSettings.SHOOTER_CONTROL_STYLE == Shooter.ShootingControlStyles.BACKSPIN_SHOOT_2022 || robotSettings.SHOOTER_CONTROL_STYLE == Shooter.ShootingControlStyles.COMP_2022) {
+            shooter.setSpeed(shooter.speed, shooter.speed * 1);
+        } else {
+            shooter.setSpeed(shooter.speed);
+        }
+        if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_HOOD_PISTON)
+            pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
+        if (shooter.getSpeed() >= (shooter.speed * 0.95)) {
+            shooter.timerTicks++;
+            if(shooter.timerTicks >= 20)
+                hopper.setAll(true);
+            if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK && (shooter.timerTicks >= 30))
+                pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kReverse);
+            if (shooter.timerTicks >= shooter.goalTicks) {
+                shooter.multiShot = false;
+                if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
+                    pneumatics.indexerBlocker.set(DoubleSolenoid.Value.kForward);
                 hopper.setAll(false);
             }
         }
@@ -262,8 +382,7 @@ public enum ShootingEnums {
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll(shooter.getSpeed() >= 4200);
         }
-    }),
-    FIRE_WITH_HOPPER_CONTROLLED(shooter -> {
+    }), FIRE_WITH_HOPPER_CONTROLLED(shooter -> {
         shooter.setSpeed(4400);
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setIndexer(shooter.getSpeed() >= 4200);

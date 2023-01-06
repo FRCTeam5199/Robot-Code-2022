@@ -19,7 +19,7 @@ public class QuoteOfTheDay {
             "It's what I like to call a gameing laptop. And by gameing I mean Joey's Awesome Boat Game.",
             "Sterling, you have what I like to call a not gameing laptop. You can't run Joey's Awesome Boat Game at 1,000 FPS.",
             "Aliiiiiiiiiii, why is the bot not working?",
-            "Why does this sound so crap?",
+            "Why does this sound so crap?", //Brandon's favorite
             "Me: Mom, can we get a random? \nMom: No, we have random at home. \nRandom at home:",
             "You mean to tell me its open source? hows it still *that* crap?",
             "your life savings? null",
@@ -30,7 +30,7 @@ public class QuoteOfTheDay {
             "The best IDE for programming is Microsoft Word. It has the most customizable syntax hilighting you can get.",
             "You can also hide your code. If you have your API key exposed, you can just unexpose it like that.",
             "You see this auto capitalization? You might think that this is an inconvenience, but it's actually great",
-            "It does that sometimes",
+            "It does that sometimes", //A close second - brandon
             "If you don't do that, it won't work. This is a feature, not a bug. It's, um, to prevent hackers from saving malicious code while they access your desktop.",
             "I'll start up Windows PowerShell because it is the best since Microsoft is the best and anything they make is the best.",
             "I understand what your saying... from a voodoo point of view.",
@@ -57,7 +57,26 @@ public class QuoteOfTheDay {
             "Africa, Default Pi.. \nWhere's Africa? \n... Amica..",
             "Fix your software!!",
             "Oh no, it rickrolled me. Oh no! Kill the server!",
-            "Me: I love my job! \nBrandon: That's a lie."
+            "Sterling: I love my job! \nBrandon: That's a lie.",
+            "Teddy, make your intake lighter.",
+            "If in doubt, comment it out",
+            "Sterling: Laugh less. Bu hao more.",
+            "I can't connect to the robot if you don't turn it on...",
+            "Sterling: Can the name on my hoodie be \"Pro 'grammer\"\nTeddy: I don’t think they can do thinking like ‘",
+            "Sterling: Where's discipline? I need to teach the freshman a lesson.",
+            "Teddy: Idk they obviously can’t read\nStryker: Bro you're so mean\nTeddy: Nvm he can read",
+            "Sterling: Someone fried my RIO ports\nBrandon: Just like someone fried my teensy?",
+            "Alex: I don't talk to the press",
+            "Sterling: Well I didn't have the budget of 5.99 so I couldn't afford the MathematicalMod.",
+            "s2: If there's chinese writing on it, it's bad",
+            "Kyle: How can I live laugh love in these conditions?",
+            "Rick: Teddy's just tall, that's it",
+            "Ali: Try blowing on [the ethernet cable] (to fix it)",
+            "Stryker: Considering my age and size I'm pretty bulked",
+            "Sterling: Here in soviet programmer fun time land, you do not turn robot; robot turns you.",
+            "Ah I'm bleeding, it's probably fine - everyone",
+            "Sterling: You did it so well that you out human-played yourself.",
+            "Alex: That's brutal"
     };
 
     /**

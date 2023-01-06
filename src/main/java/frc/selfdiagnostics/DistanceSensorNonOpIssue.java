@@ -8,7 +8,7 @@ import frc.robot.Main;
 import static frc.robot.Robot.robotSettings;
 
 /**
- * Use this when the {@link frc.vision.distancesensor.IDistanceSensor Distance sensor} appears to be
+ * Use this when the {@link frc.sensors.distancesensor.IDistanceSensor Distance sensor} appears to be
  * unresponsive/disconnected
  *
  * @author jojo2357
