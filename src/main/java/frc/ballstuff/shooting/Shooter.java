@@ -574,7 +574,7 @@ public class Shooter implements ISubsystem {
                     } else {
                         ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022.shoot(this);
                     }
-                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.TARMAC_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN)|| (joystickController.get(DefaultControllerEnums.JoystickButtons.TEN) == DefaultControllerEnums.ButtonStatus.DOWN)) {
+                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.TARMAC_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN)|| (joystickController.get(DefaultControllerEnums.JoystickButtons.TEN) == DefaultControllerEnums.ButtonStatus.DOWN) || (joystickController.get(DefaultControllerEnums.JoystickButtons.EIGHT) == DefaultControllerEnums.ButtonStatus.DOWN)) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022.shoot(this);
                 } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN)|| (joystickController.get(DefaultControllerEnums.JoystickButtons.NINE) == DefaultControllerEnums.ButtonStatus.DOWN)) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_FAR_2022.shoot(this);

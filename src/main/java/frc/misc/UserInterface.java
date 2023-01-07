@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.ballstuff.intaking.Intake;
 import frc.ballstuff.shooting.Shooter;
 import frc.drive.AbstractDriveManager;
+import frc.drive.auton.SwerveAuton.AutonManager;
 import frc.drive.auton.pointtopoint.AutonRoutines;
 import frc.motors.AbstractMotorController;
 
@@ -115,7 +116,9 @@ public class UserInterface {
             AUTON_STYLE_CHOOSER = AUTON_TAB.add("Auton Styles", AutonRoutines.getSendableChooser()).withWidget(BuiltInWidgets.kComboBoxChooser),
             DRIVE_STYLE_CHOOSER = DRIVE_TAB.add("Drive Styles", AbstractDriveManager.DriveControlStyles.getSendableChooser()).withWidget(BuiltInWidgets.kComboBoxChooser),
             SHOOTING_STYLE_CHOOSER = SHOOTER_TAB.add("Shooting Styles", Shooter.ShootingControlStyles.getSendableChooser()).withWidget(BuiltInWidgets.kComboBoxChooser),
+            AUTONSWERVE_STYLE_CHOOSER = AUTON_TAB.add("Swerve Auton Chooser", AutonManager.getSendableChooser()).withWidget(BuiltInWidgets.kComboBoxChooser),
             INTAKE_STYLE_CHOOSER = SHOOTER_TAB.add("Intaking Styles", Intake.IntakeControlStyles.getSendableChooser()).withWidget(BuiltInWidgets.kComboBoxChooser);
+
 
     //SmartDashboard
     public static void smartDashboardPutNumber(String key, double value) {
