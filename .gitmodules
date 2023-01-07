@@ -1,0 +1,3 @@
+[submodule "src/main/java/frc/controllers/basecontrollers"]
+	path = src/main/java/frc/controllers/basecontrollers
+	url = https://github.com/FRCTeam5199/FRC-AbstractContollerInterfaces.git
