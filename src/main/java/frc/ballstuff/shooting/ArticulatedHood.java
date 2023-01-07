@@ -3,7 +3,8 @@ package frc.ballstuff.shooting;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.controllers.BaseController;
+import frc.controllers.basecontrollers.BaseController;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.misc.*;
 import frc.motors.*;
 import frc.robot.Robot;
@@ -50,18 +51,18 @@ public class ArticulatedHood implements ISubsystem {
             case PRACTICE_2022:
             case STANDARD_2022:
             case STANDARD:
-                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, CustomControllers.BUTTON_PANEL_CONTROLLER);
                 break;
             case COMP_2022:
-                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, CustomControllers.BUTTTON_PANEL_CONTROLLER_2022);
                 break;
             case BOP_IT:
-                joystickController = BaseController.createOrGet(1, BaseController.Controllers.BOP_IT_CONTROLLER);
+                joystickController = BaseController.createOrGet(1, BaseController.DefaultControllers.BOP_IT_CONTROLLER);
                 break;
             case XBOX_CONTROLLER:
-                joystickController = BaseController.createOrGet(1, BaseController.Controllers.XBOX_CONTROLLER);
+                joystickController = BaseController.createOrGet(1, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             default:
                 throw new IllegalStateException("There is no UI configuration for " + robotSettings.SHOOTER_CONTROL_STYLE.name() + " to control the articulated hood. Please implement me");
@@ -104,20 +105,20 @@ public class ArticulatedHood implements ISubsystem {
             case STANDARD_2022:
             case COMP_2022:
                 if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
-                    if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.NINE) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.TEN) == ButtonStatus.DOWN) {
+                    if (joystickController.get(DefaultControllerEnums.JoystickButtons.FIVE) == DefaultControllerEnums.ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FAR_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.LOW_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.TARMAC_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN || joystickController.get(DefaultControllerEnums.JoystickButtons.NINE) == DefaultControllerEnums.ButtonStatus.DOWN || joystickController.get(DefaultControllerEnums.JoystickButtons.TEN) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
                     }
-                    if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN || joystickController.get(JoystickButtons.SEVEN) == ButtonStatus.DOWN) {
+                    if (joystickController.get(DefaultControllerEnums.JoystickButtons.THREE) == DefaultControllerEnums.ButtonStatus.DOWN || panel.get(ButtonPanelButtons2022.FENDER_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN || joystickController.get(DefaultControllerEnums.JoystickButtons.SEVEN) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kReverse);
                     }
                 }
                 break;
             case PRACTICE_2022:
                 if (robotSettings.ENABLE_HOOD_PISTON && robotSettings.ENABLE_PNOOMATICS) {
-                    if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN) {
+                    if (joystickController.get(DefaultControllerEnums.JoystickButtons.FIVE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kForward);
                     }
-                    if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN) {
+                    if (joystickController.get(DefaultControllerEnums.JoystickButtons.THREE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         pneumatics.hoodArticulator.set(DoubleSolenoid.Value.kReverse);
                     }
                 }
@@ -130,13 +131,13 @@ public class ArticulatedHood implements ISubsystem {
                 } else if (currentPos < robotSettings.SHOOTER_HOOD_MIN_POS) {
                     moveTo = -3;
                     hoodMotor.moveAtPercent(-0.1);
-                } else if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN) {
+                } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.FIVE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     moveTo = -2;
                     hoodMotor.moveAtPercent(-0.3);
-                } else if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN) {
+                } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.THREE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     moveTo = -2;
                     hoodMotor.moveAtPercent(0.3);
-                } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN) {
+                } else if (panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     if (!Robot.shooter.isValidTarget()) {
                         moveTo = 1.4;
                         unTargeted = true;
@@ -162,13 +163,13 @@ public class ArticulatedHood implements ISubsystem {
                 } else if (currentPos < robotSettings.SHOOTER_HOOD_MIN_POS) {
                     moveTo = -3;
                     hoodMotor.moveAtPercent(-0.1);
-                } else if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN) {
+                } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.FIVE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     moveTo = -2;
                     hoodMotor.moveAtPercent(-0.3);
-                } else if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN) {
+                } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.THREE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     moveTo = -2;
                     hoodMotor.moveAtPercent(0.3);
-                } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN) {
+                } else if (panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     if (!Robot.shooter.isValidTarget()) {
                         moveTo = 0.95;
                         unTargeted = true;
@@ -193,13 +194,13 @@ public class ArticulatedHood implements ISubsystem {
                 } else if (currentPos < robotSettings.SHOOTER_HOOD_MIN_POS) {
                     moveToPos(HoodSpecialAction.OUT_OF_BOUNDS, robotSettings.SHOOTER_HOOD_OUT_OF_BOUNDS_SPEED);
                 } else {
-                    if ((panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN) && Robot.shooter.goalCamera.hasValidTarget()) {
+                    if ((panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN) && Robot.shooter.goalCamera.hasValidTarget()) {
                         if (!Robot.shooter.isShooting()) {
                             moveToPos(requiredArticulationForTargetSize(Robot.shooter.goalCamera.getSize(), robotSettings.CALIBRATED_HOOD_POSITION_ARRAY), currentPos);
                         }
-                    } else if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN) {
+                    } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.FIVE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         moveToPos(HoodSpecialAction.MANUAL_MOVEMENT, robotSettings.SHOOTER_HOOD_CONTROL_SPEED);
-                    } else if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN) {
+                    } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.THREE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         moveToPos(HoodSpecialAction.MANUAL_MOVEMENT, -robotSettings.SHOOTER_HOOD_CONTROL_SPEED);
                     } else {
                         if (!HOOD_OVERRIDE.getBoolean(false) && currentPos > 3 && !shooter.isShooting()) {
@@ -223,7 +224,7 @@ public class ArticulatedHood implements ISubsystem {
                 } else if (HEIGHT_OVERRIDE.getBoolean(false)) {
                     moveToPos(HOOD_HEIGHT.getDouble(0), currentPos);
                 } else {
-                    if ((panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN)) {
+                    if ((panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN)) {
                         if (!Robot.shooter.isShooting()) {
                             if (shooter.tryFiringBalls) {
                                 //moveToPos(requiredArticulationForTargetSize(lastSeenCameraArea, robotSettings.CALIBRATED_HOOD_POSITION_ARRAY), currentPos);
@@ -232,13 +233,13 @@ public class ArticulatedHood implements ISubsystem {
                                 moveToPos(HoodSpecialAction.AIMING, robotSettings.SHOOTER_HOOD_MAX_POS / 2);
                             }
                         }
-                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN) {
+                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         moveToPos(HoodSpecialAction.AIMING, robotSettings.TRENCH_FRONT_HOOD_POSITION);
-                    } else if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) {
+                    } else if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         moveToPos(HoodSpecialAction.AIMING, robotSettings.INITIATION_LINE_HOOD_POSITION);
-                    } else if (joystickController.get(JoystickButtons.FIVE) == ButtonStatus.DOWN) {
+                    } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.FIVE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         moveToPos(HoodSpecialAction.MANUAL_MOVEMENT, robotSettings.SHOOTER_HOOD_CONTROL_SPEED);
-                    } else if (joystickController.get(JoystickButtons.THREE) == ButtonStatus.DOWN) {
+                    } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.THREE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         moveToPos(HoodSpecialAction.MANUAL_MOVEMENT, -robotSettings.SHOOTER_HOOD_CONTROL_SPEED);
                     } else {
                         if (!HOOD_OVERRIDE.getBoolean(false) && currentPos > 3 && !shooter.isShooting()) {
@@ -339,16 +340,16 @@ public class ArticulatedHood implements ISubsystem {
      * Uses {@link ButtonPanelTapedButtons nonstandard mapping} and moves the hood based on those inputs
      */
     private void moveToPosFromButtons() {
-        if (panel.get(ButtonPanelTapedButtons.HOOD_POS_1) == ButtonStatus.DOWN) {
+        if (panel.get(ButtonPanelTapedButtons.HOOD_POS_1) == DefaultControllerEnums.ButtonStatus.DOWN) {
             moveTo = 0.05; //POS 1
             unTargeted = false;
-        } else if (panel.get(ButtonPanelTapedButtons.HOOD_POS_2) == ButtonStatus.DOWN) {
+        } else if (panel.get(ButtonPanelTapedButtons.HOOD_POS_2) == DefaultControllerEnums.ButtonStatus.DOWN) {
             moveTo = 0.77; //POS 2
             unTargeted = false;
-        } else if (panel.get(ButtonPanelTapedButtons.HOOD_POS_3) == ButtonStatus.DOWN) {
+        } else if (panel.get(ButtonPanelTapedButtons.HOOD_POS_3) == DefaultControllerEnums.ButtonStatus.DOWN) {
             moveTo = 1.05; //POS 3
             unTargeted = false;
-        } else if (panel.get(ButtonPanelTapedButtons.HOOD_POS_4) == ButtonStatus.DOWN) {
+        } else if (panel.get(ButtonPanelTapedButtons.HOOD_POS_4) == DefaultControllerEnums.ButtonStatus.DOWN) {
             moveTo = 1.135; //POS 4
             unTargeted = false;
         } else {

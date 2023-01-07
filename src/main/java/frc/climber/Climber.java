@@ -2,9 +2,9 @@ package frc.climber;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.controllers.BaseController;
+import frc.controllers.basecontrollers.BaseController;
 import frc.controllers.ControllerEnums;
-import frc.controllers.ControllerEnums.ButtonStatus;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.misc.*;
 import frc.motors.*;
 import frc.robot.Robot;
@@ -72,11 +72,11 @@ public class Climber implements ISubsystem {
     public void updateGeneric() {
         switch (robotSettings.CLIMBER_CONTROL_STYLE) {
             case STANDARD: {
-                if (buttonpanel.get(LOWER_CLIMBER) == ButtonStatus.DOWN) {
+                if (buttonpanel.get(LOWER_CLIMBER) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     for (AbstractMotorController motor : climberMotors) {
                         motor.moveAtPercent(-0.8);
                     }
-                } else if (buttonpanel.get(RAISE_CLIMBER) == ButtonStatus.DOWN && !isLocked) {
+                } else if (buttonpanel.get(RAISE_CLIMBER) == DefaultControllerEnums.ButtonStatus.DOWN && !isLocked) {
                     for (AbstractMotorController motor : climberMotors) {
                         motor.moveAtPercent(0.8);
                     }
@@ -85,20 +85,20 @@ public class Climber implements ISubsystem {
                         motor.moveAtPercent(0);
                     }
                 }
-                if (buttonpanel.get(CLIMBER_LOCK) == ButtonStatus.DOWN) {
+                if (buttonpanel.get(CLIMBER_LOCK) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     climberLocks(true);
-                } else if (buttonpanel.get(CLIMBER_UNLOCK) == ButtonStatus.DOWN) {
+                } else if (buttonpanel.get(CLIMBER_UNLOCK) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     climberLocks(false);
                 }
             }
             break;
             case STANDARD_2022: {
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == ButtonStatus.DOWN || xbox.get(ControllerEnums.XBoxButtons.A_CROSS) == ButtonStatus.DOWN) {//&& !isLocked) {
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_UP) == DefaultControllerEnums.ButtonStatus.DOWN || xbox.get(DefaultControllerEnums.XBoxButtons.A_CROSS) == DefaultControllerEnums.ButtonStatus.DOWN) {//&& !isLocked) {
                     for (AbstractMotorController motor : climberMotors) {
                         motor.moveAtPercent(1);
                     }
                     //climberStg1.moveAtPercent(-0.8);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == ButtonStatus.DOWN|| xbox.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.FIRST_STAGE_DOWN) == DefaultControllerEnums.ButtonStatus.DOWN|| xbox.get(DefaultControllerEnums.XBoxButtons.B_CIRCLE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INTAKE) {
                         intake.deployIntake(false);
                     }
@@ -128,9 +128,9 @@ public class Climber implements ISubsystem {
                         }
                     }
                 }
-                if (joystick.get(ControllerEnums.JoystickButtons.TWELVE) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_UP) == ButtonStatus.DOWN) {
+                if (joystick.get(DefaultControllerEnums.JoystickButtons.TWELVE) == DefaultControllerEnums.ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_UP) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     climberPiston(true);
-                } else if (joystick.get(ControllerEnums.JoystickButtons.ELEVEN) == ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_DOWN) == ButtonStatus.DOWN) {
+                } else if (joystick.get(DefaultControllerEnums.JoystickButtons.ELEVEN) == DefaultControllerEnums.ButtonStatus.DOWN || buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.PIVOT_PISTON_DOWN) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     climberPiston(false);
                     if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INTAKE) {
                         intake.deployIntake(true);
@@ -271,31 +271,31 @@ public class Climber implements ISubsystem {
     private void createControllers() {
         switch (robotSettings.CLIMBER_CONTROL_STYLE) {
             case FLIGHT_STICK:
-                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
                 break;
             case STANDARD_2022:
-                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
-                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT2, BaseController.Controllers.XBOX_CONTROLLER);
+                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
+                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, ControllerEnums.CustomControllers.BUTTTON_PANEL_CONTROLLER_2022);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT2, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             case OLD_STANDARD_2022:
             case STANDARD:
-                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, ControllerEnums.CustomControllers.BUTTON_PANEL_CONTROLLER);
                 break;
             case XBOX_CONTROLLER:
-                joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             case BOP_IT:
-                joystick = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
+                joystick = BaseController.createOrGet(3, BaseController.DefaultControllers.BOP_IT_CONTROLLER);
                 break;
             case DRUM_TIME:
-                joystick = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
+                joystick = BaseController.createOrGet(5, BaseController.DefaultControllers.DRUM_CONTROLLER);
                 break;
             case WII:
-                joystick = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
+                joystick = BaseController.createOrGet(4, BaseController.DefaultControllers.WII_CONTROLLER);
                 break;
             case GUITAR:
-                joystick = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
+                joystick = BaseController.createOrGet(6, BaseController.DefaultControllers.SIX_BUTTON_GUITAR_CONTROLLER);
                 break;
             default:
                 throw new IllegalStateException("There is no UI configuration for " + robotSettings.INTAKE_CONTROL_STYLE.name() + " to control the shooter. Please implement me");

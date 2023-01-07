@@ -7,16 +7,14 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.controllers.BaseController;
-import frc.controllers.ControllerEnums;
-import frc.controllers.ControllerEnums.*;
+import frc.controllers.basecontrollers.BaseController;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.misc.*;
 import frc.motors.*;
 import frc.motors.followers.*;
 import frc.selfdiagnostics.MotorDisconnectedIssue;
 import frc.sensors.camera.IVision;
 import frc.telemetry.RobotTelemetryStandard;
-import frc.ballstuff.shooting.*;
 
 import static frc.robot.Robot.pneumatics;
 import static frc.robot.Robot.robotSettings;
@@ -105,15 +103,15 @@ public class DriveManagerStandard extends AbstractDriveManager {
         switch (robotSettings.DRIVE_STYLE) {
             case EXPERIMENTAL: {
                 double invertedDrive = robotSettings.DRIVE_INVERT_LEFT ? -1 : 1;
-                if (Math.abs(controller.get(XboxAxes.LEFT_JOY_Y)) > 0.9) {
-                    double dir = controller.get(XboxAxes.LEFT_JOY_Y) > 0 ? 1 : -1;
+                if (Math.abs(controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y)) > 0.9) {
+                    double dir = controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y) > 0 ? 1 : -1;
                     driveFPS(100 * dir * invertedDrive * driveScaleMult.getDouble(robotSettings.DRIVE_SCALE), 100 * dir * invertedDrive * driveScaleMult.getDouble(robotSettings.DRIVE_SCALE));
                     break;
                 }
-                double dynamic_gear_R = controller.get(XBoxButtons.RIGHT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
-                double dynamic_gear_L = controller.get(XBoxButtons.LEFT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_R = controller.get(DefaultControllerEnums.XBoxButtons.RIGHT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_L = controller.get(DefaultControllerEnums.XBoxButtons.LEFT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN ? 0.25 : 1;
                 if (robotSettings.DEBUG && DEBUG) {
-                    System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X)));
+                    System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X)));
                     //System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X)));
                 }
                 if (rumbleController.getBoolean(false) && !ballShifterEnabled) {
@@ -121,18 +119,18 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 } else {
                     controller.rumble(0);
                 }
-                drive(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
+                drive(invertedDrive * dynamic_gear_L * controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y), dynamic_gear_R * -controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X));
             }
             break;
             case STANDARD_2022: {
                 double invertedDrive = robotSettings.DRIVE_INVERT_LEFT ? -1 : 1;
-                double dynamic_gear_R = controller.get(XBoxButtons.RIGHT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
-                double dynamic_gear_L = controller.get(XBoxButtons.LEFT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_R = controller.get(DefaultControllerEnums.XBoxButtons.RIGHT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_L = controller.get(DefaultControllerEnums.XBoxButtons.LEFT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN ? 0.25 : 1;
                 boolean a = false;
                 UserInterface.smartDashboardPutBoolean("Drive using PID?", a);
                 if (a) {
-                    drive((controller.get(XboxAxes.LEFT_JOY_Y)), controller.get(XboxAxes.RIGHT_JOY_X));
-                } else if (robotSettings.ENABLE_VISION && controller.get(XboxAxes.RIGHT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
+                    drive((controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y)), controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X));
+                } else if (robotSettings.ENABLE_VISION && controller.get(DefaultControllerEnums.XboxAxes.RIGHT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
                     double neededRot;
                     visionCamera.setLedMode(IVision.VisionLEDMode.ON);
                     if (visionCamera.hasValidTarget()) {
@@ -141,10 +139,10 @@ public class DriveManagerStandard extends AbstractDriveManager {
                         else
                             neededRot = -adjustedRotation(TELEOP_AIMING_PID.calculate(visionCamera.getAngle()));
                     } else {
-                        neededRot = controller.get(XboxAxes.RIGHT_JOY_X);
+                        neededRot = controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X);
                     }
-                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y)), -neededRot * dynamic_gear_R);
-                } else if (robotSettings.ENABLE_VISION && robotSettings.ENABLE_DRIVE_BALL_TRACKING && controller.get(XboxAxes.LEFT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
+                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y)), -neededRot * dynamic_gear_R);
+                } else if (robotSettings.ENABLE_VISION && robotSettings.ENABLE_DRIVE_BALL_TRACKING && controller.get(DefaultControllerEnums.XboxAxes.LEFT_TRIGGER) >= robotSettings.XBOX_CONTROLLER_DEADZONE) {
                     if (ballCamera.hasValidTarget()) {
                         double dist = Math.min(1.0, Math.abs(ballCamera.getAngle())) * (ballCamera.getAngle() > 0 ? 1 : -1); //slow on approach, add correct invert
                         aimAtTargetPitch(dist, ballCamera);
@@ -152,76 +150,76 @@ public class DriveManagerStandard extends AbstractDriveManager {
                 } else {
                     if (robotSettings.ENABLE_VISION)
                         visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
-                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(XboxAxes.LEFT_JOY_Y)), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
+                    driveCringe(invertedDrive * dynamic_gear_L * (controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y)), dynamic_gear_R * -controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X));
                 }
                 //energySaver();
             }
             break;
             case BALL_SHIFTING_STANDARD: {
-                if (controller.get(ControllerEnums.XBoxPOVButtons.DOWN) == ButtonStatus.DOWN) {
+                if (controller.get(DefaultControllerEnums.XBoxPOVButtons.DOWN) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     pneumatics.ballShifter.set(DoubleSolenoid.Value.kForward);
                     ballShifterEnabled = true;
-                } else if (controller.get(ControllerEnums.XBoxPOVButtons.UP) == ButtonStatus.DOWN) {
+                } else if (controller.get(DefaultControllerEnums.XBoxPOVButtons.UP) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     pneumatics.ballShifter.set(DoubleSolenoid.Value.kReverse);
                     ballShifterEnabled = false;
                 }
             }
             case STANDARD: {
                 double invertedDrive = robotSettings.DRIVE_INVERT_LEFT ? -1 : 1;
-                double dynamic_gear_R = controller.get(XBoxButtons.RIGHT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
-                double dynamic_gear_L = controller.get(XBoxButtons.LEFT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_R = controller.get(DefaultControllerEnums.XBoxButtons.RIGHT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_L = controller.get(DefaultControllerEnums.XBoxButtons.LEFT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN ? 0.25 : 1;
                 if (robotSettings.DEBUG && DEBUG) {
-                    System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X)));
+                    System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X)));
                     //System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X)));
                 }
                 if (rumbleController.getBoolean(false)) {
                     controller.rumble(Math.max(0, Math.min(1, (avgSpeedInFPS - robotSettings.RUMBLE_TOLERANCE_FPS) / (robotSettings.MAX_SPEED - robotSettings.RUMBLE_TOLERANCE_FPS))));
                 }
-                driveCringe(invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y), dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X));
+                driveCringe(invertedDrive * dynamic_gear_L * controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y), dynamic_gear_R * -controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X));
             }
             break;
             case OPENLOOP_BALL_SHIFTING_STANDARD: {
-                if (controller.get(ControllerEnums.XBoxPOVButtons.DOWN) == ButtonStatus.DOWN) {
+                if (controller.get(DefaultControllerEnums.XBoxPOVButtons.DOWN) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     pneumatics.ballShifter.set(DoubleSolenoid.Value.kForward);
                     ballShifterEnabled = true;
-                } else if (controller.get(ControllerEnums.XBoxPOVButtons.UP) == ButtonStatus.DOWN) {
+                } else if (controller.get(DefaultControllerEnums.XBoxPOVButtons.UP) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     pneumatics.ballShifter.set(DoubleSolenoid.Value.kReverse);
                     ballShifterEnabled = false;
                 }
                 double invertedDrive = robotSettings.DRIVE_INVERT_LEFT ? -1 : 1;
-                double dynamic_gear_R = controller.get(XBoxButtons.RIGHT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
-                double dynamic_gear_L = controller.get(XBoxButtons.LEFT_BUMPER) == ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_R = controller.get(DefaultControllerEnums.XBoxButtons.RIGHT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN ? 0.25 : 1;
+                double dynamic_gear_L = controller.get(DefaultControllerEnums.XBoxButtons.LEFT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN ? 0.25 : 1;
                 if (robotSettings.DEBUG && DEBUG) {
-                    System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X)));
+                    System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X)));
                     //System.out.println("Forward: " + (invertedDrive * dynamic_gear_L * controller.get(XboxAxes.LEFT_JOY_Y)) + " Turn: " + (dynamic_gear_R * -controller.get(XboxAxes.RIGHT_JOY_X)));
                 }
                 if (rumbleController.getBoolean(false)) {
                     controller.rumble(Math.max(0, Math.min(1, (avgSpeedInFPS - robotSettings.RUMBLE_TOLERANCE_FPS) / (robotSettings.MAX_SPEED - robotSettings.RUMBLE_TOLERANCE_FPS))));
                 }
-                drivePercent(controller.get(XboxAxes.LEFT_JOY_Y), controller.get(XboxAxes.RIGHT_JOY_X));
+                drivePercent(controller.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y), controller.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X));
                 break;
             }
             case MARIO_KART: {
-                double gogoTime = controller.get(ControllerEnums.WiiButton.ONE) == ButtonStatus.DOWN ? -1 : controller.get(ControllerEnums.WiiButton.TWO) == ButtonStatus.DOWN ? 1 : 0;
-                drive(0.75 * gogoTime, -0.5 * controller.get(ControllerEnums.WiiAxis.ROTATIONAL_TILT) * gogoTime);
+                double gogoTime = controller.get(DefaultControllerEnums.WiiButton.ONE) == DefaultControllerEnums.ButtonStatus.DOWN ? -1 : controller.get(DefaultControllerEnums.WiiButton.TWO) == DefaultControllerEnums.ButtonStatus.DOWN ? 1 : 0;
+                drive(0.75 * gogoTime, -0.5 * controller.get(DefaultControllerEnums.WiiAxis.ROTATIONAL_TILT) * gogoTime);
             }
             break;
             case GUITAR: {
-                double turn = controller.get(ControllerEnums.SixKeyGuitarAxis.PITCH);
-                double gogo = controller.get(ControllerEnums.SixKeyGuitarAxis.STRUM);
+                double turn = controller.get(DefaultControllerEnums.SixKeyGuitarAxis.PITCH);
+                double gogo = controller.get(DefaultControllerEnums.SixKeyGuitarAxis.STRUM);
                 drive(gogo, turn);
                 break;
             }
             case DRUM_TIME: {
-                double speedFactor = controller.get(ControllerEnums.DrumButton.PEDAL) == ButtonStatus.DOWN ? 2 : 0.5;
-                double goLeft = controller.get(ControllerEnums.Drums.RED) == ButtonStatus.DOWN ? 2 : controller.get(ControllerEnums.Drums.YELLOW) == ButtonStatus.DOWN ? -2 : 0;
-                double goRight = controller.get(ControllerEnums.Drums.GREEN) == ButtonStatus.DOWN ? 2 : controller.get(ControllerEnums.Drums.BLUE) == ButtonStatus.DOWN ? -2 : 0;
+                double speedFactor = controller.get(DefaultControllerEnums.DrumButton.PEDAL) == DefaultControllerEnums.ButtonStatus.DOWN ? 2 : 0.5;
+                double goLeft = controller.get(DefaultControllerEnums.Drums.RED) == DefaultControllerEnums.ButtonStatus.DOWN ? 2 : controller.get(DefaultControllerEnums.Drums.YELLOW) == DefaultControllerEnums.ButtonStatus.DOWN ? -2 : 0;
+                double goRight = controller.get(DefaultControllerEnums.Drums.GREEN) == DefaultControllerEnums.ButtonStatus.DOWN ? 2 : controller.get(DefaultControllerEnums.Drums.BLUE) == DefaultControllerEnums.ButtonStatus.DOWN ? -2 : 0;
                 driveFPS(goLeft * speedFactor, goRight * speedFactor);
                 break;
             }
             case BOP_IT: {
-                double driveamt = (controller.get(ControllerEnums.BopItButtons.PULLIT) == ButtonStatus.DOWN ? 1 * driveScaleMult.getDouble(robotSettings.DRIVE_SCALE) : 0) * (controller.get(ControllerEnums.BopItButtons.BOPIT) == ButtonStatus.DOWN ? -1 : 1);
-                double turnamt = (controller.get(ControllerEnums.BopItButtons.TWISTIT) == ButtonStatus.DOWN ? 1 * driveScaleMult.getDouble(robotSettings.DRIVE_SCALE) : 0) * (controller.get(ControllerEnums.BopItButtons.BOPIT) == ButtonStatus.DOWN ? -1 : 1);
+                double driveamt = (controller.get(DefaultControllerEnums.BopItButtons.PULLIT) == DefaultControllerEnums.ButtonStatus.DOWN ? 1 * driveScaleMult.getDouble(robotSettings.DRIVE_SCALE) : 0) * (controller.get(DefaultControllerEnums.BopItButtons.BOPIT) == DefaultControllerEnums.ButtonStatus.DOWN ? -1 : 1);
+                double turnamt = (controller.get(DefaultControllerEnums.BopItButtons.TWISTIT) == DefaultControllerEnums.ButtonStatus.DOWN ? 1 * driveScaleMult.getDouble(robotSettings.DRIVE_SCALE) : 0) * (controller.get(DefaultControllerEnums.BopItButtons.BOPIT) == DefaultControllerEnums.ButtonStatus.DOWN ? -1 : 1);
                 //System.out.println("bop it says: " + driveamt + ", " + turnamt);
                 drive(driveamt, turnamt);
                 break;
@@ -340,13 +338,13 @@ public class DriveManagerStandard extends AbstractDriveManager {
      */
     private void energySaver() {
         if (robotSettings.DRIVE_STYLE == DriveControlStyles.STANDARD_2022) {
-            if (controller.get(ControllerEnums.XBoxPOVButtons.DOWN) == ButtonStatus.DOWN) {
+            if (controller.get(DefaultControllerEnums.XBoxPOVButtons.DOWN) == DefaultControllerEnums.ButtonStatus.DOWN) {
                 if (energySaverLevel < 2) {
                     energySaverLevel++;
                 } else {
                     energySaverLevel = 1;
                 }
-            } else if (controller.get(ControllerEnums.XBoxPOVButtons.UP) == ButtonStatus.DOWN) {
+            } else if (controller.get(DefaultControllerEnums.XBoxPOVButtons.UP) == DefaultControllerEnums.ButtonStatus.DOWN) {
                 energySaverLevel = 0;
             }
         }
@@ -525,22 +523,22 @@ public class DriveManagerStandard extends AbstractDriveManager {
             case OPENLOOP_BALL_SHIFTING_STANDARD:
             case STANDARD_2022:
             case STANDARD:
-                controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             case FLIGHT_STICK:
-                controller = BaseController.createOrGet(1, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                controller = BaseController.createOrGet(1, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
                 break;
             case MARIO_KART:
-                controller = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
+                controller = BaseController.createOrGet(4, BaseController.DefaultControllers.WII_CONTROLLER);
                 break;
             case GUITAR:
-                controller = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
+                controller = BaseController.createOrGet(6, BaseController.DefaultControllers.SIX_BUTTON_GUITAR_CONTROLLER);
                 break;
             case DRUM_TIME:
-                controller = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
+                controller = BaseController.createOrGet(5, BaseController.DefaultControllers.DRUM_CONTROLLER);
                 break;
             case BOP_IT:
-                controller = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
+                controller = BaseController.createOrGet(3, BaseController.DefaultControllers.BOP_IT_CONTROLLER);
                 break;
             default:
                 throw new UnsupportedOperationException("There is no UI configuration for " + robotSettings.DRIVE_STYLE.name() + " to control the drivetrain. Please implement me");

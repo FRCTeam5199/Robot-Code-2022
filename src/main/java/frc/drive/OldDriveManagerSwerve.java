@@ -5,8 +5,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
-import frc.controllers.BaseController;
-import frc.controllers.ControllerEnums;
+import frc.controllers.basecontrollers.BaseController;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.misc.PID;
 import frc.misc.SubsystemStatus;
 import frc.motors.AbstractMotorController;
@@ -58,7 +58,7 @@ public class OldDriveManagerSwerve extends AbstractDriveManager {
         BLpid.enableContinuousInput(-180, 180);
         BRpid.enableContinuousInput(-180, 180);
 
-        xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+        xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
 
         driverFR = new SwerveMotorController(1, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, 2, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
         driverBR = new SwerveMotorController(4, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX, 3, AbstractMotorController.SupportedMotors.CAN_SPARK_MAX);
@@ -115,7 +115,7 @@ public class OldDriveManagerSwerve extends AbstractDriveManager {
     public void updateTeleop() {
         updateGeneric();
         driveSwerve();
-        if (xbox.get(ControllerEnums.XBoxButtons.LEFT_BUMPER) == ControllerEnums.ButtonStatus.DOWN) {
+        if (xbox.get(DefaultControllerEnums.XBoxButtons.LEFT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN) {
             guidance.imu.resetOdometry();
         }
     }
@@ -164,19 +164,19 @@ public class OldDriveManagerSwerve extends AbstractDriveManager {
     }
 
     private void driveSwerve() {
-        double forwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_Y) * (-1);
-        double leftwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_X) * (1);
-        double rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-3);
+        double forwards = xbox.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y) * (-1);
+        double leftwards = xbox.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_X) * (1);
+        double rotation = xbox.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X) * (-3);
 
         driveMPS(adjustedDrive(forwards), adjustedDrive(leftwards), adjustedRotation(rotation));
     }
 
     private boolean useFieldOriented() {
-        return xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) < 0.1;
+        return xbox.get(DefaultControllerEnums.XboxAxes.LEFT_TRIGGER) < 0.1;
     }
 
     private boolean dorifto() {
-        return xbox.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER) > 0.1;
+        return xbox.get(DefaultControllerEnums.XboxAxes.RIGHT_TRIGGER) > 0.1;
     }
 
     /**
@@ -271,7 +271,7 @@ public class OldDriveManagerSwerve extends AbstractDriveManager {
     public void driveWithChassisSpeeds(ChassisSpeeds speeds) {
         moduleStates = kinematics.toSwerveModuleStates(speeds);
 
-        if (xbox.get(ControllerEnums.XBoxButtons.RIGHT_BUMPER) == ControllerEnums.ButtonStatus.DOWN) {
+        if (xbox.get(DefaultControllerEnums.XBoxButtons.RIGHT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN) {
             moduleStates = kinematics.toSwerveModuleStates(speeds, frontRightLocation);
         } else if (dorifto()) {
             double driftOffset = 3;

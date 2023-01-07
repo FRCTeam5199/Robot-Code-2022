@@ -1,7 +1,7 @@
 package frc.ballstuff.shooting;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import frc.controllers.ControllerEnums;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.misc.UserInterface;
 
 import java.util.function.Consumer;
@@ -17,29 +17,29 @@ public enum ShootingEnums {
     //Used when solid speed button is held down
     //TODO make controller dynamic
     FIRE_SOLID_SPEED_FLIGHTSTICK(shooter -> {
-        shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
+        shooter.setSpeed(4200 * (shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
         if (robotSettings.ENABLE_2020_HOPPER) {
-            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN);
         } else if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN);
         }
     }),
 
     FIRE_SOLID_SPEED_STANDARD2022(shooter -> {
         //shooter.setPercentSpeed(shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));//.46);
         //shooter.setPercentSpeed(.3);
-        shooter.setSpeed(3500 + (1000) * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER));
+        shooter.setSpeed(3500 + (1000) * shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER));
         if (robotSettings.ENABLE_HOPPER) {
-            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            hopper.setAll(shooter.isAtSpeed() && shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN);
         }
         //shooter.setSpeed(1000);
     }),
 
     FIRE_SOLID_SPEED_BACKSPIN_2022(shooter -> {
-        double rpm = shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * shooter.leader.getMaxRPM();
+        double rpm = shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER) * shooter.leader.getMaxRPM();
         shooter.setSpeed(rpm, rpm * 1.625);
         if (robotSettings.ENABLE_HOPPER) {
-            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean controllerHeld = shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN;
             boolean criteria = shooter.isAtSpeed() && controllerHeld;
             if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
                 pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
@@ -49,7 +49,7 @@ public enum ShootingEnums {
         double rpm = 1950;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean controllerHeld = shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN;
             boolean criteria = shooter.isAtSpeed() && controllerHeld;
             if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
                 pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
@@ -63,7 +63,7 @@ public enum ShootingEnums {
         //2200 rpm Morganne 19:19 3/27/2022
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean controllerHeld = shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN;
             boolean criteria = shooter.isAtSpeed() && controllerHeld;
             if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
                 pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
@@ -77,7 +77,7 @@ public enum ShootingEnums {
         //now 2700 Morganne/Rick 3/21/22 23:09
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean controllerHeld = shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN;
             boolean criteria = shooter.isAtSpeed() && controllerHeld;
             if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
                 pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
@@ -89,7 +89,7 @@ public enum ShootingEnums {
         double rpm = 1900;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean controllerHeld = shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN;
             boolean criteria = shooter.isAtSpeed() && controllerHeld;
             if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
                 pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
@@ -101,7 +101,7 @@ public enum ShootingEnums {
         double rpm = shooter.getSpeedToShoot();
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean controllerHeld = shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN;
             boolean criteria = shooter.isAtSpeed() && controllerHeld;
             if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
                 pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
@@ -113,7 +113,7 @@ public enum ShootingEnums {
         double rpm = 1000;
         shooter.setSpeed(rpm, true);
         if (robotSettings.ENABLE_HOPPER) {
-            boolean controllerHeld = shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN;
+            boolean controllerHeld = shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN;
             boolean criteria = shooter.isAtSpeed() && controllerHeld;
             if (robotSettings.ENABLE_PNOOMATICS && robotSettings.ENABLE_INDEXER_PISTON_BLOCK)
                 pneumatics.indexerBlocker.set(controllerHeld ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
@@ -140,23 +140,23 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_OFFSEASON21(shooter -> {
-        shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
+        shooter.setSpeed(4200 * (shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
         if (robotSettings.ENABLE_2020_HOPPER) {
-            hopper2020.setAll(shooter.isAtSpeed() && (shooter.isValidTarget() || shooter.joystickController.get(ControllerEnums.JoystickButtons.TWO) == ControllerEnums.ButtonStatus.DOWN) && shooter.joystickController.get(ControllerEnums.JoystickButtons.ONE) == ControllerEnums.ButtonStatus.DOWN);
+            hopper2020.setAll(shooter.isAtSpeed() && (shooter.isValidTarget() || shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.TWO) == DefaultControllerEnums.ButtonStatus.DOWN) && shooter.joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN);
         }
     }),
 
     FIRE_SOLID_SPEED_WII(shooter -> {
         shooter.setSpeed(shooter.speed);
         if (robotSettings.ENABLE_2020_HOPPER) {
-            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.WiiButton.A) == ControllerEnums.ButtonStatus.DOWN);
+            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(DefaultControllerEnums.WiiButton.A) == DefaultControllerEnums.ButtonStatus.DOWN);
         }
     }),
 
     FIRE_SOLID_SPEED_DRUMS(shooter -> {
         shooter.setSpeed(shooter.speed);
         if (robotSettings.ENABLE_2020_HOPPER) {
-            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(ControllerEnums.DrumButton.B) == ControllerEnums.ButtonStatus.DOWN);
+            hopper2020.setAll(shooter.isAtSpeed() && shooter.joystickController.get(DefaultControllerEnums.DrumButton.B) == DefaultControllerEnums.ButtonStatus.DOWN);
         }
     }),
 
@@ -177,7 +177,7 @@ public enum ShootingEnums {
 
     //Used by our current vision tracking
     FIRE_HIGH_SPEED(shooter -> {
-        shooter.setSpeed(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
+        shooter.setSpeed(4200 * (shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll((shooter.isAtSpeed()));
         } else if (robotSettings.ENABLE_HOPPER) {
@@ -186,7 +186,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_HIGH_SPEED_2022(shooter -> {
-        shooter.setSpeed(1000 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
+        shooter.setSpeed(1000 * (shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER) * 0.25 + 1));
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll((shooter.isAtSpeed()));
         } else if (robotSettings.ENABLE_HOPPER) {
@@ -195,7 +195,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_HIGH_SPEED_SPINUP(shooter -> {
-        shooter.setSpeed(3700 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
+        shooter.setSpeed(3700 + (500 * shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER)));
         if (robotSettings.ENABLE_2020_HOPPER) {
             shooter.setShooting(true);
             shooter.tryFiringBalls = true;
@@ -204,7 +204,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_HIGH_SPEED_SPINUP_2022(shooter -> {
-        shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
+        shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER)));
         if (robotSettings.ENABLE_2020_HOPPER) {
             shooter.setShooting(true);
             shooter.tryFiringBalls = true;
@@ -217,7 +217,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_HIGH_SPEED_ADJUSTABLE(shooter -> {
-        shooter.setSpeed(Math.ceil(4200 * (shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER) * 0.0714 + 1)));
+        shooter.setSpeed(Math.ceil(4200 * (shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER) * 0.0714 + 1)));
         if (robotSettings.ENABLE_2020_HOPPER) {
             hopper2020.setAll((shooter.isAtSpeed()));
         }

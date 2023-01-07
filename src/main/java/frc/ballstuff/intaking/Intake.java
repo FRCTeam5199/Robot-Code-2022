@@ -2,9 +2,9 @@ package frc.ballstuff.intaking;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.controllers.BaseController;
+import frc.controllers.basecontrollers.BaseController;
 import frc.controllers.ControllerEnums;
-import frc.controllers.ControllerEnums.ButtonStatus;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.drive.auton.AutonType;
 import frc.misc.*;
 import frc.motors.*;
@@ -106,9 +106,9 @@ public class Intake implements ISubsystem {
         switch (robotSettings.INTAKE_CONTROL_STYLE) {
             case FLIGHT_STICK:
             case STANDARD:
-                if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
+                if (joystick.hatIs(DefaultControllerEnums.ResolvedCompassInput.DOWN)) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
                     setIntake(IntakeDirection.IN);
-                } else if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.UP)) {
+                } else if (joystick.hatIs(DefaultControllerEnums.ResolvedCompassInput.UP)) {
                     setIntake(IntakeDirection.OUT);
                 } else {
                     setIntake(IntakeDirection.OFF);
@@ -118,18 +118,18 @@ public class Intake implements ISubsystem {
             case ROBOT_2021:
                 if (robotSettings.ENABLE_INTAKE_SERVOS) {
                     //do servo-y things
-                    if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
+                    if (joystick.hatIs(DefaultControllerEnums.ResolvedCompassInput.DOWN)) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
                         setIntake(IntakeDirection.IN);
-                    } else if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.UP)) {
+                    } else if (joystick.hatIs(DefaultControllerEnums.ResolvedCompassInput.UP)) {
                         setIntake(IntakeDirection.OUT);
                     } else {
                         setIntake(IntakeDirection.OFF);
                     }
 
-                    if (joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
+                    if (joystick.get(DefaultControllerEnums.JoystickButtons.FOUR) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         intakeServo1.moveToAngle(145);
                         intakeServo2.moveToAngle(35);
-                    } else if (joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
+                    } else if (joystick.get(DefaultControllerEnums.JoystickButtons.SIX) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         intakeServo1.moveToAngle(0);
                         intakeServo2.moveToAngle(180);
                     }
@@ -138,7 +138,7 @@ public class Intake implements ISubsystem {
                 }
                 break;
             case ROBOT_PRACTICE_2022: {
-                if (joystick.get(ControllerEnums.XBoxButtons.Y_TRIANGLE) == ButtonStatus.DOWN) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
+                if (joystick.get(DefaultControllerEnums.XBoxButtons.Y_TRIANGLE) == DefaultControllerEnums.ButtonStatus.DOWN) {//|| buttonPanel.get(ControllerEnums.ButtonPanelButtons.) {
                     setIntake(IntakeDirection.IN);
                 } else {
                     setIntake(IntakeDirection.OFF);
@@ -163,10 +163,10 @@ public class Intake implements ISubsystem {
 
                 }
             case ROBOT_2022_OLD: {
-                if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.DOWN)) {
+                if (joystick.hatIs(DefaultControllerEnums.ResolvedCompassInput.DOWN)) {
                     setIntake(IntakeDirection.IN);
                     //hopper.setAgitatorTopbar(true);
-                } else if (joystick.hatIs(ControllerEnums.ResolvedCompassInput.UP)) {
+                } else if (joystick.hatIs(DefaultControllerEnums.ResolvedCompassInput.UP)) {
                     setIntake(IntakeDirection.OUT);
                 } else {
                     setIntake(IntakeDirection.OFF);
@@ -176,28 +176,28 @@ public class Intake implements ISubsystem {
                 break;
             }
             case DRUM_TIME:
-                if (joystick.get(ControllerEnums.DrumButton.TWO) == ButtonStatus.DOWN)
+                if (joystick.get(DefaultControllerEnums.DrumButton.TWO) == DefaultControllerEnums.ButtonStatus.DOWN)
                     setIntake(IntakeDirection.IN);
                 else
                     setIntake(IntakeDirection.OFF);
                 break;
             case BOP_IT:
-                if (joystick.get(ControllerEnums.BopItButtons.PULLIT) == ButtonStatus.DOWN)
+                if (joystick.get(DefaultControllerEnums.BopItButtons.PULLIT) == DefaultControllerEnums.ButtonStatus.DOWN)
                     setIntake(IntakeDirection.IN);
                 else
                     setIntake(IntakeDirection.OFF);
                 break;
             case WII:
-                speed = joystick.get(ControllerEnums.WiiAxis.FORWARD_TILT);
+                speed = joystick.get(DefaultControllerEnums.WiiAxis.FORWARD_TILT);
                 if (Math.abs(speed) >= 0.1) {
                     setIntake(speed);
                 }
                 break;
             case GUITAR:
-                setIntake(joystick.get(ControllerEnums.SixKeyGuitarAxis.STRUM));
+                setIntake(joystick.get(DefaultControllerEnums.SixKeyGuitarAxis.STRUM));
                 break;
             case XBOX_CONTROLLER:
-                speed = joystick.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER);
+                speed = joystick.get(DefaultControllerEnums.XboxAxes.RIGHT_TRIGGER);
                 if (Math.abs(speed) >= 0.1) {
                     setIntake(speed);
                 }
@@ -213,16 +213,16 @@ public class Intake implements ISubsystem {
     public void doIntakeArticulation() {
         switch (robotSettings.INTAKE_CONTROL_STYLE) {
             case ROBOT_2022_OLD:
-                if (buttonpanel.get(INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
+                if (buttonpanel.get(INTAKE_UP) == DefaultControllerEnums.ButtonStatus.DOWN || joystick.get(DefaultControllerEnums.JoystickButtons.SIX) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     deployIntake(false);
-                } else if (buttonpanel.get(INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
+                } else if (buttonpanel.get(INTAKE_DOWN) == DefaultControllerEnums.ButtonStatus.DOWN || joystick.get(DefaultControllerEnums.JoystickButtons.FOUR) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     deployIntake(true);
                 }
                 break;
             case ROBOT_2022_COMP:
-                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_UP) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.SIX) == ButtonStatus.DOWN) {
+                if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_UP) == DefaultControllerEnums.ButtonStatus.DOWN || joystick.get(DefaultControllerEnums.JoystickButtons.SIX) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     deployIntake(false);
-                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == ButtonStatus.DOWN || joystick.get(ControllerEnums.JoystickButtons.FOUR) == ButtonStatus.DOWN) {
+                } else if (buttonpanel.get(ControllerEnums.ButtonPanelButtons2022.INTAKE_DOWN) == DefaultControllerEnums.ButtonStatus.DOWN || joystick.get(DefaultControllerEnums.JoystickButtons.FOUR) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     deployIntake(true);
                 }
                 break;
@@ -287,35 +287,35 @@ public class Intake implements ISubsystem {
         switch (robotSettings.INTAKE_CONTROL_STYLE) {
             case FLIGHT_STICK:
             case ROBOT_PRACTICE_2022:
-                joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             case ROBOT_2021:
-                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
                 break;
             case ROBOT_2022_COMP:
-                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
-                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
+                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
+                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, ControllerEnums.CustomControllers.BUTTTON_PANEL_CONTROLLER_2022);
                 break;
             case ROBOT_2022_OLD:
             case STANDARD:
-                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                joystick = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
+                buttonpanel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, ControllerEnums.CustomControllers.BUTTON_PANEL_CONTROLLER);
                 break;
             case XBOX_CONTROLLER:
-                joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                joystick = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             case BOP_IT:
-                joystick = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
+                joystick = BaseController.createOrGet(3, BaseController.DefaultControllers.BOP_IT_CONTROLLER);
                 break;
             case DRUM_TIME:
-                joystick = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
+                joystick = BaseController.createOrGet(5, BaseController.DefaultControllers.DRUM_CONTROLLER);
                 break;
             case WII:
-                joystick = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
+                joystick = BaseController.createOrGet(4, BaseController.DefaultControllers.WII_CONTROLLER);
                 break;
             case GUITAR:
-                joystick = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
+                joystick = BaseController.createOrGet(6, BaseController.DefaultControllers.SIX_BUTTON_GUITAR_CONTROLLER);
                 break;
             default:
                 throw new IllegalStateException("There is no UI configuration for " + robotSettings.INTAKE_CONTROL_STYLE.name() + " to control the shooter. Please implement me");

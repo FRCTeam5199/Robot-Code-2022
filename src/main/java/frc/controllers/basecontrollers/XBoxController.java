@@ -1,15 +1,14 @@
-package frc.controllers;
+package frc.controllers.basecontrollers;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import frc.controllers.ControllerEnums.*;
 import frc.robot.Robot;
 
 /**
  * The lame and basic controller. Does it get any more simpleton than this?
  *
  * @see BaseController
- * @see XboxAxes
- * @see XBoxButtons
+ * @see DefaultControllerEnums.XboxAxes
+ * @see DefaultControllerEnums.XBoxButtons
  */
 public class XBoxController extends BaseController {
     private final boolean triggerFlag = false;
@@ -28,18 +27,18 @@ public class XBoxController extends BaseController {
      *
      * @param axis xbox controller axis to query
      * @return the state of inputted axis on a scale of [-1,1]
-     * @see #get(frc.controllers.ControllerInterfaces.IDiscreteInput)
+     * @see #get(ControllerInterfaces.IDiscreteInput)
      */
     @Override
     public double get(ControllerInterfaces.IContinuousInput axis) {
-        if (axis instanceof ControllerEnums.XboxAxes)
-            if (Math.abs(controller.getRawAxis(axis.getChannel())) > ((XboxAxes) axis).DEADZONE) //makes sure axis is outside of the deadzone
+        if (axis instanceof DefaultControllerEnums.XboxAxes)
+            if (Math.abs(controller.getRawAxis(axis.getChannel())) > ((DefaultControllerEnums.XboxAxes) axis).DEADZONE) //makes sure axis is outside of the deadzone
                 return controller.getRawAxis(axis.getChannel());
             else
                 return 0;
         else if (Robot.robotSettings.PERMIT_ROUGE_INPUT_MAPPING)
             return controller.getRawAxis(axis.getChannel());
-        throw new IllegalArgumentException("Wrong mapping. Expected an enum of type " + ControllerEnums.XboxAxes.class.toString() + " but got " + axis.getClass().toString() + " instead");
+        throw new IllegalArgumentException("Wrong mapping. Expected an enum of type " + DefaultControllerEnums.XboxAxes.class + " but got " + axis.getClass().toString() + " instead");
     }
 
     /**
@@ -47,24 +46,24 @@ public class XBoxController extends BaseController {
      *
      * @param button the button to query
      * @return the status of queried button
-     * @see #get(frc.controllers.ControllerInterfaces.IContinuousInput)
+     * @see #get(ControllerInterfaces.IContinuousInput)
      */
     @Override
-    public ButtonStatus get(ControllerInterfaces.IDiscreteInput button) {
-        if (button instanceof ControllerEnums.XBoxButtons || Robot.robotSettings.PERMIT_ROUGE_INPUT_MAPPING)
-            return ControllerEnums.ButtonStatus.get(controller.getRawButton(button.getChannel()));
-        if (button instanceof ControllerEnums.XBoxPOVButtons)
-            return ControllerEnums.ButtonStatus.get(controller.getPOV() == button.getChannel());
-        throw new IllegalArgumentException("Wrong mapping. Expected an enum of type " + ControllerEnums.XBoxButtons.class.toString() + " but got " + button.getClass().toString() + " instead");
+    public DefaultControllerEnums.ButtonStatus get(ControllerInterfaces.IDiscreteInput button) {
+        if (button instanceof DefaultControllerEnums.XBoxButtons || Robot.robotSettings.PERMIT_ROUGE_INPUT_MAPPING)
+            return DefaultControllerEnums.ButtonStatus.get(controller.getRawButton(button.getChannel()));
+        if (button instanceof DefaultControllerEnums.XBoxPOVButtons)
+            return DefaultControllerEnums.ButtonStatus.get(controller.getPOV() == button.getChannel());
+        throw new IllegalArgumentException("Wrong mapping. Expected an enum of type " + DefaultControllerEnums.XBoxButtons.class + " but got " + button.getClass().toString() + " instead");
     }
 
     @Override
-    public boolean hatIsExactly(ControllerEnums.RawCompassInput direction) {
+    public boolean hatIsExactly(DefaultControllerEnums.RawCompassInput direction) {
         return direction.POV_ANGLE == controller.getPOV();
     }
 
     @Override
-    public boolean hatIs(ControllerEnums.ResolvedCompassInput direction) {
+    public boolean hatIs(DefaultControllerEnums.ResolvedCompassInput direction) {
         return direction.containsAngle(controller.getPOV());
     }
 

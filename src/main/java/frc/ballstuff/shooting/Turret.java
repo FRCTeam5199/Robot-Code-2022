@@ -2,10 +2,10 @@ package frc.ballstuff.shooting;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import frc.controllers.BaseController;
 import frc.controllers.ControllerEnums;
+import frc.controllers.basecontrollers.BaseController;
 import frc.controllers.ControllerEnums.ButtonPanelButtons;
-import frc.controllers.ControllerEnums.ButtonStatus;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.misc.*;
 import frc.motors.*;
 import frc.robot.Robot;
@@ -70,20 +70,20 @@ public class Turret implements ISubsystem {
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021:
             case STANDARD:
-                joy = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                joy = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, ControllerEnums.CustomControllers.BUTTON_PANEL_CONTROLLER);
                 break;
             case BOP_IT:
-                joy = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
+                joy = BaseController.createOrGet(3, BaseController.DefaultControllers.BOP_IT_CONTROLLER);
                 break;
             case DRUM_TIME:
-                joy = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
+                joy = BaseController.createOrGet(5, BaseController.DefaultControllers.DRUM_CONTROLLER);
                 break;
             case WII:
-                joy = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
+                joy = BaseController.createOrGet(4, BaseController.DefaultControllers.WII_CONTROLLER);
                 break;
             case GUITAR:
-                joy = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
+                joy = BaseController.createOrGet(6, BaseController.DefaultControllers.SIX_BUTTON_GUITAR_CONTROLLER);
                 break;
                 /*
             case XBOX_CONTROLLER:
@@ -151,9 +151,9 @@ public class Turret implements ISubsystem {
         double camoffset = 0;
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
             case STANDARD_OFFSEASON_2021:
-                if (panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN) { //trench
+                if (panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN) { //trench
                     camoffset = 0;//-4;//-2;
-                } else if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) { //init
+                } else if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN) { //init
                     camoffset = 0;
                 } else {
                     camoffset = -4;
@@ -174,9 +174,9 @@ public class Turret implements ISubsystem {
             case SPEED_2021:
             case STANDARD: {
                 if (robotSettings.ENABLE_VISION) {
-                    if (panel.get(ButtonPanelButtons.BUDDY_CLIMB) == ButtonStatus.DOWN) {
+                    if (panel.get(ButtonPanelButtons.BUDDY_CLIMB) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         visionCamera.setLedMode(IVision.VisionLEDMode.BLINK); //haha suffer
-                    } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && !shooter.isShooting()) {
+                    } else if (panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN && !shooter.isShooting()) {
                         if (robotSettings.DEBUG && DEBUG) {
                             System.out.println("I'm looking. Target is valid? " + visionCamera.hasValidTarget());
                         }
@@ -198,21 +198,21 @@ public class Turret implements ISubsystem {
                     }
                 }
                 //If holding down the manual rotation button, then rotate the turret based on the Z rotation of the joystick.
-                if (joy.get(ControllerEnums.JoystickButtons.TWO) == ControllerEnums.ButtonStatus.DOWN) {
+                if (joy.get(DefaultControllerEnums.JoystickButtons.TWO) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     if (robotSettings.DEBUG && DEBUG) {
-                        System.out.println("Joystick is at " + joy.get(ControllerEnums.JoystickAxis.Z_ROTATE));
+                        System.out.println("Joystick is at " + joy.get(DefaultControllerEnums.JoystickAxis.Z_ROTATE));
                     }
-                    omegaSetpoint = joy.get(ControllerEnums.JoystickAxis.Z_ROTATE) * -2 * (robotSettings.TURRET_INVERT ? -1 : 1);
+                    omegaSetpoint = joy.get(DefaultControllerEnums.JoystickAxis.Z_ROTATE) * -2 * (robotSettings.TURRET_INVERT ? -1 : 1);
                 }
                 break;
             }
             case EXPERIMENTAL_OFFSEASON_2021:
             case STANDARD_OFFSEASON_2021: {
                 if (robotSettings.ENABLE_VISION) {
-                    if (panel.get(ButtonPanelButtons.BUDDY_CLIMB) == ButtonStatus.DOWN) {
+                    if (panel.get(ButtonPanelButtons.BUDDY_CLIMB) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         //visionCamera.setLedMode(IVision.VisionLEDMode.BLINK); //haha suffer
                         visionCamera.setLedMode(IVision.VisionLEDMode.ON);
-                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) {
+                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         if (robotSettings.DEBUG && DEBUG) {
                             System.out.println("I'm looking. Target is valid? " + visionCamera.hasValidTarget());
                         }
@@ -224,7 +224,7 @@ public class Turret implements ISubsystem {
                             omegaSetpoint = scan();
                         }
                         visionCamera.setLedMode(IVision.VisionLEDMode.ON); //If targeting, then use the LL
-                    } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && !shooter.isShooting() && !shooter.tryFiringBalls) {
+                    } else if (panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN && !shooter.isShooting() && !shooter.tryFiringBalls) {
                         if (robotSettings.DEBUG && DEBUG) {
                             System.out.println("I'm looking. Target is valid? " + visionCamera.hasValidTarget());
                         }
@@ -241,33 +241,33 @@ public class Turret implements ISubsystem {
                     }
                 }
                 //If holding down the manual rotation button, then rotate the turret based on the Z rotation of the joystick.
-                if (joy.get(ControllerEnums.JoystickButtons.TWO) == ControllerEnums.ButtonStatus.DOWN && !shooter.tryFiringBalls) {
+                if (joy.get(DefaultControllerEnums.JoystickButtons.TWO) == DefaultControllerEnums.ButtonStatus.DOWN && !shooter.tryFiringBalls) {
                     if (robotSettings.DEBUG && DEBUG) {
-                        System.out.println("Joystick is at " + joy.get(ControllerEnums.JoystickAxis.Z_ROTATE));
+                        System.out.println("Joystick is at " + joy.get(DefaultControllerEnums.JoystickAxis.Z_ROTATE));
                     }
-                    omegaSetpoint = joy.get(ControllerEnums.JoystickAxis.Z_ROTATE) * (isMorganne.getBoolean(true) ? -1.25 : -2);
+                    omegaSetpoint = joy.get(DefaultControllerEnums.JoystickAxis.Z_ROTATE) * (isMorganne.getBoolean(true) ? -1.25 : -2);
                 }
                 break;
             }
             case BOP_IT:
                 //System.out.println("Shooting bop it");
-                if (joy.get(ControllerEnums.BopItButtons.TWISTIT) == ButtonStatus.DOWN) omegaSetpoint = scan();
+                if (joy.get(DefaultControllerEnums.BopItButtons.TWISTIT) == DefaultControllerEnums.ButtonStatus.DOWN) omegaSetpoint = scan();
                 break;
             case DRUM_TIME: {
-                if (joy.get(ControllerEnums.DrumButton.PEDAL) == ButtonStatus.DOWN) omegaSetpoint = scan();
+                if (joy.get(DefaultControllerEnums.DrumButton.PEDAL) == DefaultControllerEnums.ButtonStatus.DOWN) omegaSetpoint = scan();
                 break;
             }
             case WII: {
-                double rot = joy.get(ControllerEnums.WiiAxis.LEFT_RIGHT_NUMBERPAD);
+                double rot = joy.get(DefaultControllerEnums.WiiAxis.LEFT_RIGHT_NUMBERPAD);
                 if (Math.abs(rot) >= 0.1) {
                     omegaSetpoint = rot;
                 }
                 break;
             }
             case GUITAR: {
-                if (joy.get(ControllerEnums.SixKeyGuitarButtons.ONE) == ButtonStatus.DOWN) {
+                if (joy.get(DefaultControllerEnums.SixKeyGuitarButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     omegaSetpoint = 1;
-                } else if (joy.get(ControllerEnums.SixKeyGuitarButtons.THREE) == ButtonStatus.DOWN) {
+                } else if (joy.get(DefaultControllerEnums.SixKeyGuitarButtons.THREE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     omegaSetpoint = -1;
                 }
                 break;
@@ -359,7 +359,7 @@ public class Turret implements ISubsystem {
             scanDirection = 1;
         }
 
-        if (joy.get(ControllerEnums.JoystickButtons.ONE) == ButtonStatus.UP) {
+        if (joy.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.UP) {
             return scanDirection;
         } else {
             return 0;

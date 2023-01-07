@@ -6,8 +6,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.util.Units;
-import frc.controllers.BaseController;
-import frc.controllers.ControllerEnums;
+import frc.controllers.basecontrollers.BaseController;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.misc.*;
 import frc.motors.AbstractMotorController;
 import frc.motors.SwerveMotorController;
@@ -59,7 +59,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
 
     @Override
     public void init() {
-        xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+        xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
         createPIDControllers(new PID(0.0035, 0.00000, 0.0));
         createDriveMotors();
         setDrivingPIDS(new PID(0.001, 0, 0.0001));
@@ -94,7 +94,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     public void updateTeleop() {
         updateGeneric();
         driveSwerve();
-        if (xbox.get(ControllerEnums.XBoxButtons.LEFT_BUMPER) == ControllerEnums.ButtonStatus.DOWN) {
+        if (xbox.get(DefaultControllerEnums.XBoxButtons.LEFT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN) {
             guidance.imu.resetOdometry();
             startHeading = guidance.imu.relativeYaw();
         }
@@ -145,16 +145,16 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     private void driveSwerve() {
-            forwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_Y) * (-1);
-            leftwards = xbox.get(ControllerEnums.XboxAxes.LEFT_JOY_X) * (1);
-            if ((xbox.get(ControllerEnums.XBoxButtons.A_CROSS) == ControllerEnums.ButtonStatus.DOWN) && visionCamera.hasValidTarget()) {
+            forwards = xbox.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_Y) * (-1);
+            leftwards = xbox.get(DefaultControllerEnums.XboxAxes.LEFT_JOY_X) * (1);
+            if ((xbox.get(DefaultControllerEnums.XBoxButtons.A_CROSS) == DefaultControllerEnums.ButtonStatus.DOWN) && visionCamera.hasValidTarget()) {
                 visionCamera.setLedMode(IVision.VisionLEDMode.ON);
                 rotation = -(visionCamera.getAngle() / 15);
                 startHeading = guidance.imu.relativeYaw();
             } else {
                 visionCamera.setLedMode(IVision.VisionLEDMode.OFF);
-                if (Math.abs(xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X)) >= .2) {
-                    rotation = xbox.get(ControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1.5);
+                if (Math.abs(xbox.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X)) >= .2) {
+                    rotation = xbox.get(DefaultControllerEnums.XboxAxes.RIGHT_JOY_X) * (-1.5);
                     startHeading = guidance.imu.relativeYaw();
                 } else {
                     rotation = (guidance.imu.relativeYaw() - startHeading) * -.05;
@@ -165,11 +165,11 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     }
 
     private boolean useLocalOrientation() {
-        return (xbox.get(ControllerEnums.XboxAxes.LEFT_TRIGGER) > 0.1 || useLocalOrientation );
+        return (xbox.get(DefaultControllerEnums.XboxAxes.LEFT_TRIGGER) > 0.1 || useLocalOrientation );
     }
 
     private boolean dorifto() {
-        return xbox.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER) > 0.1;
+        return xbox.get(DefaultControllerEnums.XboxAxes.RIGHT_TRIGGER) > 0.1;
     }
 
     /**
@@ -294,7 +294,7 @@ public class DriveManagerSwerve extends AbstractDriveManager {
     public void driveWithChassisSpeeds(ChassisSpeeds speeds) {
         moduleStates = kinematics.toSwerveModuleStates(speeds);
 
-        if (xbox.get(ControllerEnums.XBoxButtons.RIGHT_BUMPER) == ControllerEnums.ButtonStatus.DOWN) { // ignore for now
+        if (xbox.get(DefaultControllerEnums.XBoxButtons.RIGHT_BUMPER) == DefaultControllerEnums.ButtonStatus.DOWN) { // ignore for now
             moduleStates = kinematics.toSwerveModuleStates(speeds, frontRightLocation);
         } else if (dorifto()) {
             double driftOffset = 3;

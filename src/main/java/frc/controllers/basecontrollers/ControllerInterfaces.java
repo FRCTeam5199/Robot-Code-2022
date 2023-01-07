@@ -1,4 +1,4 @@
-package frc.controllers;
+package frc.controllers.basecontrollers;
 
 public class ControllerInterfaces {
     /**

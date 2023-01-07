@@ -6,9 +6,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.ballstuff.intaking.Hopper2020;
 import frc.climber.Climber;
-import frc.controllers.BaseController;
+import frc.controllers.basecontrollers.BaseController;
 import frc.controllers.ControllerEnums;
 import frc.controllers.ControllerEnums.*;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
 import frc.misc.*;
 import frc.motors.*;
 import frc.robot.Robot;
@@ -82,24 +83,24 @@ public class Shooter implements ISubsystem {
             case STANDARD_OFFSEASON_2021:
             case BACKSPIN_SHOOT_2022:
             case STANDARD:
-                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
-                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, CustomControllers.BUTTON_PANEL_CONTROLLER);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             case BOP_IT:
-                joystickController = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
+                joystickController = BaseController.createOrGet(3, BaseController.DefaultControllers.BOP_IT_CONTROLLER);
                 break;
             case PRACTICE_2022:
             case XBOX_CONTROLLER:
-                joystickController = BaseController.createOrGet(0, BaseController.Controllers.XBOX_CONTROLLER);
+                joystickController = BaseController.createOrGet(0, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             case FLIGHT_STICK:
-                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
                 break;
             case COMP_2022:
-                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
-                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
-                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, CustomControllers.BUTTTON_PANEL_CONTROLLER_2022);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             default:
                 throw new IllegalStateException("There is no UI configuration for " + robotSettings.SHOOTER_CONTROL_STYLE.name() + " to control the shooter. Please implement me");
@@ -124,7 +125,7 @@ public class Shooter implements ISubsystem {
         //goalCamera.setLedMode(IVision.VisionLEDMode.ON);
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
             case STANDARD_2022: {
-                goalCamera.setLedMode((panel.get(ButtonPanelButtons.BUDDY_CLIMB) == ButtonStatus.DOWN) ? IVision.VisionLEDMode.ON : IVision.VisionLEDMode.OFF);
+                goalCamera.setLedMode((panel.get(ButtonPanelButtons.BUDDY_CLIMB) == DefaultControllerEnums.ButtonStatus.DOWN) ? IVision.VisionLEDMode.ON : IVision.VisionLEDMode.OFF);
             }
             break;
             /*default:
@@ -152,32 +153,32 @@ public class Shooter implements ISubsystem {
             case STANDARD_OFFSEASON_2021:
             case BACKSPIN_SHOOT_2022:
             case STANDARD:
-                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
-                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
-                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, CustomControllers.BUTTON_PANEL_CONTROLLER);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
             case COMP_2022:
-                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTTON_PANEL_CONTROLLER_2022);
-                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
-                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, CustomControllers.BUTTTON_PANEL_CONTROLLER_2022);
+                xbox = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
             case FLIGHT_STICK:
-                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.DefaultControllers.JOYSTICK_CONTROLLER);
                 break;
             case BOP_IT:
-                joystickController = BaseController.createOrGet(3, BaseController.Controllers.BOP_IT_CONTROLLER);
+                joystickController = BaseController.createOrGet(3, BaseController.DefaultControllers.BOP_IT_CONTROLLER);
                 break;
             case PRACTICE_2022:
             case STANDARD_2022:
             case XBOX_CONTROLLER:
-                joystickController = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
+                joystickController = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.DefaultControllers.XBOX_CONTROLLER);
                 break;
             case DRUM_TIME:
-                joystickController = BaseController.createOrGet(5, BaseController.Controllers.DRUM_CONTROLLER);
+                joystickController = BaseController.createOrGet(5, BaseController.DefaultControllers.DRUM_CONTROLLER);
                 break;
             case WII:
-                joystickController = BaseController.createOrGet(4, BaseController.Controllers.WII_CONTROLLER);
+                joystickController = BaseController.createOrGet(4, BaseController.DefaultControllers.WII_CONTROLLER);
                 break;
             case GUITAR:
-                joystickController = BaseController.createOrGet(6, BaseController.Controllers.SIX_BUTTON_GUITAR_CONTROLLER);
+                joystickController = BaseController.createOrGet(6, BaseController.DefaultControllers.SIX_BUTTON_GUITAR_CONTROLLER);
                 break;
             default:
                 throw new IllegalStateException("There is no UI configuration for " + robotSettings.SHOOTER_CONTROL_STYLE.name() + " to control the shooter. Please implement me");
@@ -328,10 +329,10 @@ public class Shooter implements ISubsystem {
         updateShuffleboard();
         switch (robotSettings.SHOOTER_CONTROL_STYLE) {
             case STANDARD: {
-                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_FLIGHTSTICK.shoot(this);
                     isConstSpeed = false;
-                } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                } else if (panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN && joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_HIGH_SPEED.shoot(this);
                     isConstSpeed = false;
                 } else {
@@ -343,28 +344,28 @@ public class Shooter implements ISubsystem {
                     ballsShot = 0;
                 }
                 if (robotSettings.ENABLE_SHOOTER_COOLING) {
-                    if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) { //OFF
+                    if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN) { //OFF
                         pneumatics.shooterCooling.set(false);
-                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN) { //ON
+                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN) { //ON
                         pneumatics.shooterCooling.set(true);
                     }
                 }
                 break;
             }
             case STANDARD_OFFSEASON_2021: {
-                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_FLIGHTSTICK.shoot(this);
                     isConstSpeed = false;
-                } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN)) {
-                    shooter.setSpeed(3700 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
-                    if (joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN)) {
+                    shooter.setSpeed(3700 + (500 * shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER)));
+                    if (joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         ShootingEnums.FIRE_HIGH_SPEED_SPINUP.shoot(this);
                     } else {
                         shooter.setShooting(false);
                         shooter.tryFiringBalls = false;
                         hopper2020.setAll(false);
                     }
-                } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                } else if (panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN && joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     tryFiringBalls = true;
                     if (articulatedHood.isAtWantedPosition) {
                         ShootingEnums.FIRE_HIGH_SPEED.shoot(this);
@@ -380,21 +381,21 @@ public class Shooter implements ISubsystem {
                     shooterDefault();
                 }
                 if (robotSettings.ENABLE_SHOOTER_COOLING) {
-                    if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) { //OFF
+                    if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN) { //OFF
                         pneumatics.shooterCooling.set(false);
-                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN) { //ON
+                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN) { //ON
                         pneumatics.shooterCooling.set(true);
                     }
                 }
                 break;
             }
             case EXPERIMENTAL_OFFSEASON_2021: {
-                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     if (!isSpinningUpHeld) {
                         isSpinningUp = !isSpinningUp;
                         isSpinningUpHeld = true;
                     }
-                } else if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.UP) {
+                } else if (panel.get(ButtonPanelButtons.SOLID_SPEED) == DefaultControllerEnums.ButtonStatus.UP) {
                     isSpinningUpHeld = false;
                 }
                 if (isSpinningUp) {
@@ -407,50 +408,50 @@ public class Shooter implements ISubsystem {
             case ACCURACY_2021: {
                 if (Robot.articulatedHood.unTargeted) {
                     shooterDefault();
-                } else if (panel.get(ControllerEnums.ButtonPanelTapedButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                } else if (panel.get(ControllerEnums.ButtonPanelTapedButtons.SOLID_SPEED) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_FLIGHTSTICK.shoot(this);
                     isConstSpeed = false;
                 } else if (singleShot) {
                     ShootingEnums.FIRE_SINGLE_SHOT.shoot(this);
                     isConstSpeed = false;
-                } else if (panel.get(ControllerEnums.ButtonPanelTapedButtons.SINGLE_SHOT) == ButtonStatus.DOWN) {
+                } else if (panel.get(ControllerEnums.ButtonPanelTapedButtons.SINGLE_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     singleShot = true;
                 } else {
                     shooterDefault();
                 }
                 if (robotSettings.ENABLE_SHOOTER_COOLING) {
-                    if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) { //OFF
+                    if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN) { //OFF
                         pneumatics.shooterCooling.set(false);
-                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN) { //ON
+                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN) { //ON
                         pneumatics.shooterCooling.set(true);
                     }
                 }
                 break;
             }
             case SPEED_2021: {
-                if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                if (panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN && joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_WITH_HOPPER_CONTROLLED.shoot(this);
                     //ShootingEnums.FIRE_TIMED.shoot(this);
                     isConstSpeed = false;
-                } else if (panel.get(ButtonPanelButtons.HOPPER_IN) == ButtonStatus.DOWN) {
+                } else if (panel.get(ButtonPanelButtons.HOPPER_IN) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_FLIGHTSTICK.shoot(this);
                     isConstSpeed = false;
                 } else {
                     //shooterDefault();
                 }
                 if (robotSettings.ENABLE_SHOOTER_COOLING) {
-                    if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) { //OFF
+                    if (panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN) { //OFF
                         pneumatics.shooterCooling.set(false);
-                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN) { //ON
+                    } else if (panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN) { //ON
                         pneumatics.shooterCooling.set(true);
                     }
                 }
                 break;
             }
             case FLIGHT_STICK: {
-                if (joystickController.get(JoystickButtons.TWO) == ButtonStatus.DOWN) {
+                if (joystickController.get(DefaultControllerEnums.JoystickButtons.TWO) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_FLIGHTSTICK.shoot(this);
-                } else if (joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                } else if (joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_HIGH_SPEED.shoot(this);
                     isConstSpeed = false;
                 } else {
@@ -464,7 +465,7 @@ public class Shooter implements ISubsystem {
                 break;
             }
             case BOP_IT: {
-                if (joystickController.get(ControllerEnums.BopItButtons.PULLIT) == ButtonStatus.DOWN || singleShot) {
+                if (joystickController.get(DefaultControllerEnums.BopItButtons.PULLIT) == DefaultControllerEnums.ButtonStatus.DOWN || singleShot) {
                     ShootingEnums.FIRE_SINGLE_SHOT.shoot(this);
                     isConstSpeed = false;
                 } else {
@@ -475,7 +476,7 @@ public class Shooter implements ISubsystem {
                 break;
             }
             case GUITAR: {
-                if (joystickController.get(ControllerEnums.SixKeyGuitarButtons.HERO_POWER) == ButtonStatus.DOWN || singleShot) {
+                if (joystickController.get(DefaultControllerEnums.SixKeyGuitarButtons.HERO_POWER) == DefaultControllerEnums.ButtonStatus.DOWN || singleShot) {
                     ShootingEnums.FIRE_SINGLE_SHOT.shoot(this);
                     isConstSpeed = false;
                 } else {
@@ -487,10 +488,10 @@ public class Shooter implements ISubsystem {
             }
 
             case WII: {
-                if (joystickController.get(ControllerEnums.WiiButton.TWO) == ButtonStatus.DOWN) {
+                if (joystickController.get(DefaultControllerEnums.WiiButton.TWO) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_WII.shoot(this);
                     isConstSpeed = false;
-                } else if (joystickController.get(ControllerEnums.WiiButton.ONE) == ButtonStatus.DOWN || singleShot) {
+                } else if (joystickController.get(DefaultControllerEnums.WiiButton.ONE) == DefaultControllerEnums.ButtonStatus.DOWN || singleShot) {
                     ShootingEnums.FIRE_SINGLE_SHOT.shoot(this);
                     isConstSpeed = false;
                 } else {
@@ -501,10 +502,10 @@ public class Shooter implements ISubsystem {
             }
 
             case DRUM_TIME: {
-                if (joystickController.get(ControllerEnums.DrumButton.A) == ButtonStatus.DOWN) {
+                if (joystickController.get(DefaultControllerEnums.DrumButton.A) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_DRUMS.shoot(this);
                     isConstSpeed = false;
-                } else if (joystickController.get(ControllerEnums.DrumButton.ONE) == ButtonStatus.DOWN || singleShot) {
+                } else if (joystickController.get(DefaultControllerEnums.DrumButton.ONE) == DefaultControllerEnums.ButtonStatus.DOWN || singleShot) {
                     ShootingEnums.FIRE_SINGLE_SHOT.shoot(this);
                     isConstSpeed = false;
                 } else {
@@ -514,7 +515,7 @@ public class Shooter implements ISubsystem {
                 }
             }
             case XBOX_CONTROLLER: {
-                if (joystickController.get(ControllerEnums.XboxAxes.RIGHT_TRIGGER) > 0.1) {
+                if (joystickController.get(DefaultControllerEnums.XboxAxes.RIGHT_TRIGGER) > 0.1) {
                     ShootingEnums.FIRE_SOLID_SPEED_XBOX_CONTROLLER.shoot(this);
                 } else {
                     leader.moveAtPercent(0);
@@ -524,19 +525,19 @@ public class Shooter implements ISubsystem {
                 break;
             }
             case STANDARD_2022: {
-                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                if (panel.get(ButtonPanelButtons.SOLID_SPEED) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_STANDARD2022.shoot(this);
                     //ShootingEnums.PID_TUNING.shoot(this);
                     isConstSpeed = false;
-                } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == ButtonStatus.DOWN) && robotSettings.CLIMBER_CONTROL_STYLE != Climber.ClimberControlStyles.STANDARD_2022) {
-                    shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(ControllerEnums.JoystickAxis.SLIDER)));
-                    if (joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                } else if ((panel.get(ButtonPanelButtons.AUX_TOP) == DefaultControllerEnums.ButtonStatus.DOWN || panel.get(ButtonPanelButtons.AUX_BOTTOM) == DefaultControllerEnums.ButtonStatus.DOWN) && robotSettings.CLIMBER_CONTROL_STYLE != Climber.ClimberControlStyles.STANDARD_2022) {
+                    shooter.setSpeed(1000 + (500 * shooter.joystickController.getPositive(DefaultControllerEnums.JoystickAxis.SLIDER)));
+                    if (joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         ShootingEnums.FIRE_HIGH_SPEED_SPINUP_2022.shoot(this);
                     } else {
                         shooter.setShooting(false);
                         shooter.tryFiringBalls = false;
                     }
-                } else if (panel.get(ButtonPanelButtons.TARGET) == ButtonStatus.DOWN && joystickController.get(JoystickButtons.ONE) == ButtonStatus.DOWN) {
+                } else if (panel.get(ButtonPanelButtons.TARGET) == DefaultControllerEnums.ButtonStatus.DOWN && joystickController.get(DefaultControllerEnums.JoystickButtons.ONE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     tryFiringBalls = true;
                     ShootingEnums.FIRE_HIGH_SPEED_2022.shoot(this);
                     isConstSpeed = false;
@@ -550,7 +551,7 @@ public class Shooter implements ISubsystem {
                 break;
             }
             case BACKSPIN_SHOOT_2022: {
-                if (joystickController.get(ControllerEnums.JoystickButtons.NINE) == ButtonStatus.DOWN || panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
+                if (joystickController.get(DefaultControllerEnums.JoystickButtons.NINE) == DefaultControllerEnums.ButtonStatus.DOWN || panel.get(ButtonPanelButtons.SOLID_SPEED) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_2022.shoot(this);
                 } else {
                     tryFiringBalls = false;
@@ -565,19 +566,19 @@ public class Shooter implements ISubsystem {
                 if (DEBUG && robotSettings.DEBUG && robotSettings.ENABLE_COLOR_SENSOR) {
                     System.out.println("I'm seeing color " + colorSensor.getColor().toString());
                 }
-                if (robotSettings.ENABLE_COLOR_SENSOR && !colorSensor.isColor(DriverStation.getAlliance() == DriverStation.Alliance.Red ? Color.kRed : Color.kBlue) && panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
+                if (robotSettings.ENABLE_COLOR_SENSOR && !colorSensor.isColor(DriverStation.getAlliance() == DriverStation.Alliance.Red ? Color.kRed : Color.kBlue) && panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.WHAT_ARE_YOU_DOING_HERE_SHOO.shoot(this);
-                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.FENDER_SHOT) == ButtonStatus.DOWN)|| (joystickController.get(JoystickButtons.SEVEN) == ButtonStatus.DOWN)){
+                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.FENDER_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN)|| (joystickController.get(DefaultControllerEnums.JoystickButtons.SEVEN) == DefaultControllerEnums.ButtonStatus.DOWN)){
                     if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
                         ShootingEnums.FIRE_FROM_RPM_ARTICULATION_2022.shoot(this);
                     } else {
                         ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_CLOSE_2022.shoot(this);
                     }
-                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.TARMAC_SHOT) == ButtonStatus.DOWN)|| (joystickController.get(JoystickButtons.TEN) == ButtonStatus.DOWN)) {
+                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.TARMAC_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN)|| (joystickController.get(DefaultControllerEnums.JoystickButtons.TEN) == DefaultControllerEnums.ButtonStatus.DOWN)) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_MIDDLE_2022.shoot(this);
-                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == ButtonStatus.DOWN)|| (joystickController.get(JoystickButtons.NINE) == ButtonStatus.DOWN)) {
+                } else if ((panel.get(ControllerEnums.ButtonPanelButtons2022.FAR_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN)|| (joystickController.get(DefaultControllerEnums.JoystickButtons.NINE) == DefaultControllerEnums.ButtonStatus.DOWN)) {
                     ShootingEnums.FIRE_SOLID_SPEED_BACKSPIN_FAR_2022.shoot(this);
-                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == ButtonStatus.DOWN) {
+                } else if (panel.get(ControllerEnums.ButtonPanelButtons2022.LOW_SHOT) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     if (robotSettings.ENABLE_SHOOTER_RPM_ARTICULATION) {
                         ShootingEnums.FIRE_FROM_RPM_ARTICULATION_2022.shoot(this);
                     } else {
@@ -596,9 +597,9 @@ public class Shooter implements ISubsystem {
             }
             case PRACTICE_2022: {
                 //if (panel.get(ButtonPanelButtons.SOLID_SPEED) == ButtonStatus.DOWN) {
-                if (joystickController.get(ControllerEnums.XBoxButtons.B_CIRCLE) == ButtonStatus.DOWN) {
+                if (joystickController.get(DefaultControllerEnums.XBoxButtons.B_CIRCLE) == DefaultControllerEnums.ButtonStatus.DOWN) {
                     ShootingEnums.FIRE_SOLID_SPEED_PRACTICE2022.shoot(this);
-                    if (joystickController.get(ControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == ButtonStatus.DOWN) {
+                    if (joystickController.get(DefaultControllerEnums.XBoxButtons.RIGHT_JOYSTICK_BUTTON) == DefaultControllerEnums.ButtonStatus.DOWN) {
                         hopper.setAll(true);
                     }
                 } else {

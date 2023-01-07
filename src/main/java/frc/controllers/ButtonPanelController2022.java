@@ -1,5 +1,9 @@
 package frc.controllers;
 
+import frc.controllers.basecontrollers.BaseController;
+import frc.controllers.basecontrollers.ControllerInterfaces;
+import frc.controllers.basecontrollers.DefaultControllerEnums;
+
 public class ButtonPanelController2022 extends BaseController {
 
 
@@ -11,9 +15,9 @@ public class ButtonPanelController2022 extends BaseController {
      * Gets the Raw button value and returns true if it is pressed when it is run
      */
     @Override
-    public ControllerEnums.ButtonStatus get(ControllerInterfaces.IDiscreteInput button) {
+    public DefaultControllerEnums.ButtonStatus get(ControllerInterfaces.IDiscreteInput button) {
         if (button instanceof ControllerEnums.ButtonPanelButtons2022)
-            return ControllerEnums.ButtonStatus.get(controller.getRawButton(button.getChannel()));
+            return DefaultControllerEnums.ButtonStatus.get(controller.getRawButton(button.getChannel()));
         throw new IllegalArgumentException("Wrong mapping. Expected an enum of type " + ControllerEnums.ButtonPanelButtons.class.toString() + " but got " + button.getClass().toString() + " instead");
     }
 
