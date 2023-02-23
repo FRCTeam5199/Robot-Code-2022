@@ -23,9 +23,13 @@ public enum AutonRoutines {
             new AutonWaypoint(new Point(0, 0)),
             new AutonWaypoint(new Point(1.25, 0))
     ),
+    GAMER_TEST(
+        new AutonWaypoint(new Point(0, 0)),
+        new AutonWaypoint(new Point(1, 0)),
+        new AutonWaypoint(new Point(0, 0))
+    ),
     TEST(
             new AutonWaypoint(new Point(8999, 0))
-
     ),
     ONE_BALL_AUTON(
             new AutonWaypoint(new Point(0,0), 1),
