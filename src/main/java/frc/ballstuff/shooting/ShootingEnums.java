@@ -127,7 +127,7 @@ public enum ShootingEnums {
     }),
 
     FIRE_SOLID_SPEED_PRACTICE2022(shooter -> {
-        shooter.setPercentSpeed(.58);
+        shooter.setPercentSpeed(.8, .5);
         //shooter.setSpeed(1000);
     }),
 

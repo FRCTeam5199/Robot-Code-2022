@@ -281,6 +281,9 @@ public class Shooter implements ISubsystem {
                 backSpin.moveAtVelocity(speedYouWant * constSpeedBackspinMult.getDouble(robotSettings.BACKSPIN_MULTIPLIER));
         } else {
             leader.moveAtPercent(0);
+            if(robotSettings.ENABLE_SHOOTER_BACKSPIN){
+                backSpin.moveAtPercent(0);
+            }
         }
         shooting = false;
         ballsShot = 0;

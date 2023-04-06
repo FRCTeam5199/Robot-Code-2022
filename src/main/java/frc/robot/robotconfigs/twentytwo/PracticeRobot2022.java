@@ -16,14 +16,14 @@ public class PracticeRobot2022 extends DefaultConfig {
     //Subsystems
     public PracticeRobot2022() {
         ENABLE_DRIVE = true;
-        ENABLE_SHOOTER = false;
-        ENABLE_HOPPER = false;
-        ENABLE_INDEXER = false;
-        ENABLE_AGITATOR = false;
-        ENABLE_AGITATOR_TOP = false;
-        ENABLE_INTAKE = false;
-        ENABLE_PNOOMATICS = false;
-        ENABLE_INDEXER_AUTO_INDEX = true;
+        ENABLE_SHOOTER = true;
+        ENABLE_HOPPER = true;
+        ENABLE_INDEXER = true;
+        ENABLE_AGITATOR = true;
+        ENABLE_AGITATOR_TOP = true;
+        ENABLE_INTAKE = true;
+        ENABLE_PNOOMATICS = true;
+        ENABLE_INDEXER_AUTO_INDEX = false;
         ENABLE_IMU = false;
         ENABLE_CAMERA = false;
         ENABLE_CLIMBER_LOCK = false;
@@ -42,7 +42,7 @@ public class PracticeRobot2022 extends DefaultConfig {
 
         //UI Styles
         DRIVE_STYLE = AbstractDriveManager.DriveControlStyles.STANDARD_2022;
-        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.STANDARD_2022;
+        SHOOTER_CONTROL_STYLE = Shooter.ShootingControlStyles.PRACTICE_2022;
         HOPPER_CONTROL_STYLE = Hopper.HopperControlStyles.STANDARD_2022;
         CLIMBER_CONTROL_STYLE = Climber.ClimberControlStyles.STANDARD_2022;
 
@@ -100,8 +100,10 @@ public class PracticeRobot2022 extends DefaultConfig {
         IMU_ID = 18; //pigeon
 
         //Shooter
-        SHOOTER_LEADER_ID = 5; //talon
-        SHOOTER_FOLLOWER_ID = 6; //talon
+        SHOOTER_LEADER_ID = 8; //talon
+        SHOOTER_FOLLOWER_ID = 7; //talon
+        BACKSPIN_ID = 6;
+        ENABLE_SHOOTER_BACKSPIN = true;
         SHOOTER_USE_TWO_MOTORS = true;
         SHOOTER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.TALON_FX;
         SHOOTER_PID = new PID(1.9, .0001, 70, 0.0851136);
@@ -118,12 +120,12 @@ public class PracticeRobot2022 extends DefaultConfig {
         AGITATOR_TOPBAR_MOTOR_ID = 22;
         AGITATOR_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INDEXER_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
-        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        AGITATOR_TOP_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
 
         //Intake
         INTAKE_MOTOR_ID = 21;
         INTAKE_CONTROL_STYLE = Intake.IntakeControlStyles.ROBOT_2022_OLD;
-        INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.CAN_SPARK_MAX;
+        INTAKE_MOTOR_TYPE = AbstractMotorController.SupportedMotors.VICTOR;
         INTAKE_IN_ID = 0;
         INTAKE_OUT_ID = 1;
 

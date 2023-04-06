@@ -28,7 +28,7 @@ public class Hopper implements ISubsystem {
     public AbstractMotorController agitator, agitatorTop, indexer;
     public IDistanceSensor indexSensor;
     public boolean agitatorActive = false, indexerActive = false, agitatorTopbarActive = false;
-    private BaseController controller, panel;
+    private BaseController controller, controller2, panel;
     public ISensor sensor;
 
     public Hopper() {
@@ -50,6 +50,7 @@ public class Hopper implements ISubsystem {
             case STANDARD:
             case STANDARD_2022:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
             case PRACTICE_2022:
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
@@ -77,6 +78,8 @@ public class Hopper implements ISubsystem {
             case STANDARD:
             case STANDARD_2022:
                 panel = BaseController.createOrGet(robotSettings.BUTTON_PANEL_USB_SLOT, BaseController.Controllers.BUTTON_PANEL_CONTROLLER);
+                controller = BaseController.createOrGet(robotSettings.FLIGHT_STICK_USB_SLOT, BaseController.Controllers.JOYSTICK_CONTROLLER);
+                controller2 = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
                 break;
             case PRACTICE_2022:
                 controller = BaseController.createOrGet(robotSettings.XBOX_CONTROLLER_USB_SLOT, BaseController.Controllers.XBOX_CONTROLLER);
@@ -221,7 +224,9 @@ public class Hopper implements ISubsystem {
                     if (robotSettings.ENABLE_INDEXER) {
                         if (robotSettings.ENABLE_INDEXER_AUTO_INDEX) {
                             indexer.moveAtPercent(!isIndexed() ? 0.05 : 0);
-                        } else {
+                        } else if (controller2.get(ControllerEnums.XBoxButtons.X_SQUARE) == ControllerEnums.ButtonStatus.DOWN) {
+                            indexer.moveAtPercent(0.5);
+                        }else {
                             indexer.moveAtPercent(0);
                         }
                     }
